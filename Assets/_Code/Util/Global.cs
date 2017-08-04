@@ -8,5 +8,6 @@ namespace HASH17.Util
     public static class Global
     {
         public static TerminalData TerminalData;
+        public static DebugUtil.DebugCondition DebugCondition;
     }
 }

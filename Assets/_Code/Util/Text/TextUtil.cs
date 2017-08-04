@@ -105,5 +105,18 @@ namespace HASH17.Util.Text
         }
 
         #endregion
+
+        #region Input
+
+        /// <summary>
+        /// Cleans the inputted text and returns the cleaned string.
+        /// </summary>
+        public static string CleanInputText(string rawInput)
+        {
+            rawInput = rawInput.Remove('\n');
+            return rawInput;
+        }
+
+        #endregion
     }
 }

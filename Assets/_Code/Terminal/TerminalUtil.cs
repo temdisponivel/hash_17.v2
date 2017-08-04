@@ -50,7 +50,7 @@ namespace HASH17.Terminal
                         break;
 #if DEB
                     default:
-                        DebugUtil.Log(string.Format("THE TEXT ENTRY TYPE {0} IS NOT IMPLEMENTED!", entry.EntryType), Color.red);
+                        DebugUtil.Log(string.Format("THE TEXT ENTRY TYPE {0} IS NOT IMPLEMENTED!", entry.EntryType), Color.red, DebugUtil.DebugCondition.Always);
                         break;
 #endif
                 }

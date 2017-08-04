@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 using HASH17.Util.Text;
 using UnityEngine;
 
@@ -36,19 +37,40 @@ namespace HASH17.Util
         /// <summary>
         /// Logs the given message with the given color.
         /// </summary>
-        public static void Log(string value, Color color)
+        public static void Log(string value, Color color, DebugCondition condition)
         {
-            var msg = TextUtil.ApplyRichTextColor(value, color);
-            Debug.Log(msg);
+            if (MathUtil.ContainsFlag((int) Global.DebugCondition, (int) condition))
+            {
+                var msg = TextUtil.ApplyRichTextColor(value, color);
+                Debug.Log(msg);
+            }
         }
 
         /// <summary>
         /// Same as Log but this will add the context to the log.
         /// </summary>
-        public static void LogContext(string value, Color color, UnityEngine.Object context)
+        public static void LogContext(string value, Color color, UnityEngine.Object context, DebugCondition condition)
         {
-            var msg = TextUtil.ApplyRichTextColor(value, color);
-            Debug.Log(msg, context);
+            if (MathUtil.ContainsFlag((int) Global.DebugCondition, (int) condition))
+            {
+                var msg = TextUtil.ApplyRichTextColor(value, color);
+                Debug.Log(msg, context);
+            }
         }
+
+        #region Inner Types
+
+        /// <summary>
+        /// Enumerates all possible debug conditions.
+        /// </summary>
+        [Flags]
+        public enum DebugCondition
+        {
+            Info = 1 << 0,
+            Verbose = 1 << 1,
+            Always = Info | Verbose,
+        }
+
+        #endregion
     }
 }
