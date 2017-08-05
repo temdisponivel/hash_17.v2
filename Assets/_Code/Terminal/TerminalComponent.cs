@@ -14,6 +14,7 @@ namespace HASH17.Terminal
         private void Awake()
         {
             Global.TerminalData = Data;
+            Data.Input.selectAllTextOnFocus = false;
         }
 
         public void OnInputChanged()
@@ -38,6 +39,8 @@ namespace HASH17.Terminal
 #endif
 
             TerminalUtil.ShowText(rawInput);
+            TerminalUtil.UpdateTableAndScroll();
+            TerminalUtil.ClearInputText();
         }
     }
 }

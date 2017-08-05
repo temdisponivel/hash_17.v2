@@ -19,6 +19,7 @@ namespace HASH17.Terminal
             var singleTextObject = NGUITools.AddChild(data.TextTable.gameObject, data.SingleText.gameObject);
             var singleText = singleTextObject.GetComponent<SingleTextEntry>();
             singleText.TextComponent.text = text;
+            singleText.transform.SetAsFirstSibling();
         }
 
         /// <summary>
@@ -27,9 +28,10 @@ namespace HASH17.Terminal
         public static void ShowDualText(TerminalData data, string leftText, string rightText)
         {
             var singleTextObject = NGUITools.AddChild(data.TextTable.gameObject, data.DualText.gameObject);
-            var singleText = singleTextObject.GetComponent<DualTextEntry>();
-            singleText.LeftTextComponent.text = leftText;
-            singleText.RightTextComponent.text = rightText;
+            var dualText = singleTextObject.GetComponent<DualTextEntry>();
+            dualText.LeftTextComponent.text = leftText;
+            dualText.RightTextComponent.text = rightText;
+            dualText.transform.SetAsFirstSibling();
         }
 
 #endregion

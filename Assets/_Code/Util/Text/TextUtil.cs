@@ -113,7 +113,7 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string CleanInputText(string rawInput)
         {
-            rawInput = rawInput.Remove('\n');
+            rawInput = rawInput.Replace("\n", string.Empty);
             return rawInput;
         }
 

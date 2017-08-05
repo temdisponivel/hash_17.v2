@@ -166,6 +166,19 @@ namespace HASH17.Terminal
 
         #endregion
 
+        #region Input
+
+        /// <summary>
+        /// Clears the input text.
+        /// </summary>
+        public static void ClearInputText()
+        {
+            var data = Global.TerminalData;
+            data.Input.value = string.Empty;
+        }
+
+        #endregion
+
         #region Scroll/Table
 
         /// <summary>
