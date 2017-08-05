@@ -24,7 +24,10 @@ namespace HASH17.Terminal
         public Stack<TextBatchEntry> BatchEntries;
 
         public SimpleList<string> CommandCache;
+        public int CurrentCommandBufferIndex;
 
-        public int CurrentCommandCacheIndex;
+        public SimpleList<string> AvailableCommands;
+        
+        public SimpleList<string> CurrentCommandBuffer;
     }
 }

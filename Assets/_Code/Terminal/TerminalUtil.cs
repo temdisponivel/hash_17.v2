@@ -167,7 +167,7 @@ namespace HASH17.Terminal
 
         #endregion
 
-        #region Input
+        #region Commands
 
         /// <summary>
         /// Clears the input text.
@@ -203,7 +203,7 @@ namespace HASH17.Terminal
             FocusOnInput();
 
             CacheCommand(Global.TerminalData, text);
-            ResetCacheIndex();
+            ResetCommandBufferIndex();
         }
 
         /// <summary>
@@ -216,33 +216,97 @@ namespace HASH17.Terminal
         }
 
         /// <summary>
-        /// Navigates through the command cache.
-        /// Direction positive means go to older cache, direction negative means newer cache.
-        /// This will be clamped to the cache size.
+        /// Navigates through the command buffer.
+        /// Positive direction means up, negative directions means down.
+        /// If wrapsAround is true, this will go from end to start and start to end,
+        /// if not, it'll clamp to the buffer size.
         /// </summary>
-        public static void NavigateCommandCache(int direction)
+        public static void NavigateCommandBuffer(int direction, bool wrapsAround)
         {
             var data = Global.TerminalData;
-            if (data.CommandCache.Count > 0)
+            var buffer = data.CurrentCommandBuffer;
+            if (buffer.Count > 0)
             {
-                var index = data.CurrentCommandCacheIndex + direction;
-                index = Mathf.Clamp(index, 0, data.CommandCache.Count - 1);
-                data.CurrentCommandCacheIndex = index;
-                Terminal.ShowCommandFromCache(data);
+                var index = data.CurrentCommandBufferIndex + direction;
+                if (wrapsAround)
+                {
+                    // Since index cannot ever be smaller than -1 (because we will defined it as position right down here)
+                    // we can just define the index as the last element of the buffer
+                    if (index < 0)
+                        index = buffer.Count - 1;
+
+                    index = index % buffer.Count;
+                }
+                else
+                    index = Mathf.Clamp(index, 0, buffer.Count - 1);
+
+                data.CurrentCommandBufferIndex = index;
+                Terminal.ShowCommandFromBuffer(data);
             }
         }
 
         /// <summary>
         /// Resets the command cache index to make the cache navigation starts from the bottom.
         /// </summary>
-        public static void ResetCacheIndex()
+        public static void ResetCommandBufferIndex()
         {
             var data = Global.TerminalData;
 
             // Set to -1 because when the player presses the key again, we need this index to go to 0
             // if we set to 0, it will go either to 1 (if pressed up) or zero
             // setting to -1 makes it go to 0 regardless of up or down
-            data.CurrentCommandCacheIndex = -1;
+            data.CurrentCommandBufferIndex = -1;
+        }
+
+        /// <summary>
+        /// Fills the available command buffer with the current available options.
+        /// </summary>
+        public static void FillAvailableCommandBuffer()
+        {
+            // TODO: real stuff
+
+            var data = Global.TerminalData;
+            SList.Clear(data.AvailableCommands);
+
+            var currentText = data.Input.value;
+            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 1"));
+            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 2"));
+            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 3"));
+            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 4"));
+            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 5"));
+        }
+
+        /// <summary>
+        /// Checks to see if the current buffer is equals to the commands cache buffer and, if not
+        /// changes the current buffer to the commands cache buffer and resets the buffer index.
+        /// </summary>
+        public static void ChangeToCommandCacheBufferIfNeeded()
+        {
+            var data = Global.TerminalData;
+            if (data.CurrentCommandBuffer != data.CommandCache)
+            {
+                data.CurrentCommandBuffer = data.CommandCache;
+                ResetCommandBufferIndex();
+            }
+        }
+
+        /// <summary>
+        /// Checks to see if the current buffer is equals to the available commands buffer and, if not
+        /// changes the current buffer to the available commands buffer and resets the buffer index.
+        /// Returns true if it changed the current buffer, false otherwise.
+        /// </summary>
+        public static bool ChangeToAvailableCommandsBufferIfNeeded()
+        {
+            var data = Global.TerminalData;
+            if (data.CurrentCommandBuffer != data.AvailableCommands)
+            {
+                data.CurrentCommandBuffer = data.AvailableCommands;
+                ResetCommandBufferIndex();
+
+                return true;
+            }
+            else
+                return false;
         }
 
         #endregion

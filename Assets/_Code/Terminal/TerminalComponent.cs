@@ -32,21 +32,37 @@ namespace HASH17.Terminal
         {
             TerminalUtil.HandlePlayerInput(Data.Input.value);
         }
-        
+
         public void UpPressed()
         {
-            TerminalUtil.NavigateCommandCache(1);
+            TerminalUtil.ChangeToCommandCacheBufferIfNeeded();
+            TerminalUtil.NavigateCommandBuffer(1, false);
         }
 
         public void DownPressed()
         {
-            TerminalUtil.NavigateCommandCache(-1);
+            TerminalUtil.ChangeToCommandCacheBufferIfNeeded();
+            TerminalUtil.NavigateCommandBuffer(-1, false);
         }
 
         public void EscPressed()
         {
             TerminalUtil.ClearInputText();
-            TerminalUtil.ResetCacheIndex();
+            TerminalUtil.ResetCommandBufferIndex();
+        }
+
+        public void TabPressed()
+        {
+            // If we changed to the available command buffer, 
+            // we need to make sure it has the right options, so we fill the buffer
+            if (TerminalUtil.ChangeToAvailableCommandsBufferIfNeeded())
+                TerminalUtil.FillAvailableCommandBuffer();
+            
+            var shiftPressed = Input.GetKey(KeyCode.LeftShift);
+            if (shiftPressed)
+                TerminalUtil.NavigateCommandBuffer(-1, true);
+            else
+                TerminalUtil.NavigateCommandBuffer(1, true);
         }
 
         #endregion
@@ -60,6 +76,7 @@ namespace HASH17.Terminal
         {
             DebugUtil.Log("TERMINAL COMPONENT INITIALIZED!", Color.green, DebugUtil.DebugCondition.Info);
             Data.CommandCache = SList.Create<string>(50);
+            Data.AvailableCommands = SList.Create<string>(20);
             Global.TerminalData = Data;
             TerminalUtil.FocusOnInput();
         }

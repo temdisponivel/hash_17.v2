@@ -48,11 +48,11 @@ namespace HASH17.Terminal
         #region Input
 
         /// <summary>
-        /// Shows the command from the command cache accordingly to the index on TerminalData.
+        /// Shows the command from the command buffer accordingly to the index on TerminalData.
         /// </summary>
-        public static void ShowCommandFromCache(TerminalData data)
+        public static void ShowCommandFromBuffer(TerminalData data)
         {
-            var command = data.CommandCache[data.CurrentCommandCacheIndex];
+            var command = data.CurrentCommandBuffer[data.CurrentCommandBufferIndex];
             ShowTextOnInput(data, command);
         }
 
