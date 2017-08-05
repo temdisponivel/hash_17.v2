@@ -45,9 +45,7 @@ namespace HASH17.Util
             var children = GetAllInitializableChildren(transform);
             children.Sort(_initializableComparer);
             for (int i = 0; i < children.Count; i++)
-            {
                 children[i].Initialize();
-            }
             return children;
         }
 

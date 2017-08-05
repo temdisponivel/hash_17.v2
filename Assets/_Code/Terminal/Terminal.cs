@@ -1,5 +1,6 @@
 ﻿using HASH17.Util;
 using HASH17.Terminal.TextEntry;
+using SimpleCollections.Lists;
 using UnityEngine;
 
 namespace HASH17.Terminal
@@ -20,6 +21,10 @@ namespace HASH17.Terminal
             var singleText = singleTextObject.GetComponent<SingleTextEntry>();
             singleText.TextComponent.text = text;
             singleText.transform.SetAsFirstSibling();
+
+            var widget = singleText.ParentWidget;
+            widget.leftAnchor.target = data.ScrollView.transform;
+            widget.rightAnchor.target = data.ScrollView.transform;
         }
 
         /// <summary>
@@ -32,11 +37,36 @@ namespace HASH17.Terminal
             dualText.LeftTextComponent.text = leftText;
             dualText.RightTextComponent.text = rightText;
             dualText.transform.SetAsFirstSibling();
+
+            var widget = dualText.ParentWidget;
+            widget.leftAnchor.target = data.ScrollView.transform;
+            widget.rightAnchor.target = data.ScrollView.transform;
         }
 
-#endregion
+        #endregion
 
-#region Table / scroll
+        #region Input
+
+        /// <summary>
+        /// Shows the command from the command cache accordingly to the index on TerminalData.
+        /// </summary>
+        public static void ShowCommandFromCache(TerminalData data)
+        {
+            var command = data.CommandCache[data.CurrentCommandCacheIndex];
+            ShowTextOnInput(data, command);
+        }
+
+        /// <summary>
+        /// Shows the given text on the input.
+        /// </summary>
+        public static void ShowTextOnInput(TerminalData data, string text)
+        {
+            data.Input.value = text;
+        }
+
+        #endregion
+
+        #region Table / scroll
 
         /// <summary>
         /// Updates the scroll view position and bounds.

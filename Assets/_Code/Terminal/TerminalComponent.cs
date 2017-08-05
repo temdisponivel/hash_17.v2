@@ -1,5 +1,7 @@
-﻿using HASH17.Util;
+﻿using HASH.Game;
+using HASH17.Util;
 using HASH17.Util.Text;
+using SimpleCollections.Lists;
 using UnityEngine;
 
 namespace HASH17.Terminal
@@ -7,40 +9,59 @@ namespace HASH17.Terminal
     /// <summary>
     /// Component to serialize a terminal data.
     /// </summary>
-    public class TerminalComponent : MonoBehaviour
+    public class TerminalComponent : MonoBehaviour, IInitializable
     {
         public TerminalData Data;
 
-        private void Awake()
+        void Awake()
         {
-            Global.TerminalData = Data;
-            Data.Input.selectAllTextOnFocus = false;
+            Initialize();
         }
+
+        #region Callbacks [CALLED BY EDITOR STUFF THROUGH NGUI OR INPUT LISTENER]
 
         public void OnInputChanged()
         {
             var text = Data.Input.value;
 
             if (text.EndsWith("\n"))
-                HandlePlayerInput(text);
+                TerminalUtil.HandlePlayerInput(text);
         }
 
         public void OnInputSubimit()
         {
-            HandlePlayerInput(Data.Input.value);
+            TerminalUtil.HandlePlayerInput(Data.Input.value);
+        }
+        
+        public void UpPressed()
+        {
+            TerminalUtil.NavigateCommandCache(1);
         }
 
-        private void HandlePlayerInput(string rawInput)
+        public void DownPressed()
         {
-            var text = TextUtil.CleanInputText(rawInput);
+            TerminalUtil.NavigateCommandCache(-1);
+        }
 
-#if DEB
-            DebugUtil.Log("[Terminal Component] PLAYER INPUT: " + text, Color.green, DebugUtil.DebugCondition.Verbose);
-#endif
-
-            TerminalUtil.ShowText(rawInput);
-            TerminalUtil.UpdateTableAndScroll();
+        public void EscPressed()
+        {
             TerminalUtil.ClearInputText();
+            TerminalUtil.ResetCacheIndex();
+        }
+
+        #endregion
+
+        public int GetOrder()
+        {
+            return 0;
+        }
+
+        public void Initialize()
+        {
+            DebugUtil.Log("TERMINAL COMPONENT INITIALIZED!", Color.green, DebugUtil.DebugCondition.Info);
+            Data.CommandCache = SList.Create<string>(50);
+            Global.TerminalData = Data;
+            TerminalUtil.FocusOnInput();
         }
     }
 }

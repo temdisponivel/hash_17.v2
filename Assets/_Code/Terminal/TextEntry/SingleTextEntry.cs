@@ -9,6 +9,7 @@ namespace HASH17.Terminal.TextEntry
     public class SingleTextEntry : MonoBehaviour
     {
         public const TextEntryType EntryType = TextEntryType.Single;
+        public UIWidget ParentWidget;
         public UILabel TextComponent;
     }
 }

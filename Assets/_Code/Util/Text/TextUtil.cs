@@ -114,6 +114,7 @@ namespace HASH17.Util.Text
         public static string CleanInputText(string rawInput)
         {
             rawInput = rawInput.Replace("\n", string.Empty);
+            rawInput = StripNGUIModifiersAndColor(rawInput);
             return rawInput;
         }
 

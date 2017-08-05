@@ -9,6 +9,7 @@ namespace HASH17.Terminal.TextEntry
     public class DualTextEntry : MonoBehaviour
     {
         public const TextEntryType EntryType = TextEntryType.Dual;
+        public UIWidget ParentWidget;
         public UILabel LeftTextComponent;
         public UILabel RightTextComponent;
     }

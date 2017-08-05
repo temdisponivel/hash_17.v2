@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using HASH17.Terminal.TextEntry;
+using HASH17.Util;
+using SimpleCollections.Lists;
 
 namespace HASH17.Terminal
 {
@@ -20,5 +22,9 @@ namespace HASH17.Terminal
 
         public bool Batching;
         public Stack<TextBatchEntry> BatchEntries;
+
+        public SimpleList<string> CommandCache;
+
+        public int CurrentCommandCacheIndex;
     }
 }

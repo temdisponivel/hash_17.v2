@@ -27,6 +27,7 @@ namespace Assets._Code.__TRASH
             childs.Sort((a, b) => a.GetOrder() - b.GetOrder());
             for (int i = 0; i < childs.Count; i++)
                 childs[i].Initialize();
+            
         }
     }
 }

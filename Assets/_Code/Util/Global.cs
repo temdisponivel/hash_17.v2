@@ -1,4 +1,5 @@
 ﻿using HASH17.Terminal;
+using HASH17.Util.Input;
 
 namespace HASH17.Util
 {
@@ -9,5 +10,7 @@ namespace HASH17.Util
     {
         public static TerminalData TerminalData;
         public static DebugUtil.DebugCondition DebugCondition;
+
+        public static InputListener InputListener;
     }
 }

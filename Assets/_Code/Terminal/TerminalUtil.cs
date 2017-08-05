@@ -2,6 +2,7 @@
 using HASH17.Terminal.TextEntry;
 using HASH17.Util;
 using HASH17.Util.Text;
+using SimpleCollections.Lists;
 using UnityEngine;
 
 namespace HASH17.Terminal
@@ -144,9 +145,9 @@ namespace HASH17.Terminal
         /// </summary>
         public static void ShowModifiedAndColorizedText(string text, Color color, int modifiers)
         {
-            var colorizedText = TextUtil.ApplyNGUIColor(text, color);
-            var modifiedText = TextUtil.ApplyNGUIModifiers(colorizedText, modifiers);
-            ShowText(modifiedText);
+            var modifiedText = TextUtil.ApplyNGUIModifiers(text, modifiers);
+            var colorizedText = TextUtil.ApplyNGUIColor(modifiedText, color);
+            ShowText(colorizedText);
         }
 
         /// <summary>
@@ -173,8 +174,75 @@ namespace HASH17.Terminal
         /// </summary>
         public static void ClearInputText()
         {
+            Terminal.ShowTextOnInput(Global.TerminalData, string.Empty);
+        }
+
+        /// <summary>
+        /// Change the focus to the input component.
+        /// </summary>
+        public static void FocusOnInput()
+        {
+            Global.TerminalData.Input.selectAllTextOnFocus = false;
+        }
+
+        /// <summary>
+        /// Handles a player input.
+        /// </summary>
+        public static void HandlePlayerInput(string rawInput)
+        {
+            var text = TextUtil.CleanInputText(rawInput);
+
+#if DEB
+            DebugUtil.Log("[Terminal Util] PLAYER INPUT: " + text, Color.green, DebugUtil.DebugCondition.Verbose);
+#endif
+
+            ShowText(rawInput);
+
+            UpdateTableAndScroll();
+            ClearInputText();
+            FocusOnInput();
+
+            CacheCommand(Global.TerminalData, text);
+            ResetCacheIndex();
+        }
+
+        /// <summary>
+        /// Caches the command on the terminal data.
+        /// This will enable the user to up/down typed commands.
+        /// </summary>
+        public static void CacheCommand(TerminalData data, string command)
+        {
+            SList.Insert(data.CommandCache, command, 0);
+        }
+
+        /// <summary>
+        /// Navigates through the command cache.
+        /// Direction positive means go to older cache, direction negative means newer cache.
+        /// This will be clamped to the cache size.
+        /// </summary>
+        public static void NavigateCommandCache(int direction)
+        {
             var data = Global.TerminalData;
-            data.Input.value = string.Empty;
+            if (data.CommandCache.Count > 0)
+            {
+                var index = data.CurrentCommandCacheIndex + direction;
+                index = Mathf.Clamp(index, 0, data.CommandCache.Count - 1);
+                data.CurrentCommandCacheIndex = index;
+                Terminal.ShowCommandFromCache(data);
+            }
+        }
+
+        /// <summary>
+        /// Resets the command cache index to make the cache navigation starts from the bottom.
+        /// </summary>
+        public static void ResetCacheIndex()
+        {
+            var data = Global.TerminalData;
+
+            // Set to -1 because when the player presses the key again, we need this index to go to 0
+            // if we set to 0, it will go either to 1 (if pressed up) or zero
+            // setting to -1 makes it go to 0 regardless of up or down
+            data.CurrentCommandCacheIndex = -1;
         }
 
         #endregion

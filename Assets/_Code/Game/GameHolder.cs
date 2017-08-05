@@ -8,9 +8,14 @@ namespace HASH.Game
     /// </summary>
     public class GameHolder : MonoBehaviour
     {
+#if DEB
+        public DebugUtil.DebugCondition DebugCondition;
+#endif
+
         void Awake()
         {
             GameObjectUtil.InitializeAllChildren(transform);
+            Global.DebugCondition = DebugCondition;
         }
     }
 }
