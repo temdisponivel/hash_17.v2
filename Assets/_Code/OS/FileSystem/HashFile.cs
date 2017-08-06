@@ -15,7 +15,6 @@ namespace HASH.OS.FileSystem
         public string Name;
         public string FullName;
         public string FullPath;
-        public string Extension;
         public HashFileType FileType;
 
         public object Content;

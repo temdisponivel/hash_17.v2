@@ -14,7 +14,36 @@ namespace Assets._Code.__TRASH
         void Awake()
         {
             TestDir();
-            TestFile();
+            //TestFile();
+
+            TestPaths();
+        }
+
+        void TestPaths()
+        {
+            var paths = new[] { "/alo", "/dir1/", "../dir1/dir2/", "../dir3/" };
+
+            for (int i = 0; i < 2; i++)
+            {
+                var pathName = paths[i];
+                var dir = FileSystem.FindDirByPath(pathName);
+                if (dir != null)
+                    Debug.Log(pathName + " FOUND");
+                else
+                    Debug.Log(pathName + " NOT FOUND");
+            }
+
+            Global.FileSystemData.CurrentDir = FileSystem.FindDirByPath(paths[1]);
+
+            for (int i = 2; i < paths.Length; i++)
+            {
+                var pathName = paths[i];
+                var dir = FileSystem.FindDirByPath(pathName);
+                if (dir != null)
+                    Debug.Log(pathName + " FOUND");
+                else
+                    Debug.Log(pathName + " NOT FOUND");
+            }
         }
 
         void TestDir()
@@ -23,29 +52,20 @@ namespace Assets._Code.__TRASH
             textUtil.BuilderHelper = new StringBuilder(1024);
             Global.TextUtilData = textUtil;
 
+
             var data = new FileSystemData();
             data.PathStackHelper = SList.Create<string>(10);
+            data.AllFiles = STable.Create<int, HashFile>(10, true);
             Global.FileSystemData = data;
 
-            var dir0 = new HashDir();
-            dir0.Name = "/";
-            dir0.DirId = 0;
-            dir0.ParentDirId = -1;
+            var dir0 = CreateDir(0, "/", -1);
 
-            var dir1 = new HashDir();
-            dir1.Name = "ALO1";
-            dir1.DirId = 1;
-            dir1.ParentDirId = dir0.DirId;
+            Global.FileSystemData.RootDir = dir0;
+            Global.FileSystemData.CurrentDir = dir0;
 
-            var dir2 = new HashDir();
-            dir2.Name = "ALO2";
-            dir2.DirId = 2;
-            dir2.ParentDirId = dir1.DirId;
-
-            var dir3 = new HashDir();
-            dir3.DirId = 3;
-            dir3.Name = "ALO3";
-            dir3.ParentDirId = dir2.DirId;
+            var dir1 = CreateDir(1, "dir1", 0);
+            var dir2 = CreateDir(2, "dir2", 1);
+            var dir3 = CreateDir(3, "dir3", 0);
 
             data.AllDirectories = STable.Create<int, HashDir>(3, true);
             STable.Add(data.AllDirectories, dir0.DirId, dir0, true);
@@ -55,17 +75,26 @@ namespace Assets._Code.__TRASH
 
             var allDirectories = data.AllDirectories;
             foreach (var dir in allDirectories)
-                FileSystem.CacheDirFullPath(dir.Value);
+                FileSystem.CacheDirContent(dir.Value);
+        }
 
-            foreach (var dir in allDirectories)
-                Debug.Log(dir.Value.FullPath);
+        HashDir CreateDir(int id, string name, int parentId)
+        {
+            var dir = new HashDir();
+            dir.DirId = id;
+            dir.Name = name;
+            dir.Childs = SList.Create<HashDir>(1);
+            dir.ChildsDirId = SList.Create<int>(1);
+            dir.ParentDirId = parentId;
+            dir.Files = SList.Create<HashFile>(1);
+            dir.FilesId = SList.Create<int>(1);
+            return dir;
         }
 
         void TestFile()
         {
             var file = new HashFile();
             file = new HashFile();
-            file.Extension = "txt";
             file.Name = "read_me";
             file.ParentDirId = 0;
             file.FileId = 0;

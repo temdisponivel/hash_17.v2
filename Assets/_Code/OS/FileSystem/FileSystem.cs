@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
 using System.Text;
 using HASH.OS.FileSystem.FileTypes;
 using HASH17.Util;
@@ -17,7 +16,10 @@ namespace HASH.OS.FileSystem
     {
         #region Properties
 
-        public const char PathSeparator = '/';
+        public const string TextFileExtension = "txt";
+        public const string ImageFileExtension = "img";
+
+        public static readonly string[] KnownFileExtensions = { TextFileExtension, ImageFileExtension, };
 
         #endregion
 
@@ -30,6 +32,85 @@ namespace HASH.OS.FileSystem
         {
             var data = Global.FileSystemData;
             return STable.Find(data.AllDirectories, dirId);
+        }
+
+        /// <summary>
+        /// Finds a child of the parent folder by name.
+        /// If no child is found, null is returned.
+        /// </summary>
+        public static HashDir FindChildByName(HashDir parent, string childName)
+        {
+            for (int i = 0; i < parent.Childs.Count; i++)
+            {
+                var child = parent.Childs[i];
+                if (string.Equals(child.Name, childName, StringComparison.InvariantCultureIgnoreCase))
+                    return child;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the directory at the given path. Returns null if did not found a dir.
+        /// </summary>
+        public static HashDir FindDirByPath(string path)
+        {
+            if (PathUtil.GetPathType(path) != PathType.Folder)
+                return null;
+
+            var data = Global.FileSystemData;
+            HashDir currentDir;
+
+            // If a path starts with the separator, it means it starts on the root folder
+            if (path.StartsWith(PathUtil.PathSeparator))
+            {
+                currentDir = data.RootDir;
+
+                // remove the path separator because we are already on the root folder
+                path = path.Remove(0, 1);
+            }
+            else
+                currentDir = data.CurrentDir;
+
+            var builder = Global.TextUtilData.BuilderHelper;
+            TextUtil.ClearBuilder(builder);
+            for (int i = 0; i < path.Length; i++)
+            {
+                var current = path[i];
+                if (current == PathUtil.PathSeparator[0])
+                {
+                    currentDir = ProcessPathPart(currentDir, builder.ToString());
+                    TextUtil.ClearBuilder(builder);
+                    // if currentDir is null, it's a invalid path
+                    if (currentDir == null)
+                        return null;
+                }
+                else
+                    builder.Append(current);
+            }
+
+            // If there's still something to process
+            // this can happen if the path did NOT ended in a path separator
+            if (builder.Length > 0)
+            {
+                currentDir = ProcessPathPart(currentDir, builder.ToString());
+                TextUtil.ClearBuilder(builder);
+            }
+
+            return currentDir;
+        }
+
+        private static HashDir ProcessPathPart(HashDir currentDir, string pathPart)
+        {
+            var folderName = pathPart;
+
+            // If we should go up
+            if (folderName == "..")
+                currentDir = currentDir.ParentDir;
+            // if it's NOT to stay on the current folder
+            else if (folderName != ".")
+                currentDir = FindChildByName(currentDir, folderName);
+
+            return currentDir;
         }
 
         /// <summary>
@@ -51,7 +132,7 @@ namespace HASH.OS.FileSystem
             // Root folder is treated differently
             if (dir.ParentDirId == -1)
             {
-                DebugUtil.Assert(dir.Name != PathSeparator.ToString(), "THERE'S A DIR WITHOUT PARENT ID THAT IS NOT THE ROOT DIR!");
+                DebugUtil.Assert(dir.Name != PathUtil.PathSeparator.ToString(), "THERE'S A DIR WITHOUT PARENT ID THAT IS NOT THE ROOT DIR!");
                 path = dir.Name;
             }
             else
@@ -68,12 +149,12 @@ namespace HASH.OS.FileSystem
                 while (data.PathStackHelper.Count > 0)
                 {
                     var last = SList.Pop(data.PathStackHelper);
-                    builder.Append(AddSeparatorToStart(last));
+                    builder.Append(PathUtil.AddSeparatorToStart(last));
                 }
                 path = builder.ToString();
 
                 // since it's a folder, add slash to the end of it
-                path = AddSeparatorToEnd(path);
+                path = PathUtil.AddSeparatorToEnd(path);
             }
 
             return path;
@@ -95,20 +176,27 @@ namespace HASH.OS.FileSystem
         }
 
         /// <summary>
-        /// Cache the given dir's parent and child dirs.
+        /// Cache the parent of the given dir. This will add this dir as child of the its parent
+        /// and store its parent on the parent property.
         /// </summary>
-        public static void CacheDirChildAndParent(HashDir dir)
+        public static void CacheParentDir(HashDir dir)
         {
             SList.Clear(dir.Childs);
-            dir.ParentDir = null;
-            for (int i = 0; i < dir.ChildsDirId.Count; i++)
-            {
-                var dirId = dir.ChildsDirId[i];
-                var child = FindDir(dirId);
-                DebugUtil.Assert(child == null, string.Format("THE DIR {0} HAS A INVALID FILE {1}", dir.Name, dirId));
-                SList.Add(dir.Childs, child);
-            }
-            dir.ParentDir = FindDir(dir.ParentDirId);
+
+            var parent = FindDir(dir.ParentDirId);
+            if (parent != null)
+                AddAsChild(parent, dir);
+        }
+
+        /// <summary>
+        /// Adds the child to the list of childs of parent.
+        /// Also adds the parent as the parent of the child.
+        /// </summary>
+        public static void AddAsChild(HashDir parent, HashDir child)
+        {
+            child.ParentDir = parent;
+            SList.Add(parent.Childs, child);
+            SList.Add(parent.ChildsDirId, child.DirId);
         }
 
         /// <summary>
@@ -118,7 +206,7 @@ namespace HASH.OS.FileSystem
         {
             CacheDirFullPath(dir);
             CacheDirFiles(dir);
-            CacheDirChildAndParent(dir);
+            CacheParentDir(dir);
         }
 
         #endregion
@@ -196,7 +284,26 @@ namespace HASH.OS.FileSystem
         /// </summary>
         public static string GetFileFullName(HashFile file)
         {
-            return string.Format("{0}.{1}", file.Name, file.Extension);
+            return string.Format("{0}.{1}", file.Name, GetFileExtension(file.FileType));
+        }
+
+        /// <summary>
+        /// Returns the file extension to the given file type.
+        /// </summary>
+        public static string GetFileExtension(HashFileType fileType)
+        {
+            switch (fileType)
+            {
+                case HashFileType.Text:
+                    return TextFileExtension;
+                case HashFileType.Image:
+                    return ImageFileExtension;
+                default:
+                    DebugUtil.Assert(true, "DID NOT FOUND AN EXTENSION FOR THE FILE TYPE: " + fileType);
+                    break;
+            }
+
+            return string.Empty;
         }
 
         /// <summary>
@@ -228,42 +335,6 @@ namespace HASH.OS.FileSystem
             CacheFileDir(file);
             CacheFilePaths(file);
             LoadFileContent(file);
-        }
-
-        #endregion
-
-        #region Path
-
-        /// <summary>
-        /// Returns the concatenated path of parent and child.
-        /// </summary>
-        public static string ConcatPath(string parentName, string childName)
-        {
-            return string.Format("{0}{1}{2}", parentName, PathSeparator, childName);
-        }
-
-        /// <summary>
-        /// Returns true if the given path ends with a path separator.
-        /// </summary>
-        public static bool HasTrailingSlash(string path)
-        {
-            return path.EndsWith(PathSeparator.ToString());
-        }
-
-        /// <summary>
-        /// Adds the path sepator to the start of the path.
-        /// </summary>
-        public static string AddSeparatorToStart(string path)
-        {
-            return string.Format("{0}{1}", PathSeparator, path);
-        }
-
-        /// <summary>
-        /// Adds a path separator to the end of the given path.
-        /// </summary>
-        public static string AddSeparatorToEnd(string path)
-        {
-            return string.Format("{0}{1}", path, PathSeparator);
         }
 
         #endregion

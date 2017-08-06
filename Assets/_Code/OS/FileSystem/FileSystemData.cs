@@ -11,6 +11,7 @@ namespace HASH.OS.FileSystem
     public class FileSystemData
     {
         public HashDir CurrentDir;
+        public HashDir RootDir;
 
         public SimpleTable<int, HashDir> AllDirectories;
         public SimpleTable<int, HashFile> AllFiles;
