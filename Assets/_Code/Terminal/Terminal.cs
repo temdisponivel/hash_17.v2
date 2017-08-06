@@ -25,6 +25,8 @@ namespace HASH17.Terminal
             var widget = singleText.ParentWidget;
             widget.leftAnchor.target = data.ScrollView.transform;
             widget.rightAnchor.target = data.ScrollView.transform;
+
+            singleTextObject.SetActive(true);
         }
 
         /// <summary>
@@ -32,8 +34,8 @@ namespace HASH17.Terminal
         /// </summary>
         public static void ShowDualText(TerminalData data, string leftText, string rightText)
         {
-            var singleTextObject = NGUITools.AddChild(data.TextTable.gameObject, data.DualText.gameObject);
-            var dualText = singleTextObject.GetComponent<DualTextEntry>();
+            var dualTextObject = NGUITools.AddChild(data.TextTable.gameObject, data.DualText.gameObject);
+            var dualText = dualTextObject.GetComponent<DualTextEntry>();
             dualText.LeftTextComponent.text = leftText;
             dualText.RightTextComponent.text = rightText;
             dualText.transform.SetAsFirstSibling();
@@ -41,6 +43,8 @@ namespace HASH17.Terminal
             var widget = dualText.ParentWidget;
             widget.leftAnchor.target = data.ScrollView.transform;
             widget.rightAnchor.target = data.ScrollView.transform;
+            
+            dualTextObject.SetActive(true);
         }
 
         #endregion

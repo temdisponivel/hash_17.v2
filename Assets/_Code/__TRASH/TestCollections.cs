@@ -1,53 +1,66 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace Assets._Code.__TRASH
 {
     [Serializable]
     public class StringList : SimpleList<int> { }
 
+    [Serializable]
+    public class IntDic : SimpleTable<int, string> { }
+
     public class TestCollections : MonoBehaviour
     {
         public SimpleList<int> list;
+        //public IntDic Dic;
 
         void Awake()
         {
+            //TestDic();
             TestSimpleList();
         }
 
+        void TestDic()
+        {
+            Stopwatch stop = new Stopwatch();
+            stop.Start();
+            var dic = new Dictionary<int, string>(10);
+            //var dic = STable.Create<int, string>(10, true);
+            for (int i = 0; i < 100000; i++)
+                dic[i] = i + "ALO";
+            //stop.Start();
+            for (int i = 0; i < 100000; i++)
+            {
+                string name;
+                //if (STable.TryGetValue(dic, i, out name))
+                if (dic.TryGetValue(i, out name))
+                    name += name;
+            }
+            stop.Stop();
+            Debug.Log(stop.ElapsedMilliseconds);
+        }
+        
         void TestSimpleList()
         {
-            list = SList.Create<int>(5);
-            for (int i = 1; i <= 5; i++)
+            var stop = new Stopwatch();
+            stop.Start();
+            var list = SList.Create<int>(10);
+            for (int i = 0; i < 1000000; i++)
                 SList.Add(list, i);
-            Log();
+            //var list = new List<int>(10);
+            //for (int i = 0; i < 1000000; i++)
+            //    list.Add(i);
 
-            var newList = SList.Create<int>(4);
-            SList.CopyRange(list, 1, newList, 0, newList.Capacity);
-            //SList.CopyRange(list, 2, newList, 0, 4);
-
-            SList.RemoveFirst(list);
-            Debug.Log("REMOVE");
-
-            list = newList;
-
-            Log();
-
-            return;
-
-            SList.Remove(list, 2);
-            SList.Delete(list, (value) => value == 3);
-            Debug.Log("CONSTAINS 99: " + SList.Contains(list, 99));
-            Log();
-            Debug.Log("CAPACITY: " + list.Capacity);
-            SList.Clear(list);
-            Log();
-            SList.EnsureCapacity(list, 300);
-            Debug.Log("CAPACITY: " + list.Capacity);
-            for (int i = 0; i < list.Capacity; i++)
-                list[i] = i;
-            Log();
+            var sum = 0;
+            for (int i = 0; i < 1000000; i++)
+                sum += list[i];
+            stop.Stop();
+            Debug.Log(stop.ElapsedMilliseconds);
         }
 
         private void Log()

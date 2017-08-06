@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using HASH17.Terminal.TextEntry;
 using HASH17.Util;
 using HASH17.Util.Text;
@@ -22,9 +23,9 @@ namespace HASH17.Terminal
         public static void StartTextBatch()
         {
             var data = Global.TerminalData;
-#if DEB
+
             DebugUtil.Assert(data.Batching, "THERE'S ALREADY A TEXT BATCH HAPPENING!");
-#endif
+
             data.Batching = true;
         }
 
@@ -34,9 +35,9 @@ namespace HASH17.Terminal
         public static void EndTextBatch()
         {
             var data = Global.TerminalData;
-#if DEB
+
             DebugUtil.Assert(!data.Batching, "THERE'S NO TEXT BATCH HAPPENING!");
-#endif
+
             data.Batching = false;
             while (data.BatchEntries.Count > 0)
             {
@@ -49,11 +50,9 @@ namespace HASH17.Terminal
                     case TextEntryType.Dual:
                         ShowDualText(entry.Texts[0], entry.Texts[1]);
                         break;
-#if DEB
                     default:
                         DebugUtil.Log(string.Format("THE TEXT ENTRY TYPE {0} IS NOT IMPLEMENTED!", entry.EntryType), Color.red, DebugUtil.DebugCondition.Always);
                         break;
-#endif
                 }
             }
         }
@@ -93,11 +92,7 @@ namespace HASH17.Terminal
                 data.BatchEntries.Push(entry);
             }
             else
-            {
                 Terminal.ShowDualText(data, leftText, rightText);
-                Terminal.UpdateScroll(data);
-
-            }
         }
 
         /// <summary>
@@ -188,15 +183,19 @@ namespace HASH17.Terminal
         /// <summary>
         /// Handles a player input.
         /// </summary>
-        public static void HandlePlayerInput(string rawInput)
+        public static IEnumerator HandlePlayerInput(string rawInput)
         {
             var text = TextUtil.CleanInputText(rawInput);
-
-#if DEB
+            if (string.IsNullOrEmpty(text))
+                yield break;
+       
             DebugUtil.Log("[Terminal Util] PLAYER INPUT: " + text, Color.green, DebugUtil.DebugCondition.Verbose);
-#endif
 
-            ShowText(rawInput);
+            var path = TextUtil.ApplyNGUIColor("/emails/background/attachement/images/", Color.green);
+            ShowDualText(path, text);
+
+            // TODO: remove this wait to fix label flickering, but fix table reposition
+            yield return null;
 
             UpdateTableAndScroll();
             ClearInputText();

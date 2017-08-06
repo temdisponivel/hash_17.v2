@@ -25,12 +25,12 @@ namespace HASH17.Terminal
             var text = Data.Input.value;
 
             if (text.EndsWith("\n"))
-                TerminalUtil.HandlePlayerInput(text);
+                StartCoroutine(TerminalUtil.HandlePlayerInput(text));
         }
 
         public void OnInputSubimit()
         {
-            TerminalUtil.HandlePlayerInput(Data.Input.value);
+            StartCoroutine(TerminalUtil.HandlePlayerInput(Data.Input.value));
         }
 
         public void UpPressed()

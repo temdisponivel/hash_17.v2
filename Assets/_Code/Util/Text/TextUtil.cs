@@ -38,8 +38,12 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string ApplyNGUIColor(string text, Color color)
         {
+            var builder = Global.TextUtilData.BuilderHelper;
+            ClearBuilder(builder);
+
             var colorEncoded = ColorUtil.EncodeColor(color);
-            return string.Format(NGUIColorStringFormat, colorEncoded, text);
+            builder.AppendFormat(NGUIColorStringFormat, colorEncoded, text);
+            return builder.ToString();
         }
 
         /// <summary>
@@ -48,22 +52,25 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string ApplyNGUIModifiers(string text, int modifiers)
         {
+            var builder = Global.TextUtilData.BuilderHelper;
+            ClearBuilder(builder);
+
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Bold))
-                text = string.Format(NGUIBoldStringFormat, text);
+                builder.AppendFormat(NGUIBoldStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Italic))
-                text = string.Format(NGUIItalicStringFormat, text);
+                builder.AppendFormat(NGUIItalicStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Ignorecolor))
-                text = string.Format(NGUIIgnoreColorStringFormat, text);
+                builder.AppendFormat(NGUIIgnoreColorStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Stroke))
-                text = string.Format(NGUIStrokeStringFormat, text);
+                builder.AppendFormat(NGUIStrokeStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Underline))
-                text = string.Format(NGUIUnderlineStringFormat, text);
+                builder.AppendFormat(NGUIUnderlineStringFormat, text);
 
-            return text;
+            return builder.ToString();
         }
 
         /// <summary>
@@ -83,25 +90,30 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string ApplyRichTextColor(string text, Color color)
         {
+            var builder = Global.TextUtilData.BuilderHelper;
+            ClearBuilder(builder);
+
             var colorEncoded = ColorUtil.EncodeColor(color);
-            return string.Format(RichTextColorStringFormat, colorEncoded, text);
+            builder.AppendFormat(RichTextColorStringFormat, colorEncoded, text);
+            return builder.ToString();
         }
 
         public static string ApplyRichTextModifiers(string text, int modifiers)
         {
+            var builder = Global.TextUtilData.BuilderHelper;
+            ClearBuilder(builder);
+
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Bold))
-                text = string.Format(RichTextBoldStringFormat, text);
+                builder.AppendFormat(RichTextBoldStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Italic))
-                text = string.Format(RichTextItalicStringFormat, text);
+                builder.AppendFormat(RichTextItalicStringFormat, text);
 
-#if DEB
             DebugUtil.Assert(MathUtil.ContainsFlag(modifiers, TextModifiers.Ignorecolor), "IGNORE COLOR IS NOT A VALID RICH TEXT MODIFIER!");
             DebugUtil.Assert(MathUtil.ContainsFlag(modifiers, TextModifiers.Stroke), "STROKE IS NOT A VALID RICH TEXT MODIFIER!");
             DebugUtil.Assert(MathUtil.ContainsFlag(modifiers, TextModifiers.Underline), "UNDERLINE IS NOT A VALID RICH TEXT MODIFIER!");
-#endif
 
-            return text;
+            return builder.ToString();
         }
 
         #endregion
@@ -113,9 +125,34 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string CleanInputText(string rawInput)
         {
-            rawInput = rawInput.Replace("\n", string.Empty);
-            rawInput = StripNGUIModifiersAndColor(rawInput);
-            return rawInput;
+            var builder = Global.TextUtilData.BuilderHelper;
+            ClearBuilder(builder);
+            builder.Append(rawInput);
+            builder.Replace("\n", string.Empty);
+            return StripNGUIModifiersAndColor(builder.ToString());
+        }
+
+        #endregion
+
+        #region Builder
+
+        /// <summary>
+        /// Formats the given string using our internal string builder to prevent garbage generation.
+        /// </summary>
+        public static string Format(string text, params object[] parameters)
+        {
+            var builder = Global.TextUtilData.BuilderHelper;
+            ClearBuilder(builder);
+            builder.AppendFormat(text, parameters);
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Remove all contents from the given string builder.
+        /// </summary>
+        public static void ClearBuilder(StringBuilder builder)
+        {
+            builder.Remove(0, builder.Length);
         }
 
         #endregion
