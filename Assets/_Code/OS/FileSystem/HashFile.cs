@@ -9,8 +9,11 @@ namespace HASH.OS.FileSystem
     {
         public int ParentDirId;
 
+        public HashDir ParentDir;
+
         public int FileId;
         public string Name;
+        public string FullName;
         public string FullPath;
         public string Extension;
         public HashFileType FileType;

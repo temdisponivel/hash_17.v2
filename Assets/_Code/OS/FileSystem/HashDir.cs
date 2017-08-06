@@ -15,7 +15,11 @@ namespace HASH.OS.FileSystem
         public int ParentDirId;
         public SimpleList<int> ChildsDirId;
         public SimpleList<int> FilesId;
-        
+
+        public HashDir ParentDir;
+        public SimpleList<HashFile> Files;
+        public SimpleList<HashDir> Childs;
+
         public SimpleTable<int, AccessPermission> UserPermission;
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using HASH.OS.FileSystem.FileTypes;
 using HASH17.Util;
@@ -32,10 +33,17 @@ namespace HASH.OS.FileSystem
         }
 
         /// <summary>
-        /// Calculates the full path of the given dir and caches it on the dir full path property.
-        /// This will return the path WITH the trailling slash.
+        /// Shorthand for hashDir.FullPath = GetDirFullPath(hashDir)
         /// </summary>
         public static void CacheDirFullPath(HashDir hashDir)
+        {
+            hashDir.FullPath = GetDirFullPath(hashDir);
+        }
+
+        /// <summary>
+        /// Calculates and return the full path of the dir.
+        /// </summary>
+        public static string GetDirFullPath(HashDir hashDir)
         {
             var dir = hashDir;
             string path;
@@ -68,7 +76,49 @@ namespace HASH.OS.FileSystem
                 path = AddSeparatorToEnd(path);
             }
 
-            hashDir.FullPath = path;
+            return path;
+        }
+
+        /// <summary>
+        /// Returns a list containing all of the dir files.
+        /// </summary>
+        public static void CacheDirFiles(HashDir dir)
+        {
+            SList.Clear(dir.Files);
+            for (int i = 0; i < dir.FilesId.Count; i++)
+            {
+                var fileId = dir.FilesId[i];
+                var file = FindFile(fileId);
+                DebugUtil.Assert(file == null, string.Format("THE DIR {0} HAS A INVALID FILE {1}", dir.Name, fileId));
+                SList.Add(dir.Files, file);
+            }
+        }
+
+        /// <summary>
+        /// Cache the given dir's parent and child dirs.
+        /// </summary>
+        public static void CacheDirChildAndParent(HashDir dir)
+        {
+            SList.Clear(dir.Childs);
+            dir.ParentDir = null;
+            for (int i = 0; i < dir.ChildsDirId.Count; i++)
+            {
+                var dirId = dir.ChildsDirId[i];
+                var child = FindDir(dirId);
+                DebugUtil.Assert(child == null, string.Format("THE DIR {0} HAS A INVALID FILE {1}", dir.Name, dirId));
+                SList.Add(dir.Childs, child);
+            }
+            dir.ParentDir = FindDir(dir.ParentDirId);
+        }
+
+        /// <summary>
+        /// Caches the given dir's parent, childs and files.
+        /// </summary>
+        public static void CacheDirContent(HashDir dir)
+        {
+            CacheDirFullPath(dir);
+            CacheDirFiles(dir);
+            CacheDirChildAndParent(dir);
         }
 
         #endregion
@@ -84,8 +134,6 @@ namespace HASH.OS.FileSystem
             HashFile file;
             if (STable.TryGetValue(data.AllFiles, fileId, out file))
                 return file;
-
-            DebugUtil.Assert(true, string.Format("NO FILES WITH ID {0}.", fileId));
             return null;
         }
 
@@ -133,6 +181,53 @@ namespace HASH.OS.FileSystem
             imageFile.ImageContent = texture;
 
             // Do not unload texture (like we unload text asset)
+        }
+
+        /// <summary>
+        /// Caches the file parent dir.
+        /// </summary>
+        public static void CacheFileDir(HashFile file)
+        {
+            file.ParentDir = FindDir(file.ParentDirId);
+        }
+
+        /// <summary>
+        /// Returns the file name + extension.
+        /// </summary>
+        public static string GetFileFullName(HashFile file)
+        {
+            return string.Format("{0}.{1}", file.Name, file.Extension);
+        }
+
+        /// <summary>
+        /// Calculates and returns the file full path.
+        /// </summary>
+        public static string GetFileFullPath(HashFile file)
+        {
+            var parentDirFullPath = GetDirFullPath(file.ParentDir);
+            var fullName = GetFileFullName(file);
+
+            var path = string.Format("{0}{1}", parentDirFullPath, fullName); // parentDirFullPath already has a trailling slash
+            return path;
+        }
+
+        /// <summary>
+        /// Caches the file full path and full name.
+        /// </summary>
+        public static void CacheFilePaths(HashFile file)
+        {
+            file.FullPath = GetFileFullPath(file);
+            file.FullName = GetFileFullName(file);
+        }
+
+        /// <summary>
+        /// Cache files path, folder and load its contents.
+        /// </summary>
+        public static void CacheFileContents(HashFile file)
+        {
+            CacheFileDir(file);
+            CacheFilePaths(file);
+            LoadFileContent(file);
         }
 
         #endregion

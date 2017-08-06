@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using HASH.OS.FileSystem;
+using HASH.OS.FileSystem.FileTypes;
 using HASH17.Util;
 using HASH17.Util.Text;
 using SimpleCollections.Hash;
@@ -13,6 +14,7 @@ namespace Assets._Code.__TRASH
         void Awake()
         {
             TestDir();
+            TestFile();
         }
 
         void TestDir()
@@ -57,6 +59,36 @@ namespace Assets._Code.__TRASH
 
             foreach (var dir in allDirectories)
                 Debug.Log(dir.Value.FullPath);
+        }
+
+        void TestFile()
+        {
+            var file = new HashFile();
+            file = new HashFile();
+            file.Extension = "txt";
+            file.Name = "read_me";
+            file.ParentDirId = 0;
+            file.FileId = 0;
+            file.FileType = HashFileType.Text;
+
+            var textFile = new TextFile();
+            textFile.TextContentAssetPath = "ReadMe";
+            textFile.File = file;
+            file.Content = textFile;
+
+            var data = Global.FileSystemData;
+            data.AllFiles = STable.Create<int, HashFile>(10, true);
+            data.AllFiles[file.FileId] = file;
+
+            foreach (var f in data.AllFiles)
+                FileSystem.CacheFileContents(f.Value);
+
+            foreach (var f in data.AllFiles)
+            {
+                Debug.Log(f.Value.FullPath);
+                var tf = f.Value.Content as TextFile;
+                Debug.Log(tf.TextContent);
+            }
         }
     }
 }
