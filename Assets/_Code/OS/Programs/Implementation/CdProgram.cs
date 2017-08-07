@@ -2,6 +2,7 @@
 {
     /// <summary>
     /// Executes the CD program.
+    /// CD stands for change directory and that's what this program does.
     /// </summary>
     public static class CdProgram
     {
@@ -10,7 +11,7 @@
         /// </summary>
         public static void Execute(ProgramExecutionOptions options)
         {
-            
+            UnityEngine.Debug.Log("CD EXECUTED");
         }
     }
 }

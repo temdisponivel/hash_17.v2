@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using HASH.OS.FileSystem;
 using HASH.OS.FileSystem.FileTypes;
+using HASH.OS.Programs;
 using HASH.OS.Shell;
 using HASH17.Util;
 using HASH17.Util.Text;
@@ -23,6 +24,15 @@ namespace Assets._Code.__TRASH
 
         public void TestCommandLine()
         {
+            var programData = new ProgramsData();
+            programData.AllPrograms = SList.Create<Program>(1);
+            var cdProgram = new Program();
+            cdProgram.ProgramType = ProgramType.Cd;
+            cdProgram.Commands = new string[2] { "cd", "alo" };
+            SList.Add(programData.AllPrograms, cdProgram);
+
+            Global.ProgramData = programData;
+
             var textUtil = new TextUtilData();
             textUtil.BuilderHelper = new StringBuilder();
             Global.TextUtilData = textUtil;
@@ -44,6 +54,9 @@ namespace Assets._Code.__TRASH
             Debug.Log(options.RawCommandLine);
             Debug.Log(options.ProgramReference);
             Debug.Log(options.ParsedArguments);
+
+            var cdCommandLine = "cd dir1";
+            Shell.RunCommandLine(cdCommandLine);
         }
 
         #region Files
@@ -126,7 +139,7 @@ namespace Assets._Code.__TRASH
 
             foreach (var dataAllFile in data.AllFiles)
                 FileSystem.CacheFileContents(dataAllFile.Value);
-            
+
         }
 
         HashDir CreateDir(int id, string name, int parentId)

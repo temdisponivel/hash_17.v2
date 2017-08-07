@@ -1,8 +1,7 @@
 ﻿using System;
 using HASH.OS.Programs;
+using HASH.OS.Programs.Implementation;
 using HASH17.Util;
-using SimpleCollections.Lists;
-using SimpleCollections.Util;
 
 namespace HASH.OS.Shell
 {
@@ -11,6 +10,23 @@ namespace HASH.OS.Shell
     /// </summary>
     public static class Shell
     {
+        /// <summary>
+        /// Interprets, find the program and execute the command of the given command line.
+        /// </summary>
+        public static void RunCommandLine(string commandLine)
+        {
+            var programOpt = GetProgramExecutionOptions(commandLine);
+            if (programOpt.ProgramReference == null)
+            {
+                UnityEngine.Debug.Log("ERROR");
+            }
+            else
+            {
+                var entryPoint = GetProgramExecutionEntryPoint(programOpt.ProgramReference);
+                entryPoint(programOpt);
+            }
+        }
+
         /// <summary>
         /// Handles a command line.
         /// </summary>
@@ -53,7 +69,7 @@ namespace HASH.OS.Shell
         /// </summary>
         public static ProgramExecutionOptions GetProgramExecutionOptions(string rawCommandLine)
         {
-            if (IsCommandLineValid(rawCommandLine))
+            if (!IsCommandLineValid(rawCommandLine))
                 return default(ProgramExecutionOptions);
 
             var command = CommandLineUtil.GetCommandName(rawCommandLine);
@@ -67,6 +83,25 @@ namespace HASH.OS.Shell
             options.ParsedArguments = CommandLineUtil.GetArgumentsFromCommandLine(rawArguments);
 
             return options;
+        }
+
+        /// <summary>
+        /// Returns the method used to execute the given program.
+        /// </summary>
+        public static Action<ProgramExecutionOptions> GetProgramExecutionEntryPoint(Program program)
+        {
+            switch (program.ProgramType)
+            {
+                case ProgramType.Cd:
+                    return CdProgram.Execute;
+                case ProgramType.Dir:
+                    return DirProgram.Execute;
+                default:
+                    DebugUtil.Assert(true, "PROGRAM TYPE HAS NO RELATED CLASS. " + program.ProgramType);
+                    break;
+            }
+
+            return null;
         }
     }
 }
