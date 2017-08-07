@@ -1,4 +1,5 @@
 ﻿using HASH.OS.Programs;
+using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 
 namespace HASH.OS.Shell
@@ -9,5 +10,7 @@ namespace HASH.OS.Shell
     public class ProgramsData
     {
         public SimpleList<Program> AllPrograms;
+
+        public SimpleSet<string> ArgNameSetHelper;
     }
 }

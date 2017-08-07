@@ -26,6 +26,7 @@ namespace Assets._Code.__TRASH
         {
             var programData = new ProgramsData();
             programData.AllPrograms = SList.Create<Program>(1);
+            programData.ArgNameSetHelper = SSet.Create<string>(1, true);
             var cdProgram = new Program();
             cdProgram.ProgramType = ProgramType.Cd;
             cdProgram.Commands = new string[2] { "cd", "alo" };
@@ -55,7 +56,7 @@ namespace Assets._Code.__TRASH
             Debug.Log(options.ProgramReference);
             Debug.Log(options.ParsedArguments);
 
-            var cdCommandLine = "cd dir1";
+            var cdCommandLine = "cd alo -p path -p path";
             Shell.RunCommandLine(cdCommandLine);
         }
 

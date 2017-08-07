@@ -1,5 +1,7 @@
-﻿using HASH17.Util;
+﻿using System;
+using HASH17.Util;
 using HASH17.Util.Text;
+using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using SimpleCollections.Util;
 
@@ -168,7 +170,7 @@ namespace HASH.OS.Shell
                     break;
             }
 
-            // We can parameters with empty names but values or with empty values but names
+            // We can arguments with empty names but values or with empty values but names
             if (!(string.IsNullOrEmpty(argName) && string.IsNullOrEmpty(argValue)))
             {
                 var finalPair = CreateArgPair(argName, argValue);
@@ -189,6 +191,161 @@ namespace HASH.OS.Shell
             pair.Key = argName;
             pair.Value = argValue;
             return pair;
+        }
+
+        /// <summary>
+        /// Search for the first argument with the given name. Returns true if found the parameter, false otherse.
+        /// The resulting parameter will be on the out Pair argument.
+        /// </summary>
+        public static bool TryGetArgumentByName(SimpleList<Pair<string, string>> arguments, string parameterName, out Pair<string, string> parameter)
+        {
+            parameter = SList.Find(arguments, pair => string.Equals(pair.Key, parameterName, StringComparison.InvariantCultureIgnoreCase));
+
+            // since pair is a struct (always not null), we need to validate if the key AND value is null
+            return !(string.IsNullOrEmpty(parameter.Key) && string.IsNullOrEmpty(parameter.Value));
+        }
+
+        /// <summary>
+        /// Search for the nth argument with the given name. Returns true if found the parameter, false otherse.
+        /// The resulting parameter will be on the out Pair argument.
+        /// </summary>
+        public static bool TryGetNthArgumentByName(SimpleList<Pair<string, string>> arguments, string parameterName, out Pair<string, string> parameter, int n)
+        {
+            var count = 0;
+            parameter = SList.Find(arguments, pair =>
+            {
+                if (count++ == n)
+                    return string.Equals(pair.Key, parameterName, StringComparison.InvariantCultureIgnoreCase);
+                else
+                    return false;
+            });
+
+            // since pair is a struct (always not null), we need to validate if the key AND value is null
+            return !(string.IsNullOrEmpty(parameter.Key) && string.IsNullOrEmpty(parameter.Value));
+        }
+
+        /// <summary>
+        /// Returns true if the given parameter name appears more than one on the list of arguments.
+        /// </summary>
+        public static bool IsArgumentDuplicated(SimpleList<Pair<string, string>> arguments, string parameterName)
+        {
+            var set = Global.ProgramData.ArgNameSetHelper;
+            SSet.Clear(set);
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                var key = arguments[i].Key;
+                if (string.Equals(key, parameterName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    if (SSet.Contains(set, key))
+                        return true;
+                    else
+                        SSet.Add(set, key);
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Validates the given command line validation options and stores the validation result on the corresponding command line option.
+        /// containing the result of the validation.
+        /// This will validate all options whether one of them failed.
+        /// This returns true of EVERY argument is EverythingOk.
+        /// </summary>
+        public static bool ValidateArguments<T>(SimpleList<Pair<string, string>> arguments, CommandLineArgValidationOption<T>[] options)
+        {
+            bool result = true;
+            for (int i = 0; i < options.Length; i++)
+            {
+                var opt = options[i];
+                opt.ValidationResult = ArgValidationResult.EverythingOk;
+
+                if (MathUtil.ContainsFlag((int) opt.Requirements, (int) ArgRequirement.Unique))
+                {
+                    if (IsArgumentDuplicated(arguments, opt.ArgumentName))
+                    {
+                        opt.ValidationResult |= ArgValidationResult.Duplicated;
+                        result = false;
+                    }
+                }
+
+                Pair<string, string> arg;
+                if (TryGetArgumentByName(arguments, opt.ArgumentName, out arg))
+                {
+                    if (MathUtil.ContainsFlag((int)opt.Requirements, (int)ArgRequirement.ValueRequired))
+                    {
+                        if (string.IsNullOrEmpty(arg.Value))
+                        {
+                            opt.ValidationResult |= ArgValidationResult.EmptyValue;
+                            result = false;
+                        }
+                    }
+                }
+                else
+                {
+                    if (MathUtil.ContainsFlag((int) opt.Requirements, (int) ArgRequirement.Required))
+                    {
+                        opt.ValidationResult |= ArgValidationResult.NotFound;
+                        result = false;
+                    }
+                }
+
+                // redefine because it's a struct and we've changed the copy of it, not the one on the list
+                options[i] = opt;
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns true if EVERY argument on the arguments list is also on the known arguments list.
+        /// Use GetUnkownArguments to see which arguments were unknown.
+        /// </summary>
+        public static bool AreAllArgumentsKnown(SimpleList<Pair<string, string>> arguments, string[] knownArguments)
+        {
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                var arg = arguments[i].Key;
+                if (Array.IndexOf(knownArguments, arg) == -1)
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Returns a list of all unknown arguments.
+        /// An argument is unknown when it's present on the arguments list but not on the knownArguments list.
+        /// </summary>
+        public static SimpleList<Pair<string, string>> GetUnknownArguments(SimpleList<Pair<string, string>> arguments, string[] knownArguments)
+        {
+            var result = SList.Create<Pair<string, string>>(1);
+            if (AreAllArgumentsKnown(arguments, knownArguments))
+                return result;
+
+            for (int i = 0; i < arguments.Count; i++)
+            {
+                var arg = arguments[i];
+                var indexOf = Array.IndexOf(knownArguments, arg.Key);
+                if (indexOf == -1)
+                    SList.Add(result, arg);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// Shorthand for calling ValidateArguments and HasUnknownArguments.
+        /// Returns true if ValidateArguments return true and HasUnkoownArgument return false. Returns false otherwise.
+        /// If this method returns true, every validating said that the arguments are ok. If returned false, there's something wrong.
+        /// Use the hasUnknownArg and hasNotOkParameter to known the results of each operation.
+        /// </summary>
+        public static bool FullArgValidation<T>(SimpleList<Pair<string, string>> arguments,
+            CommandLineArgValidationOption<T>[] options, string[] knownArguments, out bool areArgumentsKnown, out bool areArgumentsOk)
+        {
+            areArgumentsOk = ValidateArguments(arguments, options);
+            areArgumentsKnown = AreAllArgumentsKnown(arguments, knownArguments);
+
+            return areArgumentsOk & areArgumentsKnown;
         }
     }
 }
