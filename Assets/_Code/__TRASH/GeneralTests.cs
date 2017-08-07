@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using HASH.OS.FileSystem;
 using HASH.OS.FileSystem.FileTypes;
+using HASH.OS.Shell;
 using HASH17.Util;
 using HASH17.Util.Text;
 using SimpleCollections.Hash;
@@ -13,11 +14,39 @@ namespace Assets._Code.__TRASH
     {
         void Awake()
         {
-            TestDir();
+            //TestDir();
             //TestFile();
+            //TestPaths();
 
-            TestPaths();
+            TestCommandLine();
         }
+
+        public void TestCommandLine()
+        {
+            var textUtil = new TextUtilData();
+            textUtil.BuilderHelper = new StringBuilder();
+            Global.TextUtilData = textUtil;
+
+            var simpleCommand = "cd -p /path/ to/file.txt -c alo - d putamerda -e";
+            var command = CommandLineUtil.GetCommandName(simpleCommand);
+            var commandArgs = CommandLineUtil.RemoveCommandFromCommandLine(simpleCommand);
+            Debug.Log(command);
+            Debug.Log(commandArgs);
+
+            var args = CommandLineUtil.GetArgumentsFromCommandLine(commandArgs);
+            for (int i = 0; i < args.Count; i++)
+            {
+                var arg = args[i];
+                Debug.Log(arg.Key + ": " + arg.Value);
+            }
+
+            var options = Shell.GetProgramExecutionOptions(simpleCommand);
+            Debug.Log(options.RawCommandLine);
+            Debug.Log(options.ProgramReference);
+            Debug.Log(options.ParsedArguments);
+        }
+
+        #region Files
 
         void TestPaths()
         {
@@ -97,6 +126,7 @@ namespace Assets._Code.__TRASH
 
             foreach (var dataAllFile in data.AllFiles)
                 FileSystem.CacheFileContents(dataAllFile.Value);
+            
         }
 
         HashDir CreateDir(int id, string name, int parentId)
@@ -129,5 +159,7 @@ namespace Assets._Code.__TRASH
             file.ParentDirId = parentDirId;
             return file;
         }
+
+        #endregion
     }
 }

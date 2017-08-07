@@ -1,7 +1,4 @@
 ﻿using System;
-using HASH17.Util;
-using HASH17.Util.Text;
-using UnityEngine.Assertions.Must;
 
 namespace HASH.OS.FileSystem
 {

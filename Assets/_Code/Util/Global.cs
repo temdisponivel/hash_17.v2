@@ -1,4 +1,5 @@
 ﻿using HASH.OS.FileSystem;
+using HASH.OS.Shell;
 using HASH17.Terminal;
 using HASH17.Util.Input;
 using HASH17.Util.Text;
@@ -17,5 +18,6 @@ namespace HASH17.Util
         public static FileSystemData FileSystemData;
 
         public static TextUtilData TextUtilData;
+        public static ProgramsData ProgramData;
     }
 }
