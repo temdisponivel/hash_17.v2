@@ -226,6 +226,37 @@ namespace HASH.OS.FileSystem
         }
 
         /// <summary>
+        /// Finds and returns the path at the given file.
+        /// Null if the path is invalid, not a file path or the file is not found.
+        /// </summary>
+        public static HashFile FindFileByPath(string filePath)
+        {
+            var folderPath = PathUtil.RemoveFileNameFromPath(filePath);
+            var fileName = PathUtil.GetFileName(filePath);
+            var fileDir = FindDirByPath(folderPath);
+            if (fileDir == null)
+                return null;
+
+            return FindFileInDir(fileDir, fileName);
+        }
+
+        /// <summary>
+        /// Finds the file with the given name on the given dir.
+        /// Returns null if the file is not found.
+        /// </summary>
+        public static HashFile FindFileInDir(HashDir dir, string fileName)
+        {
+            var files = dir.Files;
+            for (int i = 0; i < files.Count; i++)
+            {
+                var file = files[i];
+                if (string.Equals(file.FullName, fileName, StringComparison.InvariantCultureIgnoreCase))
+                    return file;
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Loads the file content into their content property.
         /// </summary>
         public static void LoadFileContent(HashFile file)
@@ -276,7 +307,18 @@ namespace HASH.OS.FileSystem
         /// </summary>
         public static void CacheFileDir(HashFile file)
         {
-            file.ParentDir = FindDir(file.ParentDirId);
+            var parent = FindDir(file.ParentDirId);
+            AddAsFile(parent, file);
+        }
+
+        /// <summary>
+        /// Adds the given file to the list of files.
+        /// </summary>
+        public static void AddAsFile(HashDir dir, HashFile file)
+        {
+            SList.Add(dir.FilesId, file.FileId);
+            SList.Add(dir.Files, file);
+            file.ParentDir = dir;
         }
 
         /// <summary>

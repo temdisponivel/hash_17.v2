@@ -33,7 +33,7 @@ namespace Assets._Code.__TRASH
                     Debug.Log(pathName + " NOT FOUND");
             }
 
-            Global.FileSystemData.CurrentDir = FileSystem.FindDirByPath(paths[1]);
+            Global.FileSystemData.CurrentDir = FileSystem.FindDirByPath("dir1/dir2");
 
             for (int i = 2; i < paths.Length; i++)
             {
@@ -43,6 +43,17 @@ namespace Assets._Code.__TRASH
                     Debug.Log(pathName + " FOUND");
                 else
                     Debug.Log(pathName + " NOT FOUND");
+            }
+
+            var filePaths = new[] { "file1.txt", "file2.txt", "file3.txt" };
+            for (int i = 0; i < filePaths.Length; i++)
+            {
+                var pathName = filePaths[i];
+                var dir = FileSystem.FindFileByPath(pathName);
+                if (dir != null)
+                    Debug.Log(pathName + " FOUND - FILE");
+                else
+                    Debug.Log(pathName + " NOT FOUND - FILE");
             }
         }
 
@@ -76,6 +87,16 @@ namespace Assets._Code.__TRASH
             var allDirectories = data.AllDirectories;
             foreach (var dir in allDirectories)
                 FileSystem.CacheDirContent(dir.Value);
+
+            var file1 = CreateFile(0, "file1", HashFileType.Text, 0);
+            var file2 = CreateFile(1, "file2", HashFileType.Text, 1);
+            var file3 = CreateFile(2, "file3", HashFileType.Text, 2);
+            data.AllFiles[file1.FileId] = file1;
+            data.AllFiles[file2.FileId] = file2;
+            data.AllFiles[file3.FileId] = file3;
+
+            foreach (var dataAllFile in data.AllFiles)
+                FileSystem.CacheFileContents(dataAllFile.Value);
         }
 
         HashDir CreateDir(int id, string name, int parentId)
@@ -91,33 +112,22 @@ namespace Assets._Code.__TRASH
             return dir;
         }
 
-        void TestFile()
+        HashFile CreateFile(int id, string name, HashFileType type, int parentDirId)
         {
             var file = new HashFile();
-            file = new HashFile();
-            file.Name = "read_me";
-            file.ParentDirId = 0;
-            file.FileId = 0;
-            file.FileType = HashFileType.Text;
-
-            var textFile = new TextFile();
-            textFile.TextContentAssetPath = "ReadMe";
-            textFile.File = file;
-            file.Content = textFile;
-
-            var data = Global.FileSystemData;
-            data.AllFiles = STable.Create<int, HashFile>(10, true);
-            data.AllFiles[file.FileId] = file;
-
-            foreach (var f in data.AllFiles)
-                FileSystem.CacheFileContents(f.Value);
-
-            foreach (var f in data.AllFiles)
+            file.FileId = id;
+            file.Name = name;
+            file.FileType = type;
+            if (type == HashFileType.Image)
+                file.Content = new ImageFile();
+            else
             {
-                Debug.Log(f.Value.FullPath);
-                var tf = f.Value.Content as TextFile;
-                Debug.Log(tf.TextContent);
+                var txt = new TextFile();
+                txt.TextContentAssetPath = "ReadMe";
+                file.Content = txt;
             }
+            file.ParentDirId = parentDirId;
+            return file;
         }
     }
 }

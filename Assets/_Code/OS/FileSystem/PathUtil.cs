@@ -1,6 +1,7 @@
 ﻿using System;
 using HASH17.Util;
 using HASH17.Util.Text;
+using UnityEngine.Assertions.Must;
 
 namespace HASH.OS.FileSystem
 {
@@ -87,6 +88,23 @@ namespace HASH.OS.FileSystem
             var parts = path.Split(PathSeparator[0]);
             var fileName = parts[parts.Length - 1];
             return fileName;
+        }
+
+        /// <summary>
+        /// Removes the file name and extension from the given path.
+        /// Returns empty is the path is invalid.
+        /// </summary>
+        public static string RemoveFileNameFromPath(string path)
+        {
+            var fileName = GetFileName(path);
+            if (string.IsNullOrEmpty(fileName))
+                return string.Empty;
+            var resultingPath = path.Replace(fileName, string.Empty);
+            // if the remaining path is empty, return a dot to simbilize that it on current dir
+            if (string.IsNullOrEmpty(resultingPath))
+                return ".";
+            else
+                return resultingPath;
         }
 
         /// <summary>
