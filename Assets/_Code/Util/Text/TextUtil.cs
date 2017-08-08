@@ -1,4 +1,6 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
+using SimpleCollections.Lists;
 using UnityEngine;
 
 namespace HASH17.Util.Text
@@ -153,6 +155,175 @@ namespace HASH17.Util.Text
         public static void ClearBuilder(StringBuilder builder)
         {
             builder.Remove(0, builder.Length);
+        }
+
+        #endregion
+
+        #region Tables
+
+        /// <summary>
+        /// Formats a table item accordingly to the given option.
+        /// </summary>
+        public static string FormatTableItem(TextTableItem item)
+        {
+            const int AddDotWrapCount = 3;
+
+            string text = item.Text;
+
+            var symbolLength = GetNGUISymbolsSize(text);
+            item.Size += symbolLength; // compensate for possible color, bold and mofifiers
+
+            if (text.Length > item.Size)
+            {
+                switch (item.WrapMode)
+                {
+                    case WrapTextMode.Clamp:
+                        text = text.Substring(0, item.Size);
+                        break;
+                    case WrapTextMode.AddDots:
+                        DebugUtil.Assert(text.Length <= 3, "TO USE ADD POINTS WRAP THE TEXT MUST BE AT LEAST 3 CHARS LONG");
+                        text = text.Substring(0, item.Size - AddDotWrapCount);
+                        text = text.PadRight(item.Size, '.');
+                        break;
+                }
+            }
+
+            var diff = item.Size - item.Text.Length;
+            if (diff > 0)
+            {
+                switch (item.Align)
+                {
+                    case TextTableAlign.Left:
+                        text = text.PadRight(item.Size, item.PaddingChar);
+                        break;
+                    case TextTableAlign.Center:
+                        if (diff % 2 != 0)
+                        {
+                            diff++;
+                            item.Size++; // need to add one here to compensate for the one padding we are adding
+                        }
+                        diff /= 2;
+                        text = text.PadLeft(item.Size - diff, item.PaddingChar);
+                        text = text.PadRight(item.Size, item.PaddingChar);
+                        break;
+                    case TextTableAlign.Right:
+                        text = text.PadLeft(item.Size, item.PaddingChar);
+                        break;
+                }
+            }
+
+            return text;
+        }
+
+        /// <summary>
+        /// Formats a table line accordingly to the given options.
+        /// </summary>
+        public static string FormatTableLine(TextTableLine line)
+        {
+            var builder = Global.TextUtilData.BuilderHelper;
+            ClearBuilder(builder);
+            var collumns = line.Items;
+            string text;
+            for (int i = 0; i < collumns.Count; i++)
+            {
+                var collumn = collumns[i];
+                text = FormatTableItem(collumn);
+
+                bool addSeparator = true;
+                if (string.IsNullOrEmpty(line.ItemsSeparator))
+                    addSeparator = false;
+                else if (i == 0 && !line.AddSeparatorOnStart)
+                    addSeparator = false;
+
+                if (addSeparator)
+                    text = string.Format("{0}{1}", line.ItemsSeparator, text);
+
+                builder.Append(text);
+            }
+
+            if (line.AddSeparatorOnEnd)
+                builder.Append(line.ItemsSeparator);
+
+            return builder.ToString();
+        }
+
+        /// <summary>
+        /// Shorthand for calling FormatTableLine and returning the length of the result.
+        /// </summary>
+        public static int CalculateTableLineLength(TextTableLine line, bool removeSymbolsLength)
+        {
+            var text = FormatTableLine(line);
+            var symbolsLength = 0;
+            if (removeSymbolsLength)
+                symbolsLength = GetNGUISymbolsSize(text);
+            return text.Length - symbolsLength;
+        }
+
+        /// <summary>
+        /// Shorthand for calling FormatTableItem and retuning the length of the result.
+        /// </summary>
+        public static int CalculateTableItemLength(TextTableItem item, bool removeSymbolsLength)
+        {
+            var text = FormatTableItem(item);
+
+            var symbolsLength = 0;
+            if (removeSymbolsLength)
+                symbolsLength = GetNGUISymbolsSize(text);
+
+            return text.Length - symbolsLength;
+        }
+
+        /// <summary>
+        /// Calculates and stores the sizes of the items of the given line accordingly to the maxLineSize and items weight.
+        /// </summary>
+        public static TextTableLine GetIdealTableItemSize(TextTableLine line)
+        {
+            int maxLineSize = line.MaxLineSize;
+
+            int separatorLength = 0;
+            if (!string.IsNullOrEmpty(line.ItemsSeparator))
+                separatorLength = line.ItemsSeparator.Length;
+
+            separatorLength -= GetNGUISymbolsSize(line.ItemsSeparator);
+
+            maxLineSize -= separatorLength * (line.Items.Count - 1);
+
+            if (line.AddSeparatorOnStart)
+                maxLineSize -= separatorLength;
+            if (line.AddSeparatorOnEnd)
+                maxLineSize -= separatorLength;
+            
+            DebugUtil.Assert(maxLineSize <= 0, "THE MAX LINE SIZE IS NOT BIG ENOUGH TO FIT ANY OF THE ITEMS");
+
+            for (int i = 0; i < line.Items.Count; i++)
+            {
+                var item = line.Items[i];
+                var weight = item.WeightOnLine;
+                item.Size = Mathf.RoundToInt(maxLineSize * weight);
+                
+                line.Items[i] = item;
+            }
+
+            return line;
+        }
+
+        /// <summary>
+        /// Shorthand for calling GetIdealTableItemSize and FormatTableLine.
+        /// </summary>
+        public static string FormatConsideringWeightsAndSize(TextTableLine line)
+        {
+            line = GetIdealTableItemSize(line);
+            return FormatTableLine(line);
+        }
+
+        /// <summary>
+        /// Returns the total size of NGUI symbols on the string.
+        /// Use this in order to compensate for stirng lenghts.
+        /// </summary>
+        public static int GetNGUISymbolsSize(string text)
+        {
+            var stripped = StripNGUIModifiersAndColor(text).Length;
+            return text.Length - stripped;
         }
 
         #endregion

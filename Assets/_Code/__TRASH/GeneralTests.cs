@@ -7,6 +7,7 @@ using HASH17.Util;
 using HASH17.Util.Text;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
+using UnityEditor;
 using UnityEngine;
 
 namespace Assets._Code.__TRASH
@@ -18,9 +19,71 @@ namespace Assets._Code.__TRASH
             //TestDir();
             //TestFile();
             //TestPaths();
-
-            TestCommandLine();
+            //TestCommandLine();
+            TestText();
         }
+        
+        #region Text
+
+        void TestText()
+        {
+            var textUtil = new TextUtilData();
+            textUtil.BuilderHelper = new StringBuilder();
+            Global.TextUtilData = textUtil;
+
+            var list = SList.Create<TextTableItem>(3);
+
+            var textOpt = new TextTableItem();
+            textOpt.Align = TextTableAlign.Right;
+            textOpt.Text = TextUtil.ApplyNGUIColor("THIS LEFT IS MY TEXT", Color.red);
+            //textOpt.Text = "THIS LEFT IS MY TEXT";
+            textOpt.WrapMode = WrapTextMode.AddDots;
+            textOpt.Size = textOpt.Text.Length + 6;
+            textOpt.PaddingChar = '-';
+            textOpt.WeightOnLine = .1f;
+
+            Debug.Log(TextUtil.FormatTableItem(textOpt));
+
+            SList.Add(list, textOpt);
+
+            textOpt = new TextTableItem();
+            textOpt.Align = TextTableAlign.Center;
+            textOpt.Text = TextUtil.ApplyNGUIColor("THIS CENTER IS MY TEXT", Color.green);
+            textOpt.WrapMode = WrapTextMode.AddDots;
+            textOpt.Size = textOpt.Text.Length + 5;
+            textOpt.PaddingChar = '-';
+            textOpt.WeightOnLine = .5f;
+            Debug.Log(TextUtil.FormatTableItem(textOpt));
+
+            SList.Add(list, textOpt);
+
+            textOpt = new TextTableItem();
+            textOpt.Align = TextTableAlign.Right;
+            textOpt.Text = TextUtil.ApplyNGUIColor("THIS RIGHT IS MY TEXT", Color.yellow);
+            textOpt.WrapMode = WrapTextMode.AddDots;
+            textOpt.Size = textOpt.Text.Length + 5;
+            textOpt.PaddingChar = '-';
+            textOpt.WeightOnLine = .4f;
+
+            Debug.Log(TextUtil.FormatTableItem(textOpt));
+
+            SList.Add(list, textOpt);
+
+            var line = new TextTableLine();
+            line.Items = list;
+            line.ItemsSeparator = " | ";
+            line.AddSeparatorOnEnd = false;
+            line.AddSeparatorOnStart = false;
+            line.MaxLineSize = 150;
+            
+            var result = TextUtil.FormatConsideringWeightsAndSize(line);
+            Debug.Log(result);
+            Debug.Log(result.Length);
+        }
+
+        #endregion
+
+        #region Commands
 
         public void TestCommandLine()
         {
@@ -59,6 +122,8 @@ namespace Assets._Code.__TRASH
             var cdCommandLine = "cd alo -p path -p path";
             Shell.RunCommandLine(cdCommandLine);
         }
+
+        #endregion
 
         #region Files
 
