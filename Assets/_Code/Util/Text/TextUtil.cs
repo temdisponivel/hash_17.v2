@@ -248,6 +248,7 @@ namespace HASH17.Util.Text
             var builder = new StringBuilder(line.Items.Count * 128);
 
             var collumns = line.Items;
+            var separatorModified = ModifyText(line.ItemsSeparator, line.SeparatorModifier);
             string text;
             for (int i = 0; i < collumns.Count; i++)
             {
@@ -261,15 +262,17 @@ namespace HASH17.Util.Text
                     addSeparator = false;
 
                 if (addSeparator)
-                    text = string.Format("{0}{1}", line.ItemsSeparator, text);
+                    text = string.Format("{0}{1}", separatorModified, text);
 
                 builder.Append(text);
             }
 
             if (line.AddSeparatorOnEnd)
-                builder.Append(line.ItemsSeparator);
+                builder.Append(separatorModified);
 
             var builderText = builder.ToString();
+            line.FormattedText = builderText;
+
             return builderText;
         }
 
@@ -298,6 +301,10 @@ namespace HASH17.Util.Text
         {
             int maxLineSize = line.MaxLineSize;
 
+            // If no max line size was defined, do nothing
+            if (maxLineSize <= 0)
+                return line;
+
             int separatorLength = 0;
             if (!string.IsNullOrEmpty(line.ItemsSeparator))
                 separatorLength = line.ItemsSeparator.Length;
@@ -316,7 +323,12 @@ namespace HASH17.Util.Text
                 var item = line.Items[i];
                 var weight = item.WeightOnLine;
 
-                var size = Mathf.RoundToInt(maxLineSize * weight);
+                int size;
+                if (Mathf.Approximately(weight, 0f))
+                    size = item.Text.Length; // assume natural size
+                else
+                    size = Mathf.RoundToInt(maxLineSize * weight);
+
                 if (line.MaxLineSizeIsForced)
                     item.Size = size;
                 else

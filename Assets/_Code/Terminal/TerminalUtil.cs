@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using HASH.OS.Shell;
 using HASH17.Terminal.TextEntry;
 using HASH17.Util;
 using HASH17.Util.Text;
@@ -41,7 +42,7 @@ namespace HASH17.Terminal
             data.Batching = false;
             while (data.BatchEntries.Count > 0)
             {
-                var entry = data.BatchEntries.Pop();
+                var entry = SList.Pop(data.BatchEntries);
                 switch (entry.EntryType)
                 {
                     case TextEntryType.Single:
@@ -72,7 +73,7 @@ namespace HASH17.Terminal
                 var entry = new TextBatchEntry();
                 entry.EntryType = TextEntryType.Single;
                 entry.Texts = new string[] { text };
-                data.BatchEntries.Push(entry);
+                SList.Push(data.BatchEntries, entry);
             }
             else
                 Terminal.ShowSingleText(data, text);
@@ -89,7 +90,7 @@ namespace HASH17.Terminal
                 var entry = new TextBatchEntry();
                 entry.EntryType = TextEntryType.Dual;
                 entry.Texts = new string[] { leftText, rightText };
-                data.BatchEntries.Push(entry);
+                SList.Push(data.BatchEntries, entry);
             }
             else
                 Terminal.ShowDualText(data, leftText, rightText);
@@ -196,6 +197,8 @@ namespace HASH17.Terminal
 
             // TODO: remove this wait to fix label flickering, but fix table reposition
             yield return null;
+
+            Shell.RunCommandLine(text);
 
             UpdateTableAndScroll();
             ClearInputText();

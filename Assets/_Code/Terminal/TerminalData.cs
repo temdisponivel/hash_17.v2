@@ -21,7 +21,7 @@ namespace HASH17.Terminal
         public UIInput Input;
 
         public bool Batching;
-        public Stack<TextBatchEntry> BatchEntries;
+        public SimpleList<TextBatchEntry> BatchEntries;
 
         public SimpleList<string> CommandCache;
         public int CurrentCommandBufferIndex;
@@ -29,5 +29,7 @@ namespace HASH17.Terminal
         public SimpleList<string> AvailableCommands;
         
         public SimpleList<string> CurrentCommandBuffer;
+
+        public int MaxLineWidthInChars;
     }
 }

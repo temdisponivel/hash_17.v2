@@ -1,6 +1,5 @@
 ﻿using HASH.Game;
 using HASH17.Util;
-using HASH17.Util.Text;
 using SimpleCollections.Lists;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace HASH17.Terminal
     {
         public TerminalData Data;
 
-        void Awake()
+        void Start()
         {
             Initialize();
         }
@@ -77,6 +76,7 @@ namespace HASH17.Terminal
             DebugUtil.Log("TERMINAL COMPONENT INITIALIZED!", Color.green, DebugUtil.DebugCondition.Info);
             Data.CommandCache = SList.Create<string>(50);
             Data.AvailableCommands = SList.Create<string>(20);
+            Data.BatchEntries = SList.Create<TextBatchEntry>(10);
             Global.TerminalData = Data;
             TerminalUtil.FocusOnInput();
         }

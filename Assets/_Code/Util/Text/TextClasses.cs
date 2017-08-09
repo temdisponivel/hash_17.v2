@@ -4,9 +4,29 @@ using UnityEngine;
 namespace HASH17.Util.Text
 {
     /// <summary>
+    /// Represents a line on a text table.
+    /// </summary>
+    public class TextTableLine
+    {
+        public SimpleList<TextTableItem> Items;
+
+        public string ItemsSeparator;
+        public ModifyTextOptions SeparatorModifier;
+
+        public int MaxLineSize;
+
+        public bool AddSeparatorOnStart;
+        public bool AddSeparatorOnEnd;
+
+        public bool MaxLineSizeIsForced;
+
+        public string FormattedText;
+    }
+
+    /// <summary>
     /// Represents a item on a text line.
     /// </summary>
-    public struct TextTableItem
+    public class TextTableItem
     {
         public string Text;
         public string ModifiedText;
@@ -17,22 +37,6 @@ namespace HASH17.Util.Text
         public WrapTextMode WrapMode;
 
         public float WeightOnLine;
-    }
-
-    /// <summary>
-    /// Represents a line on a text table.
-    /// </summary>
-    public struct TextTableLine
-    {
-        public SimpleList<TextTableItem> Items;
-        public string ItemsSeparator;
-
-        public int MaxLineSize;
-
-        public bool AddSeparatorOnStart;
-        public bool AddSeparatorOnEnd;
-
-        public bool MaxLineSizeIsForced;
     }
 
     /// <summary>
