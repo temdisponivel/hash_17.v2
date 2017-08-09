@@ -1,4 +1,5 @@
 ﻿using SimpleCollections.Lists;
+using UnityEngine;
 
 namespace HASH17.Util.Text
 {
@@ -8,6 +9,8 @@ namespace HASH17.Util.Text
     public struct TextTableItem
     {
         public string Text;
+        public string ModifiedText;
+        public ModifyTextOptions ModifyTextOptions;
         public int Size;
         public char PaddingChar;
         public TextTableAlign Align;
@@ -28,6 +31,18 @@ namespace HASH17.Util.Text
 
         public bool AddSeparatorOnStart;
         public bool AddSeparatorOnEnd;
+
+        public bool MaxLineSizeIsForced;
+    }
+
+    /// <summary>
+    /// Wrappers formatting options of a text.
+    /// </summary>
+    public struct ModifyTextOptions
+    {
+        public bool UseRichText;
+        public int Modifiers;
+        public Color? Color;
     }
 
     /// <summary>
@@ -47,5 +62,17 @@ namespace HASH17.Util.Text
         Left,
         Center,
         Right
+    }
+
+    /// <summary>
+    /// Enumerates all possible text modifiers.
+    /// </summary>
+    public static class TextModifiers
+    {
+        public const int Bold = 1 << 0;
+        public const int Italic = 1 << 1;
+        public const int Stroke = 1 << 2;
+        public const int Underline = 1 << 3;
+        public const int Ignorecolor = 1 << 4;
     }
 }

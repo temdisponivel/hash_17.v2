@@ -40,12 +40,13 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string ApplyNGUIColor(string text, Color color)
         {
-            var builder = Global.TextUtilData.BuilderHelper;
-            ClearBuilder(builder);
+            var builder = new StringBuilder(text.Length + 12);
 
             var colorEncoded = ColorUtil.EncodeColor(color);
             builder.AppendFormat(NGUIColorStringFormat, colorEncoded, text);
-            return builder.ToString();
+
+            var builderText = builder.ToString();
+            return builderText;
         }
 
         /// <summary>
@@ -54,8 +55,7 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string ApplyNGUIModifiers(string text, int modifiers)
         {
-            var builder = Global.TextUtilData.BuilderHelper;
-            ClearBuilder(builder);
+            var builder = new StringBuilder(text.Length + 12);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Bold))
                 builder.AppendFormat(NGUIBoldStringFormat, text);
@@ -72,7 +72,12 @@ namespace HASH17.Util.Text
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Underline))
                 builder.AppendFormat(NGUIUnderlineStringFormat, text);
 
-            return builder.ToString();
+            var builderText = builder.ToString();
+
+            if (builderText.Length == 0)
+                return text;
+            else
+                return builderText;
         }
 
         /// <summary>
@@ -81,6 +86,27 @@ namespace HASH17.Util.Text
         public static string StripNGUIModifiersAndColor(string text)
         {
             return NGUIText.StripSymbols(text);
+        }
+
+        /// <summary>
+        /// Modifies the given text using the given options and returns the result.
+        /// This is just a shorhand.
+        /// </summary>
+        public static string ModifyText(string text, ModifyTextOptions modifyOptions)
+        {
+            if (modifyOptions.UseRichText)
+            {
+                text = ApplyRichTextModifiers(text, modifyOptions.Modifiers);
+                if (modifyOptions.Color.HasValue)
+                    text = ApplyRichTextColor(text, modifyOptions.Color.Value);
+            }
+            else
+            {
+                text = ApplyNGUIModifiers(text, modifyOptions.Modifiers);
+                if (modifyOptions.Color.HasValue)
+                    text = ApplyNGUIColor(text, modifyOptions.Color.Value);
+            }
+            return text;
         }
 
         #endregion
@@ -92,18 +118,18 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string ApplyRichTextColor(string text, Color color)
         {
-            var builder = Global.TextUtilData.BuilderHelper;
-            ClearBuilder(builder);
+            var builder = new StringBuilder(text.Length + 12);
 
             var colorEncoded = ColorUtil.EncodeColor(color);
             builder.AppendFormat(RichTextColorStringFormat, colorEncoded, text);
-            return builder.ToString();
+
+            var builderText = builder.ToString();
+            return builderText;
         }
 
         public static string ApplyRichTextModifiers(string text, int modifiers)
         {
-            var builder = Global.TextUtilData.BuilderHelper;
-            ClearBuilder(builder);
+            var builder = new StringBuilder(text.Length + 12);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Bold))
                 builder.AppendFormat(RichTextBoldStringFormat, text);
@@ -115,7 +141,8 @@ namespace HASH17.Util.Text
             DebugUtil.Assert(MathUtil.ContainsFlag(modifiers, TextModifiers.Stroke), "STROKE IS NOT A VALID RICH TEXT MODIFIER!");
             DebugUtil.Assert(MathUtil.ContainsFlag(modifiers, TextModifiers.Underline), "UNDERLINE IS NOT A VALID RICH TEXT MODIFIER!");
 
-            return builder.ToString();
+            var builderText = builder.ToString();
+            return builderText;
         }
 
         #endregion
@@ -127,11 +154,8 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string CleanInputText(string rawInput)
         {
-            var builder = Global.TextUtilData.BuilderHelper;
-            ClearBuilder(builder);
-            builder.Append(rawInput);
-            builder.Replace("\n", string.Empty);
-            return StripNGUIModifiersAndColor(builder.ToString());
+            rawInput = rawInput.Replace("\n", string.Empty);
+            return StripNGUIModifiersAndColor(rawInput);
         }
 
         #endregion
@@ -143,10 +167,11 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string Format(string text, params object[] parameters)
         {
-            var builder = Global.TextUtilData.BuilderHelper;
-            ClearBuilder(builder);
+            var builder = new StringBuilder(text.Length + parameters.Length * 4);
             builder.AppendFormat(text, parameters);
-            return builder.ToString();
+
+            var builderText = builder.ToString();
+            return builderText;
         }
 
         /// <summary>
@@ -162,16 +187,14 @@ namespace HASH17.Util.Text
         #region Tables
 
         /// <summary>
-        /// Formats a table item accordingly to the given option.
+        /// Formats a table item accordingly to the given option. The text should be without any modifiers or colors.
+        /// It  also stores the returned result on the ModifiedText property of the item after applying the modifiers.
         /// </summary>
         public static string FormatTableItem(TextTableItem item)
         {
             const int AddDotWrapCount = 3;
 
             string text = item.Text;
-
-            var symbolLength = GetNGUISymbolsSize(text);
-            item.Size += symbolLength; // compensate for possible color, bold and mofifiers
 
             if (text.Length > item.Size)
             {
@@ -212,6 +235,8 @@ namespace HASH17.Util.Text
                 }
             }
 
+            text = ModifyText(text, item.ModifyTextOptions);
+            item.ModifiedText = text;
             return text;
         }
 
@@ -220,8 +245,8 @@ namespace HASH17.Util.Text
         /// </summary>
         public static string FormatTableLine(TextTableLine line)
         {
-            var builder = Global.TextUtilData.BuilderHelper;
-            ClearBuilder(builder);
+            var builder = new StringBuilder(line.Items.Count * 128);
+
             var collumns = line.Items;
             string text;
             for (int i = 0; i < collumns.Count; i++)
@@ -244,19 +269,17 @@ namespace HASH17.Util.Text
             if (line.AddSeparatorOnEnd)
                 builder.Append(line.ItemsSeparator);
 
-            return builder.ToString();
+            var builderText = builder.ToString();
+            return builderText;
         }
 
-        /// <summary>
+        /// <summary>   
         /// Shorthand for calling FormatTableLine and returning the length of the result.
         /// </summary>
         public static int CalculateTableLineLength(TextTableLine line, bool removeSymbolsLength)
         {
             var text = FormatTableLine(line);
-            var symbolsLength = 0;
-            if (removeSymbolsLength)
-                symbolsLength = GetNGUISymbolsSize(text);
-            return text.Length - symbolsLength;
+            return text.Length;
         }
 
         /// <summary>
@@ -265,12 +288,7 @@ namespace HASH17.Util.Text
         public static int CalculateTableItemLength(TextTableItem item, bool removeSymbolsLength)
         {
             var text = FormatTableItem(item);
-
-            var symbolsLength = 0;
-            if (removeSymbolsLength)
-                symbolsLength = GetNGUISymbolsSize(text);
-
-            return text.Length - symbolsLength;
+            return text.Length;
         }
 
         /// <summary>
@@ -284,23 +302,26 @@ namespace HASH17.Util.Text
             if (!string.IsNullOrEmpty(line.ItemsSeparator))
                 separatorLength = line.ItemsSeparator.Length;
 
-            separatorLength -= GetNGUISymbolsSize(line.ItemsSeparator);
-
             maxLineSize -= separatorLength * (line.Items.Count - 1);
 
             if (line.AddSeparatorOnStart)
                 maxLineSize -= separatorLength;
             if (line.AddSeparatorOnEnd)
                 maxLineSize -= separatorLength;
-            
+
             DebugUtil.Assert(maxLineSize <= 0, "THE MAX LINE SIZE IS NOT BIG ENOUGH TO FIT ANY OF THE ITEMS");
 
             for (int i = 0; i < line.Items.Count; i++)
             {
                 var item = line.Items[i];
                 var weight = item.WeightOnLine;
-                item.Size = Mathf.RoundToInt(maxLineSize * weight);
-                
+
+                var size = Mathf.RoundToInt(maxLineSize * weight);
+                if (line.MaxLineSizeIsForced)
+                    item.Size = size;
+                else
+                    item.Size = Math.Min(item.Size, size);
+
                 line.Items[i] = item;
             }
 
@@ -310,7 +331,7 @@ namespace HASH17.Util.Text
         /// <summary>
         /// Shorthand for calling GetIdealTableItemSize and FormatTableLine.
         /// </summary>
-        public static string FormatConsideringWeightsAndSize(TextTableLine line)
+        public static string FormatLineConsideringWeightsAndSize(TextTableLine line)
         {
             line = GetIdealTableItemSize(line);
             return FormatTableLine(line);

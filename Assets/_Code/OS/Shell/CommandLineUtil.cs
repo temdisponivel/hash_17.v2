@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using HASH17.Util;
 using HASH17.Util.Text;
 using SimpleCollections.Hash;
@@ -28,8 +29,7 @@ namespace HASH.OS.Shell
             if (string.IsNullOrEmpty(commandLine))
                 return string.Empty;
 
-            var builder = Global.TextUtilData.BuilderHelper;
-            TextUtil.ClearBuilder(builder);
+            var builder = new StringBuilder(commandLine.Length);
             for (int i = 0; i < commandLine.Length; i++)
             {
                 var letter = commandLine[i];
@@ -40,7 +40,8 @@ namespace HASH.OS.Shell
                     break;
             }
 
-            return builder.ToString();
+            var builderText = builder.ToString();
+            return builderText;
         }
 
         /// <summary>
@@ -69,8 +70,7 @@ namespace HASH.OS.Shell
 
             var result = SList.Create<Pair<string, string>>(3);
 
-            var builder = Global.TextUtilData.BuilderHelper;
-            TextUtil.ClearBuilder(builder);
+            var builder = new StringBuilder(commandLineWithoutCommand.Length);
 
             var argName = string.Empty;
             var argValue = string.Empty;
@@ -176,8 +176,6 @@ namespace HASH.OS.Shell
                 var finalPair = CreateArgPair(argName, argValue);
                 SList.Add(result, finalPair);
             }
-
-            TextUtil.ClearBuilder(builder);
 
             return result;
         }

@@ -71,8 +71,7 @@ namespace HASH.OS.FileSystem
             else
                 currentDir = data.CurrentDir;
 
-            var builder = Global.TextUtilData.BuilderHelper;
-            TextUtil.ClearBuilder(builder);
+            var builder = new StringBuilder(path.Length);
             for (int i = 0; i < path.Length; i++)
             {
                 var current = path[i];

@@ -7,6 +7,6 @@ namespace HASH17.Util.Text
     /// </summary>
     public class TextUtilData
     {
-        public StringBuilder BuilderHelper;
+        
     }
 }

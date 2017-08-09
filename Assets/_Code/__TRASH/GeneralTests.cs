@@ -22,61 +22,66 @@ namespace Assets._Code.__TRASH
             //TestCommandLine();
             TestText();
         }
-        
+
         #region Text
 
         void TestText()
         {
             var textUtil = new TextUtilData();
-            textUtil.BuilderHelper = new StringBuilder();
             Global.TextUtilData = textUtil;
 
-            var list = SList.Create<TextTableItem>(3);
+            string result = string.Empty;
+            for (int i = 0; i < 5; i++)
+            {
+                var list = SList.Create<TextTableItem>(3);
 
-            var textOpt = new TextTableItem();
-            textOpt.Align = TextTableAlign.Right;
-            textOpt.Text = TextUtil.ApplyNGUIColor("THIS LEFT IS MY TEXT", Color.red);
-            //textOpt.Text = "THIS LEFT IS MY TEXT";
-            textOpt.WrapMode = WrapTextMode.AddDots;
-            textOpt.Size = textOpt.Text.Length + 6;
-            textOpt.PaddingChar = '-';
-            textOpt.WeightOnLine = .1f;
+                var textOpt = new TextTableItem();
+                textOpt.Align = TextTableAlign.Right;
+                textOpt.Text = "THIS LEFT IS MY TEXT";
+                textOpt.WrapMode = WrapTextMode.AddDots;
+                textOpt.Size = textOpt.Text.Length - 10;
+                textOpt.PaddingChar = '-';
+                textOpt.WeightOnLine = .1f;
+                textOpt.ModifyTextOptions.Color = Color.green;
+                Debug.Log(TextUtil.FormatTableItem(textOpt));
 
-            Debug.Log(TextUtil.FormatTableItem(textOpt));
+                SList.Add(list, textOpt);
 
-            SList.Add(list, textOpt);
+                textOpt = new TextTableItem();
+                textOpt.Align = TextTableAlign.Center;
+                textOpt.Text = "THIS CENTER IS MY TEXT";
+                textOpt.WrapMode = WrapTextMode.AddDots;
+                textOpt.Size = textOpt.Text.Length - 10;
+                textOpt.PaddingChar = '-';
+                textOpt.WeightOnLine = .5f;
+                textOpt.ModifyTextOptions.Color = Color.red;
+                Debug.Log(TextUtil.FormatTableItem(textOpt));
 
-            textOpt = new TextTableItem();
-            textOpt.Align = TextTableAlign.Center;
-            textOpt.Text = TextUtil.ApplyNGUIColor("THIS CENTER IS MY TEXT", Color.green);
-            textOpt.WrapMode = WrapTextMode.AddDots;
-            textOpt.Size = textOpt.Text.Length + 5;
-            textOpt.PaddingChar = '-';
-            textOpt.WeightOnLine = .5f;
-            Debug.Log(TextUtil.FormatTableItem(textOpt));
+                SList.Add(list, textOpt);
 
-            SList.Add(list, textOpt);
+                textOpt = new TextTableItem();
+                textOpt.Align = TextTableAlign.Right;
+                textOpt.Text = "THIS RIGHT IS MY TEXT";
+                textOpt.WrapMode = WrapTextMode.AddDots;
+                textOpt.Size = textOpt.Text.Length - 10;
+                textOpt.PaddingChar = '-';
+                textOpt.WeightOnLine = .4f;
+                textOpt.ModifyTextOptions.Color = Color.yellow;
+                Debug.Log(TextUtil.FormatTableItem(textOpt));
 
-            textOpt = new TextTableItem();
-            textOpt.Align = TextTableAlign.Right;
-            textOpt.Text = TextUtil.ApplyNGUIColor("THIS RIGHT IS MY TEXT", Color.yellow);
-            textOpt.WrapMode = WrapTextMode.AddDots;
-            textOpt.Size = textOpt.Text.Length + 5;
-            textOpt.PaddingChar = '-';
-            textOpt.WeightOnLine = .4f;
+                SList.Add(list, textOpt);
 
-            Debug.Log(TextUtil.FormatTableItem(textOpt));
+                var line = new TextTableLine();
+                line.Items = list;
+                line.ItemsSeparator = " | ";
+                line.AddSeparatorOnEnd = false;
+                line.AddSeparatorOnStart = false;
+                line.MaxLineSize = 100;
+                line.MaxLineSizeIsForced = true;
 
-            SList.Add(list, textOpt);
+                result += TextUtil.FormatLineConsideringWeightsAndSize(line) + "\n";
+            }
 
-            var line = new TextTableLine();
-            line.Items = list;
-            line.ItemsSeparator = " | ";
-            line.AddSeparatorOnEnd = false;
-            line.AddSeparatorOnStart = false;
-            line.MaxLineSize = 150;
-            
-            var result = TextUtil.FormatConsideringWeightsAndSize(line);
             Debug.Log(result);
             Debug.Log(result.Length);
         }
@@ -98,7 +103,6 @@ namespace Assets._Code.__TRASH
             Global.ProgramData = programData;
 
             var textUtil = new TextUtilData();
-            textUtil.BuilderHelper = new StringBuilder();
             Global.TextUtilData = textUtil;
 
             var simpleCommand = "cd -p /path/ to/file.txt -c alo - d putamerda -e";
@@ -168,7 +172,6 @@ namespace Assets._Code.__TRASH
         void TestDir()
         {
             var textUtil = new TextUtilData();
-            textUtil.BuilderHelper = new StringBuilder(1024);
             Global.TextUtilData = textUtil;
 
 
