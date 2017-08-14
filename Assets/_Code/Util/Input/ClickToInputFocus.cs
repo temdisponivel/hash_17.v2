@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HASH17.Util.Input
+namespace HASH.Util.Input
 {
     /// <summary>
     /// Receives a click input and focus on the terminal.
@@ -10,7 +10,7 @@ namespace HASH17.Util.Input
         // Called by NGUI's UI Root
         private void OnClick()
         {
-            Global.TerminalData.Input.isSelected = true;
+            Global.TerminalReferences.Input.isSelected = true;
         }
     }
 }

@@ -1,10 +1,10 @@
 ﻿using HASH.OS.FileSystem;
 using HASH.OS.Shell;
-using HASH17.Terminal;
-using HASH17.Util.Input;
-using HASH17.Util.Text;
+using HASH.Terminal;
+using HASH.Util.Input;
+using HASH.Util.Text;
 
-namespace HASH17.Util
+namespace HASH.Util
 {
     /// <summary>
     /// Class that holds global state.
@@ -14,10 +14,9 @@ namespace HASH17.Util
         public static DebugUtil.DebugCondition DebugCondition;
         public static InputListener InputListener;
 
-        public static TerminalData TerminalData;
+        public static TerminalReferences TerminalReferences;
         public static FileSystemData FileSystemData;
-
-        public static TextUtilData TextUtilData;
+        
         public static ProgramsData ProgramData;
     }
 }

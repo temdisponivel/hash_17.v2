@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Text;
+using HASH.Data.FileSystem;
 using HASH.OS.FileSystem.FileTypes;
-using HASH17.Util;
-using HASH17.Util.Text;
+using HASH.Util;
+using HASH.Util.Text;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEngine;
@@ -131,11 +132,18 @@ namespace HASH.OS.FileSystem
             // Root folder is treated differently
             if (dir.ParentDirId == -1)
             {
-                DebugUtil.Assert(dir.Name != PathUtil.PathSeparator.ToString(), "THERE'S A DIR WITHOUT PARENT ID THAT IS NOT THE ROOT DIR!");
+                DebugUtil.Assert(dir.Name != PathUtil.PathSeparator, string.Format("THE DIR {0} HAS NO PARENT AND IT'S THE ROOT DIR!", dir.DirId));
                 path = dir.Name;
             }
             else
             {
+#if DEB
+                if (dir.ParentDirId == dir.DirId)
+                {
+                    DebugUtil.Log(string.Format("THE DIR {0} HAS ITSELF AS PARENT!", dir.DirId), Color.red, DebugUtil.DebugCondition.Always);
+                    return null;
+                }
+#endif
                 var data = Global.FileSystemData;
                 SList.Clear(data.PathStackHelper);
                 while (dir.ParentDirId != -1)
@@ -208,6 +216,32 @@ namespace HASH.OS.FileSystem
             CacheParentDir(dir);
         }
 
+        /// <summary>
+        /// Creates and returns a dir from the given serialized data.
+        /// </summary>
+        public static HashDir GetDirFromSerializedData(SerializedHashDir serializedDir)
+        {
+            var dir = new HashDir();
+
+            dir.DirId = serializedDir.DirId;
+            dir.ParentDirId = serializedDir.ParentDirId;
+            dir.Name = serializedDir.Name;
+            dir.ChildsDirId = SList.Instatiate<int>(serializedDir.ChildsDirId);
+            dir.FilesId = SList.Instatiate<int>(serializedDir.FilesId);
+            dir.UserPermission = STable.Create<string, AccessPermission>(serializedDir.UserPermission.Length, true);
+
+            dir.Childs = SList.Create<HashDir>(dir.ChildsDirId.Count);
+            dir.Files = SList.Create<HashFile>(dir.FilesId.Count);
+
+            for (int i = 0; i < serializedDir.UserPermission.Length; i++)
+            {
+                var permission = serializedDir.UserPermission[i];
+                dir.UserPermission[permission.Key] = permission.Value;
+            }
+
+            return dir;
+        }
+
         #endregion
 
         #region File
@@ -277,6 +311,26 @@ namespace HASH.OS.FileSystem
         }
 
         /// <summary>
+        /// Creates and returns a file from the given serialized data.
+        /// </summary>
+        public static HashFile GetFileFromSerializedData(SerializedHashFile serializedFile)
+        {
+            var file = new HashFile();
+            file.FileId = serializedFile.FileId;
+            file.Name = serializedFile.Name;
+            file.ParentDirId = serializedFile.ParentDirId;
+
+            file.UserPermission = STable.Create<string, AccessPermission>(serializedFile.UserPermission.Length, true);
+            for (int i = 0; i < serializedFile.UserPermission.Length; i++)
+            {
+                var permission = serializedFile.UserPermission[i];
+                file.UserPermission[permission.Key] = permission.Value;
+            }
+
+            return file;
+        }
+
+        /// <summary>
         /// Loads the content of a text file into their Content property.
         /// </summary>
         public static void LoadTextFileContent(TextFile textFile)
@@ -286,6 +340,19 @@ namespace HASH.OS.FileSystem
             var textAsset = ContentUtil.Load<TextAsset>(textFile.TextContentAssetPath);
             textFile.TextContent = textAsset.text;
             ContentUtil.Unload(textAsset);
+        }
+
+        /// <summary>
+        /// Creates and returns a text file from the given serialized data.
+        /// </summary>
+        public static HashFile GetTextFileFromSerializedData(SerializedHashFileText serialized)
+        {
+            var file = GetFileFromSerializedData(serialized.File);
+            file.FileType = HashFileType.Text;
+            var txtFile = new TextFile();
+            txtFile.TextContentAssetPath = serialized.TextAssetPath;
+            file.Content = txtFile;
+            return file;
         }
 
         /// <summary>
@@ -299,6 +366,19 @@ namespace HASH.OS.FileSystem
             imageFile.ImageContent = texture;
 
             // Do not unload texture (like we unload text asset)
+        }
+
+        /// <summary>
+        /// Creates and returns a image file from the given serialized data.
+        /// </summary>
+        public static HashFile GetImageFileFromSerializedData(SerializedHashFileImage serialized)
+        {
+            var file = GetFileFromSerializedData(serialized.File);
+            file.FileType = HashFileType.Image;
+            var imageFile = new ImageFile();
+            imageFile.ImageContentAssetPath = serialized.ImageAssetPath;
+            file.Content = imageFile;
+            return file;
         }
 
         /// <summary>
@@ -376,6 +456,18 @@ namespace HASH.OS.FileSystem
             CacheFileDir(file);
             CacheFilePaths(file);
             LoadFileContent(file);
+        }
+
+        #endregion
+
+        #region Permission
+
+        /// <summary>
+        /// Returns the lower of the two given permissions.
+        /// </summary>
+        public static AccessPermission GetLowerPermissionAccess(AccessPermission permissionA, AccessPermission permissionB)
+        {
+            return (AccessPermission)Math.Min((int)permissionA, (int)permissionB);
         }
 
         #endregion

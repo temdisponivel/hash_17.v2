@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace HASH17.Util.Input
+namespace HASH.Util.Input
 {
     /// <summary>
     /// Enumerates possible inputs to hear.
@@ -37,11 +37,11 @@ namespace HASH17.Util.Input
         public bool Listen;
         public InputEventConfig[] EventsToListen;
 
-        void Awake()
+        public void Initialize()
         {
             Global.InputListener = this;
         }
-
+        
         private void Update()
         {
             if (!Listen)

@@ -20,6 +20,6 @@ namespace HASH.OS.FileSystem
         public SimpleList<HashFile> Files;
         public SimpleList<HashDir> Childs;
 
-        public SimpleTable<int, AccessPermission> UserPermission;
+        public SimpleTable<string, AccessPermission> UserPermission;
     }
 }

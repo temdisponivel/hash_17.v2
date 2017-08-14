@@ -11,6 +11,6 @@ namespace HASH.OS.Shell
     {
         public SimpleList<Program> AllPrograms;
 
-        public SimpleSet<string> ArgNameSetHelper;
+        public SimpleSet<string> ArgNameHelper;
     }
 }

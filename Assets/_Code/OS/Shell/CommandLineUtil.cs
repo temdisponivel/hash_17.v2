@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text;
-using HASH17.Util;
-using HASH17.Util.Text;
+using HASH.Util;
+using HASH.Util.Text;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using SimpleCollections.Util;
@@ -227,7 +227,7 @@ namespace HASH.OS.Shell
         /// </summary>
         public static bool IsArgumentDuplicated(SimpleList<Pair<string, string>> arguments, string parameterName)
         {
-            var set = Global.ProgramData.ArgNameSetHelper;
+            var set = Global.ProgramData.ArgNameHelper;
             SSet.Clear(set);
             for (int i = 0; i < arguments.Count; i++)
             {

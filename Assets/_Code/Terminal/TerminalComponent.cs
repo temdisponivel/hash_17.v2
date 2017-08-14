@@ -1,27 +1,33 @@
 ﻿using HASH.Game;
-using HASH17.Util;
+using HASH.Util;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH17.Terminal
+namespace HASH.Terminal
 {
     /// <summary>
     /// Component to serialize a terminal data.
     /// </summary>
-    public class TerminalComponent : MonoBehaviour, IInitializable
+    public class TerminalComponent : MonoBehaviour
     {
-        public TerminalData Data;
+        public TerminalReferences References;
 
-        void Start()
+        public void Initialize()
         {
-            Initialize();
+            DebugUtil.Log("TERMINAL COMPONENT INITIALIZED!", Color.green, DebugUtil.DebugCondition.Info);
+            References.CommandCache = SList.Create<string>(50);
+            References.AvailableCommands = SList.Create<string>(20);
+            References.BatchEntries = SList.Create<TextBatchEntry>(10);
+            Global.TerminalReferences = References;
+            TerminalUtil.FocusOnInput();
+            TerminalUtil.CalculateMaxCharLenght();
         }
 
         #region Callbacks [CALLED BY EDITOR STUFF THROUGH NGUI OR INPUT LISTENER]
 
         public void OnInputChanged()
         {
-            var text = Data.Input.value;
+            var text = References.Input.value;
 
             if (text.EndsWith("\n"))
                 StartCoroutine(TerminalUtil.HandlePlayerInput(text));
@@ -29,7 +35,7 @@ namespace HASH17.Terminal
 
         public void OnInputSubimit()
         {
-            StartCoroutine(TerminalUtil.HandlePlayerInput(Data.Input.value));
+            StartCoroutine(TerminalUtil.HandlePlayerInput(References.Input.value));
         }
 
         public void UpPressed()
@@ -65,20 +71,5 @@ namespace HASH17.Terminal
         }
 
         #endregion
-
-        public int GetOrder()
-        {
-            return 0;
-        }
-
-        public void Initialize()
-        {
-            DebugUtil.Log("TERMINAL COMPONENT INITIALIZED!", Color.green, DebugUtil.DebugCondition.Info);
-            Data.CommandCache = SList.Create<string>(50);
-            Data.AvailableCommands = SList.Create<string>(20);
-            Data.BatchEntries = SList.Create<TextBatchEntry>(10);
-            Global.TerminalData = Data;
-            TerminalUtil.FocusOnInput();
-        }
     }
 }

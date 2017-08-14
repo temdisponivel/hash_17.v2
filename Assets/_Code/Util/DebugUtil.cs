@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using HASH17.Util.Text;
+using HASH.Util.Text;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace HASH17.Util
+namespace HASH.Util
 {
     /// <summary>
     /// Utility class for debugging.
@@ -42,13 +42,43 @@ namespace HASH17.Util
         /// Logs the given message with the given color.
         /// </summary>
         [Conditional("DEB")]
-        public static void Log(string value, Color color, DebugCondition condition)
+        public static void Log(string value, Color color, DebugCondition condition, LogType type = LogType.Info)
         {
-            if (MathUtil.ContainsFlag((int) Global.DebugCondition, (int) condition))
+            if (MathUtil.ContainsFlag((int) condition, (int)Global.DebugCondition))
             {
                 var msg = TextUtil.ApplyRichTextColor(value, color);
-                Debug.Log(msg);
+
+                switch (type)
+                {
+                    case LogType.Info:
+                        Debug.Log(msg);
+                        break;
+                    case LogType.Warning:
+                        Debug.LogWarning(msg);
+                        break;
+                    case LogType.Error:
+                        Debug.LogError(msg);
+                        break;
+                }
             }
+        }
+
+        /// <summary>
+        /// Logs an error to the console.
+        /// </summary>
+        [Conditional("DEB")]
+        public static void Error(string message)
+        {
+            Log(message, Color.red, DebugCondition.Verbose, LogType.Error);
+        }
+
+        /// <summary>
+        /// Logs an error to the console.
+        /// </summary>
+        [Conditional("DEB")]
+        public static void Warning(string message)
+        {
+            Log(message, Color.yellow, DebugCondition.Always, LogType.Warning);
         }
 
         /// <summary>
@@ -72,9 +102,19 @@ namespace HASH17.Util
         [Flags]
         public enum DebugCondition
         {
-            Info = 1 << 0,
-            Verbose = 1 << 1,
+            Info = 1 << 1,
+            Verbose = 1 << 2,
             Always = Info | Verbose,
+        }
+
+        /// <summary>
+        /// Enumerates all possible log types.
+        /// </summary>
+        public enum LogType
+        {
+            Info,
+            Warning,
+            Error,
         }
 
         #endregion

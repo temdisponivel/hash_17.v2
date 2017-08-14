@@ -8,8 +8,9 @@ namespace HASH.OS.FileSystem
     [Flags]
     public enum AccessPermission
     {
-        Read = 1 << 0,
-        Write = 1 << 1,
+        None = 1 << 0,
+        Read = 1 << 1,
+        Write = 1 << 2,
         All = Read | Write,
     }
 }

@@ -1,9 +1,9 @@
-﻿using HASH17.Util;
-using HASH17.Terminal.TextEntry;
+﻿using HASH.Terminal.TextEntry;
+using HASH.Util;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH17.Terminal
+namespace HASH.Terminal
 {
     /// <summary>
     /// Class that handles the terminal behaviour.
@@ -15,16 +15,16 @@ namespace HASH17.Terminal
         /// <summary>
         /// Shows a single text at the bottom of the terminal.
         /// </summary>
-        public static void ShowSingleText(TerminalData data, string text)
+        public static void ShowSingleText(TerminalReferences references, string text)
         {
-            var singleTextObject = NGUITools.AddChild(data.TextTable.gameObject, data.SingleText.gameObject);
+            var singleTextObject = NGUITools.AddChild(references.TextTable.gameObject, references.SingleText.gameObject);
             var singleText = singleTextObject.GetComponent<SingleTextEntry>();
             singleText.TextComponent.text = text;
             singleText.transform.SetAsFirstSibling();
 
             var widget = singleText.ParentWidget;
-            widget.leftAnchor.target = data.ScrollView.transform;
-            widget.rightAnchor.target = data.ScrollView.transform;
+            widget.leftAnchor.target = references.ScrollView.transform;
+            widget.rightAnchor.target = references.ScrollView.transform;
 
             singleTextObject.SetActive(true);
         }
@@ -32,17 +32,17 @@ namespace HASH17.Terminal
         /// <summary>
         /// Shows a dual text at the bottom of the terminal.
         /// </summary>
-        public static void ShowDualText(TerminalData data, string leftText, string rightText)
+        public static void ShowDualText(TerminalReferences references, string leftText, string rightText)
         {
-            var dualTextObject = NGUITools.AddChild(data.TextTable.gameObject, data.DualText.gameObject);
+            var dualTextObject = NGUITools.AddChild(references.TextTable.gameObject, references.DualText.gameObject);
             var dualText = dualTextObject.GetComponent<DualTextEntry>();
             dualText.LeftTextComponent.text = leftText;
             dualText.RightTextComponent.text = rightText;
             dualText.transform.SetAsFirstSibling();
 
             var widget = dualText.ParentWidget;
-            widget.leftAnchor.target = data.ScrollView.transform;
-            widget.rightAnchor.target = data.ScrollView.transform;
+            widget.leftAnchor.target = references.ScrollView.transform;
+            widget.rightAnchor.target = references.ScrollView.transform;
             
             dualTextObject.SetActive(true);
         }
@@ -54,18 +54,18 @@ namespace HASH17.Terminal
         /// <summary>
         /// Shows the command from the command buffer accordingly to the index on TerminalData.
         /// </summary>
-        public static void ShowCommandFromBuffer(TerminalData data)
+        public static void ShowCommandFromBuffer(TerminalReferences references)
         {
-            var command = data.CurrentCommandBuffer[data.CurrentCommandBufferIndex];
-            ShowTextOnInput(data, command);
+            var command = references.CurrentCommandBuffer[references.CurrentCommandBufferIndex];
+            ShowTextOnInput(references, command);
         }
 
         /// <summary>
         /// Shows the given text on the input.
         /// </summary>
-        public static void ShowTextOnInput(TerminalData data, string text)
+        public static void ShowTextOnInput(TerminalReferences references, string text)
         {
-            data.Input.value = text;
+            references.Input.value = text;
         }
 
         #endregion
@@ -75,17 +75,17 @@ namespace HASH17.Terminal
         /// <summary>
         /// Updates the scroll view position and bounds.
         /// </summary>
-        public static void UpdateScroll(TerminalData data)
+        public static void UpdateScroll(TerminalReferences references)
         {
-            data.ScrollView.UpdateScrollbars(true);
+            references.ScrollView.UpdateScrollbars(true);
         }
 
         /// <summary>
         /// Calls reposition on the table.
         /// </summary>
-        public static void UpdateTable(TerminalData data)
+        public static void UpdateTable(TerminalReferences references)
         {
-            data.TextTable.Reposition();
+            references.TextTable.Reposition();
         }
 
 #endregion

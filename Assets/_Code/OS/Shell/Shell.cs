@@ -1,7 +1,7 @@
 ﻿using System;
 using HASH.OS.Programs;
 using HASH.OS.Programs.Implementation;
-using HASH17.Util;
+using HASH.Util;
 
 namespace HASH.OS.Shell
 {
@@ -17,9 +17,7 @@ namespace HASH.OS.Shell
         {
             var programOpt = GetProgramExecutionOptions(commandLine);
             if (programOpt.ProgramReference == null)
-            {
-                UnityEngine.Debug.Log("ERROR");
-            }
+                DebugUtil.Error("DID NOT FOUND A PROGRAM MATCH FOR THE GIVEN COMMAND LINE: " + commandLine);
             else
             {
                 var entryPoint = GetProgramExecutionEntryPoint(programOpt.ProgramReference);

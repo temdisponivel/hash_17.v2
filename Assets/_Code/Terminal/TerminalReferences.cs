@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using HASH17.Terminal.TextEntry;
-using HASH17.Util;
+using HASH.Terminal.TextEntry;
+using HASH.Util;
 using SimpleCollections.Lists;
 
-namespace HASH17.Terminal
+namespace HASH.Terminal
 {
     /// <summary>
     /// Holds references to stuff needed by the terminal.
     /// </summary>
     [Serializable]
-    public class TerminalData
+    public class TerminalReferences
     {
         public SingleTextEntry SingleText;
         public DualTextEntry DualText;
@@ -20,16 +20,20 @@ namespace HASH17.Terminal
 
         public UIInput Input;
 
+        [NonSerialized]
         public bool Batching;
         public SimpleList<TextBatchEntry> BatchEntries;
 
         public SimpleList<string> CommandCache;
+
+        [NonSerialized]
         public int CurrentCommandBufferIndex;
 
         public SimpleList<string> AvailableCommands;
         
         public SimpleList<string> CurrentCommandBuffer;
 
+        [NonSerialized]
         public int MaxLineWidthInChars;
     }
 }

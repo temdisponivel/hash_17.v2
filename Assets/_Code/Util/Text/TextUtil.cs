@@ -3,7 +3,7 @@ using System.Text;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH17.Util.Text
+namespace HASH.Util.Text
 {
     /// <summary>
     /// Utility class for handling text.

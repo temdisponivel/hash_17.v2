@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HASH17.Util
+namespace HASH.Util
 {
     /// <summary>
     /// Utility class for handling classes.

@@ -3,8 +3,8 @@ using HASH.OS.FileSystem;
 using HASH.OS.FileSystem.FileTypes;
 using HASH.OS.Programs;
 using HASH.OS.Shell;
-using HASH17.Util;
-using HASH17.Util.Text;
+using HASH.Util;
+using HASH.Util.Text;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEditor;
@@ -20,16 +20,13 @@ namespace Assets._Code.__TRASH
             //TestFile();
             //TestPaths();
             //TestCommandLine();
-            TestText();
+            //TestText();
         }
 
         #region Text
 
         void TestText()
         {
-            var textUtil = new TextUtilData();
-            Global.TextUtilData = textUtil;
-
             string result = string.Empty;
             for (int i = 0; i < 5; i++)
             {
@@ -94,17 +91,14 @@ namespace Assets._Code.__TRASH
         {
             var programData = new ProgramsData();
             programData.AllPrograms = SList.Create<Program>(1);
-            programData.ArgNameSetHelper = SSet.Create<string>(1, true);
+            programData.ArgNameHelper = SSet.Create<string>(1, true);
             var cdProgram = new Program();
             cdProgram.ProgramType = ProgramType.Cd;
             cdProgram.Commands = new string[2] { "cd", "alo" };
             SList.Add(programData.AllPrograms, cdProgram);
 
             Global.ProgramData = programData;
-
-            var textUtil = new TextUtilData();
-            Global.TextUtilData = textUtil;
-
+            
             var simpleCommand = "cd -p /path/ to/file.txt -c alo - d putamerda -e";
             var command = CommandLineUtil.GetCommandName(simpleCommand);
             var commandArgs = CommandLineUtil.RemoveCommandFromCommandLine(simpleCommand);
@@ -171,10 +165,6 @@ namespace Assets._Code.__TRASH
 
         void TestDir()
         {
-            var textUtil = new TextUtilData();
-            Global.TextUtilData = textUtil;
-
-
             var data = new FileSystemData();
             data.PathStackHelper = SList.Create<string>(10);
             data.AllFiles = STable.Create<int, HashFile>(10, true);

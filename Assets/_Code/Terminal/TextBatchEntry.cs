@@ -1,6 +1,6 @@
-﻿using HASH17.Terminal.TextEntry;
+﻿using HASH.Terminal.TextEntry;
 
-namespace HASH17.Terminal
+namespace HASH.Terminal
 {
     /// <summary>
     /// Class that holds information about a batched text.

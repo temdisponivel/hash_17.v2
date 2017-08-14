@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using HASH.OS.Shell;
-using HASH17.Terminal;
-using HASH17.Util;
-using HASH17.Util.Text;
+using HASH.Terminal;
+using HASH.Util;
+using HASH.Util.Text;
 using SimpleCollections.Lists;
 using UnityEngine;
 
@@ -44,7 +44,7 @@ namespace HASH.OS.Programs.Implementation
 
             DirContentHeader.ItemsSeparator = " | ";
             DirContentHeader.SeparatorModifier.Color = Color.cyan;
-            DirContentHeader.MaxLineSize = Global.TerminalData.MaxLineWidthInChars;
+            DirContentHeader.MaxLineSize = Global.TerminalReferences.MaxLineWidthInChars;
             DirContentHeader.Items = items;
             DirContentHeader.MaxLineSize = 100;
             DirContentHeader.MaxLineSizeIsForced = true;

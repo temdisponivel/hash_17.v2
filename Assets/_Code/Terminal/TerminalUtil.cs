@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 using HASH.OS.Shell;
-using HASH17.Terminal.TextEntry;
-using HASH17.Util;
-using HASH17.Util.Text;
+using HASH.Terminal.TextEntry;
+using HASH.Util;
+using HASH.Util.Text;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH17.Terminal
+namespace HASH.Terminal
 {
     /// <summary>
     /// Class that performs more complex operations on top of the terminal.
@@ -23,7 +23,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static void StartTextBatch()
         {
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
 
             DebugUtil.Assert(data.Batching, "THERE'S ALREADY A TEXT BATCH HAPPENING!");
 
@@ -35,7 +35,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static void EndTextBatch()
         {
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
 
             DebugUtil.Assert(!data.Batching, "THERE'S NO TEXT BATCH HAPPENING!");
 
@@ -67,7 +67,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static void ShowText(string text)
         {
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
             if (data.Batching)
             {
                 var entry = new TextBatchEntry();
@@ -84,7 +84,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static void ShowDualText(string leftText, string rightText)
         {
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
             if (data.Batching)
             {
                 var entry = new TextBatchEntry();
@@ -170,7 +170,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static void ClearInputText()
         {
-            Terminal.ShowTextOnInput(Global.TerminalData, string.Empty);
+            Terminal.ShowTextOnInput(Global.TerminalReferences, string.Empty);
         }
 
         /// <summary>
@@ -178,7 +178,19 @@ namespace HASH17.Terminal
         /// </summary>
         public static void FocusOnInput()
         {
-            Global.TerminalData.Input.selectAllTextOnFocus = false;
+            Global.TerminalReferences.Input.selectAllTextOnFocus = false;
+        }
+
+        /// <summary>
+        /// Calculates and stores the max char lenght on the terminal references.
+        /// </summary>
+        public static void CalculateMaxCharLenght()
+        {
+            var references = Global.TerminalReferences;
+            var font = references.Input.label.bitmapFont;
+            var width = font.defaultSize;
+            var screenWidth = references.ScrollView.bounds.size.x;
+            references.MaxLineWidthInChars = Mathf.FloorToInt(screenWidth / width);
         }
 
         /// <summary>
@@ -194,7 +206,7 @@ namespace HASH17.Terminal
 
             var path = TextUtil.ApplyNGUIColor("/emails/background/attachement/images/", Color.green);
             ShowDualText(path, text);
-
+            
             // TODO: remove this wait to fix label flickering, but fix table reposition
             yield return null;
 
@@ -204,7 +216,7 @@ namespace HASH17.Terminal
             ClearInputText();
             FocusOnInput();
 
-            CacheCommand(Global.TerminalData, text);
+            CacheCommand(Global.TerminalReferences, text);
             ResetCommandBufferIndex();
         }
 
@@ -212,9 +224,9 @@ namespace HASH17.Terminal
         /// Caches the command on the terminal data.
         /// This will enable the user to up/down typed commands.
         /// </summary>
-        public static void CacheCommand(TerminalData data, string command)
+        public static void CacheCommand(TerminalReferences references, string command)
         {
-            SList.Insert(data.CommandCache, command, 0);
+            SList.Insert(references.CommandCache, command, 0);
         }
 
         /// <summary>
@@ -225,7 +237,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static void NavigateCommandBuffer(int direction, bool wrapsAround)
         {
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
             var buffer = data.CurrentCommandBuffer;
             if (buffer.Count > 0)
             {
@@ -252,7 +264,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static void ResetCommandBufferIndex()
         {
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
 
             // Set to -1 because when the player presses the key again, we need this index to go to 0
             // if we set to 0, it will go either to 1 (if pressed up) or zero
@@ -267,7 +279,7 @@ namespace HASH17.Terminal
         {
             // TODO: real stuff
 
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
             SList.Clear(data.AvailableCommands);
 
             var currentText = data.Input.value;
@@ -284,7 +296,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static void ChangeToCommandCacheBufferIfNeeded()
         {
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
             if (data.CurrentCommandBuffer != data.CommandCache)
             {
                 data.CurrentCommandBuffer = data.CommandCache;
@@ -299,7 +311,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static bool ChangeToAvailableCommandsBufferIfNeeded()
         {
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
             if (data.CurrentCommandBuffer != data.AvailableCommands)
             {
                 data.CurrentCommandBuffer = data.AvailableCommands;
@@ -320,7 +332,7 @@ namespace HASH17.Terminal
         /// </summary>
         public static void UpdateTableAndScroll()
         {
-            var data = Global.TerminalData;
+            var data = Global.TerminalReferences;
             Terminal.UpdateTable(data);
             Terminal.UpdateScroll(data);
         }

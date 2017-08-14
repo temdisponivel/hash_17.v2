@@ -1,4 +1,5 @@
 ﻿using HASH.OS.FileSystem.FileTypes;
+using SimpleCollections.Hash;
 
 namespace HASH.OS.FileSystem
 {
@@ -18,5 +19,7 @@ namespace HASH.OS.FileSystem
         public HashFileType FileType;
 
         public object Content;
+
+        public SimpleTable<string, AccessPermission> UserPermission;
     }
 }

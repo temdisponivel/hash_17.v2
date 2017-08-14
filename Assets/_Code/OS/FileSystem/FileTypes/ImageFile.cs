@@ -7,8 +7,6 @@ namespace HASH.OS.FileSystem.FileTypes
     /// </summary>
     public class ImageFile
     {
-        public HashFile File;
-
         public string ImageContentAssetPath;
         public Texture ImageContent;
     }

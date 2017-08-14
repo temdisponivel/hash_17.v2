@@ -7,8 +7,6 @@ namespace HASH.OS.FileSystem.FileTypes
     /// </summary>
     public class TextFile
     {
-        public HashFile File;
-
         public string TextContentAssetPath;
         public string TextContent;
     }
