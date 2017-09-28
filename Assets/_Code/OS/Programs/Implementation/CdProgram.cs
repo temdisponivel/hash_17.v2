@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Xml.Schema;
 using HASH.OS.Shell;
 using HASH.Terminal;
 using HASH.Util;
@@ -37,7 +38,7 @@ namespace HASH.OS.Programs.Implementation
 
             ValidationOptions[0] = pathOpt;
 
-            KnownArgs = new[] {"",};
+            KnownArgs = new[] { "", };
 
             DirContentHeader = new TextTableLine();
             var items = SList.Create<TextTableItem>(3);
@@ -82,26 +83,28 @@ namespace HASH.OS.Programs.Implementation
             TextUtil.FormatLineConsideringWeightsAndSize(DirContentHeader);
         }
 
-        private static int i = 0;
-
         /// <summary>
         /// Executes the CD program.
         /// </summary>
         public static void Execute(ProgramExecutionOptions options)
         {
             bool argumentsOk, knownArgs;
-            var result = CommandLineUtil.FullArgValidation(options.ParsedArguments, ValidationOptions, KnownArgs,
-                out knownArgs, out argumentsOk);
+            CommandLineUtil.FullArgValidation(options.ParsedArguments, ValidationOptions, KnownArgs, out knownArgs, out argumentsOk);
+            ValidateErrorsWithArgs(ValidationOptions);
+        }
 
-            UnityEngine.Debug.Log("ALO");
-
-            if (i == 3)
-                TerminalUtil.EndTextBatch();
-            else if (i == 0)
-                TerminalUtil.StartTextBatch();
-
-            TerminalUtil.ShowText(DirContentHeader.FormattedText);
-            i++;
+        private static void ValidateErrorsWithArgs(CommandLineArgValidationOption<Args>[] args)
+        {
+            for (int i = 0; i < args.Length; i++)
+            {
+                var arg = args[i];
+                var result = (int) arg.ValidationResult;
+                var empty = (int) ArgValidationResult.EmptyValue;
+                if (MathUtil.ContainsFlag(result, empty))
+                {
+                    Debug.Log("EMPTY");
+                }
+            }
         }
     }
 }

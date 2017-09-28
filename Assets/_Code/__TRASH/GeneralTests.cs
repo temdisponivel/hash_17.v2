@@ -91,7 +91,7 @@ namespace Assets._Code.__TRASH
         {
             var programData = new ProgramsData();
             programData.AllPrograms = SList.Create<Program>(1);
-            programData.ArgNameHelper = SSet.Create<string>(1, true);
+            programData.ArgNameHelper = SSet.Create<string>(1, false);
             var cdProgram = new Program();
             cdProgram.ProgramType = ProgramType.Cd;
             cdProgram.Commands = new string[2] { "cd", "alo" };

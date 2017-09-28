@@ -205,7 +205,7 @@ namespace HASH.OS.Shell
 
         /// <summary>
         /// Search for the nth argument with the given name. Returns true if found the parameter, false otherse.
-        /// The resulting parameter will be on the out Pair argument.
+        /// The resulting parameter will be on the   out Pair argument.
         /// </summary>
         public static bool TryGetNthArgumentByName(SimpleList<Pair<string, string>> arguments, string parameterName, out Pair<string, string> parameter, int n)
         {
@@ -256,8 +256,7 @@ namespace HASH.OS.Shell
             for (int i = 0; i < options.Length; i++)
             {
                 var opt = options[i];
-                opt.ValidationResult = ArgValidationResult.EverythingOk;
-
+                
                 if (MathUtil.ContainsFlag((int) opt.Requirements, (int) ArgRequirement.Unique))
                 {
                     if (IsArgumentDuplicated(arguments, opt.ArgumentName))
@@ -287,6 +286,9 @@ namespace HASH.OS.Shell
                         result = false;
                     }
                 }
+
+                if (result)
+                    opt.ValidationResult = ArgValidationResult.EverythingOk;
 
                 // redefine because it's a struct and we've changed the copy of it, not the one on the list
                 options[i] = opt;

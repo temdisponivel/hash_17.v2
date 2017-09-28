@@ -226,8 +226,8 @@ namespace HASH.OS.FileSystem
             dir.DirId = serializedDir.DirId;
             dir.ParentDirId = serializedDir.ParentDirId;
             dir.Name = serializedDir.Name;
-            dir.ChildsDirId = SList.Instatiate<int>(serializedDir.ChildsDirId);
-            dir.FilesId = SList.Instatiate<int>(serializedDir.FilesId);
+            dir.ChildsDirId = SList.FromArray(serializedDir.ChildsDirId);
+            dir.FilesId = SList.FromArray(serializedDir.FilesId);
             dir.UserPermission = STable.Create<string, AccessPermission>(serializedDir.UserPermission.Length, true);
 
             dir.Childs = SList.Create<HashDir>(dir.ChildsDirId.Count);

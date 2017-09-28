@@ -10,7 +10,6 @@ namespace HASH.OS.Shell
     public class ProgramsData
     {
         public SimpleList<Program> AllPrograms;
-
         public SimpleSet<string> ArgNameHelper;
     }
 }

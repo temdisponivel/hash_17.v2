@@ -106,7 +106,7 @@ namespace HASH.Data
                 programData.AllPrograms[i] = prog;
             }
 
-            programData.ArgNameHelper = SSet.Create<string>(10, true);
+            programData.ArgNameHelper = SSet.Create<string>(10, false);
 
             Global.ProgramData = programData;
         }
