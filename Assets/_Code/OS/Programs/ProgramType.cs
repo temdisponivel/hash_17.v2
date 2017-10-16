@@ -1,4 +1,4 @@
-﻿namespace HASH.OS.Programs
+﻿namespace HASH
 {
     /// <summary>
     /// Enumerates all programs.

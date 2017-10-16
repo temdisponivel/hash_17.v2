@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HASH.OS.Shell
+namespace HASH
 {
     /// <summary>
     /// Defines a set of configurations for validating command line arguments.

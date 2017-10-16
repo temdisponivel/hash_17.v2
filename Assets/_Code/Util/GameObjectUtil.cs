@@ -1,4 +1,4 @@
-﻿namespace HASH.Util
+﻿namespace HASH
 {
     /// <summary>
     /// Utility class for handling stuff related to game objects.

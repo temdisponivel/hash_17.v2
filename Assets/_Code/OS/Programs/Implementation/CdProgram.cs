@@ -1,13 +1,9 @@
-﻿using System.ComponentModel;
-using System.Xml.Schema;
-using HASH.OS.Shell;
-using HASH.Terminal;
-using HASH.Util;
-using HASH.Util.Text;
+﻿using HASH;
 using SimpleCollections.Lists;
+using SimpleCollections.Util;
 using UnityEngine;
 
-namespace HASH.OS.Programs.Implementation
+namespace HASH
 {
     /// <summary>
     /// Executes the CD program.
@@ -91,6 +87,12 @@ namespace HASH.OS.Programs.Implementation
             bool argumentsOk, knownArgs;
             CommandLineUtil.FullArgValidation(options.ParsedArguments, ValidationOptions, KnownArgs, out knownArgs, out argumentsOk);
             ValidateErrorsWithArgs(ValidationOptions);
+
+            Pair<string, string> command;
+            CommandLineUtil.TryGetArgumentByName(options.ParsedArguments, "", out command);
+            var path = command.Value;
+            var dir = FileSystem.FindDirByPath(path);
+            FileSystem.ChangeDir(dir);
         }
 
         private static void ValidateErrorsWithArgs(CommandLineArgValidationOption<Args>[] args)
@@ -98,8 +100,8 @@ namespace HASH.OS.Programs.Implementation
             for (int i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
-                var result = (int) arg.ValidationResult;
-                var empty = (int) ArgValidationResult.EmptyValue;
+                var result = (int)arg.ValidationResult;
+                var empty = (int)ArgValidationResult.EmptyValue;
                 if (MathUtil.ContainsFlag(result, empty))
                 {
                     Debug.Log("EMPTY");

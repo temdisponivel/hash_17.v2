@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections;
-using HASH.OS.Shell;
-using HASH.Terminal.TextEntry;
-using HASH.Util;
-using HASH.Util.Text;
+using HASH;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH.Terminal
+namespace HASH
 {
     /// <summary>
     /// Class that performs more complex operations on top of the terminal.
@@ -52,7 +49,7 @@ namespace HASH.Terminal
                         ShowDualText(entry.Texts[0], entry.Texts[1]);
                         break;
                     default:
-                        DebugUtil.Log(string.Format("THE TEXT ENTRY TYPE {0} IS NOT IMPLEMENTED!", entry.EntryType), Color.red, DebugUtil.DebugCondition.Always);
+                        DebugUtil.Log(string.Format("THE TEXT ENTRY TYPE {0} IS NOT IMPLEMENTED!", entry.EntryType), Color.red, DebugUtil.DebugCondition.Always, DebugUtil.LogType.Info);
                         break;
                 }
             }
@@ -202,7 +199,7 @@ namespace HASH.Terminal
             if (string.IsNullOrEmpty(text))
                 yield break;
        
-            DebugUtil.Log("[Terminal Util] PLAYER INPUT: " + text, Color.green, DebugUtil.DebugCondition.Verbose);
+            DebugUtil.Log("[Terminal Util] PLAYER INPUT: " + text, Color.green, DebugUtil.DebugCondition.Verbose, DebugUtil.LogType.Info);
 
             var path = TextUtil.ApplyNGUIColor("/emails/background/attachement/images/", Color.green);
             ShowDualText(path, text);

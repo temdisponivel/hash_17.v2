@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Text;
-using HASH.Util;
-using HASH.Util.Text;
+using HASH;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using SimpleCollections.Util;
 
-namespace HASH.OS.Shell
+namespace HASH
 {
     /// <summary>
     /// Class that performs operations related to the command line (like parsing arguments, etc).

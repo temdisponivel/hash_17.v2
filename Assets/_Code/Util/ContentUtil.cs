@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HASH.Util
+namespace HASH
 {
     /// <summary>
     /// Class that helps with loading content.
@@ -12,7 +12,9 @@ namespace HASH.Util
         /// </summary>
         public static T Load<T>(string assetPath) where T : UnityEngine.Object
         {
-            return Resources.Load<T>(assetPath);
+            var asset = Resources.Load<T>(assetPath);
+            DebugUtil.Assert(asset == null, string.Format("No asset of type '{0}' found at path '{1}'.", typeof(T).Name, assetPath));
+            return asset;
         }
 
         /// <summary>

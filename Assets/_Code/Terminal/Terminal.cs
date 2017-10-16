@@ -1,9 +1,8 @@
-﻿using HASH.Terminal.TextEntry;
-using HASH.Util;
+﻿using HASH;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH.Terminal
+namespace HASH
 {
     /// <summary>
     /// Class that handles the terminal behaviour.
@@ -43,7 +42,7 @@ namespace HASH.Terminal
             var widget = dualText.ParentWidget;
             widget.leftAnchor.target = references.ScrollView.transform;
             widget.rightAnchor.target = references.ScrollView.transform;
-            
+
             dualTextObject.SetActive(true);
         }
 
@@ -88,6 +87,6 @@ namespace HASH.Terminal
             references.TextTable.Reposition();
         }
 
-#endregion
+        #endregion
     }
 }

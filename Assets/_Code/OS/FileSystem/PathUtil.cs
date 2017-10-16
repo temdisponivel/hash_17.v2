@@ -1,6 +1,7 @@
 ﻿using System;
+using HASH;
 
-namespace HASH.OS.FileSystem
+namespace HASH
 {
     /// <summary>
     /// Class that handles path.
@@ -50,7 +51,7 @@ namespace HASH.OS.FileSystem
                 return PathType.Invalid;
 
             var ext = GetExtensionInPath(path);
-            
+
             if (string.IsNullOrEmpty(ext))
                 return PathType.Folder;
             else
@@ -137,8 +138,30 @@ namespace HASH.OS.FileSystem
             }
             return name;
         }
+
+        /// <summary>
+        /// Removes the toRemove part from data.
+        /// </summary>
+        public static string RemovePathPart(string data, string toRemove)
+        {
+            return data.Replace(toRemove, string.Empty);
+        }
+
+        /// <summary>
+        /// Returns the file type for the given file extension. This extension is supposed to be the real
+        /// file extension (txt, png, jpg, etc).
+        /// </summary>
+        public static HashFileType GetFileTypeByExtension(string fileExtension)
+        {
+            if (fileExtension == ".txt")
+                return HashFileType.Text;
+            else if (fileExtension == ".png")
+                return HashFileType.Image;
+            else
+                return HashFileType.Invalid;
+        }
     }
-    
+
     /// <summary>
     /// Enumerates the possible file types.
     /// </summary>

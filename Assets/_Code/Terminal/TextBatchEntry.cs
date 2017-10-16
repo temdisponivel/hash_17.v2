@@ -1,6 +1,6 @@
-﻿using HASH.Terminal.TextEntry;
+﻿using HASH;
 
-namespace HASH.Terminal
+namespace HASH
 {
     /// <summary>
     /// Class that holds information about a batched text.

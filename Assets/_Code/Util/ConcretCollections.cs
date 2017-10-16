@@ -1,7 +1,7 @@
 ﻿using System;
 using SimpleCollections.Lists;
 
-namespace HASH.Util
+namespace HASH
 {
     /// <summary>
     /// Create a concret (not generic) type of a simple list of strings.

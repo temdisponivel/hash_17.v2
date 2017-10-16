@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HASH.OS.FileSystem
+namespace HASH
 {
     /// <summary>
     /// Enumerates all possible access permissions.

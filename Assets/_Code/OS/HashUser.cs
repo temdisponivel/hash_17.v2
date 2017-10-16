@@ -1,4 +1,4 @@
-﻿namespace HASH.OS
+﻿namespace HASH
 {
     /// <summary>
     /// Class that represents a OS user.

@@ -1,4 +1,4 @@
-﻿namespace HASH.OS.Programs
+﻿namespace HASH
 {
     /// <summary>
     /// Represents options that can be passed to a program.

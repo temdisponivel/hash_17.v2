@@ -3,7 +3,7 @@ using System.Text;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 
-namespace HASH.OS.FileSystem
+namespace HASH
 {
     /// <summary>
     /// Store all the file system data.

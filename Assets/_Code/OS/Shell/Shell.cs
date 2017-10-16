@@ -1,9 +1,7 @@
 ﻿using System;
-using HASH.OS.Programs;
-using HASH.OS.Programs.Implementation;
-using HASH.Util;
+using HASH;
 
-namespace HASH.OS.Shell
+namespace HASH
 {
     /// <summary>
     /// Class that handles the shell of our virtual OS.

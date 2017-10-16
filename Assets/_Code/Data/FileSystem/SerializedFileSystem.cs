@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HASH.Data.FileSystem
+namespace HASH
 {
     /// <summary>
     /// Class that holds the serialized hash info.

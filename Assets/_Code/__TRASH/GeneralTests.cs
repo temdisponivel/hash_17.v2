@@ -1,10 +1,5 @@
 ﻿using System.Text;
-using HASH.OS.FileSystem;
-using HASH.OS.FileSystem.FileTypes;
-using HASH.OS.Programs;
-using HASH.OS.Shell;
-using HASH.Util;
-using HASH.Util.Text;
+using HASH;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEditor;

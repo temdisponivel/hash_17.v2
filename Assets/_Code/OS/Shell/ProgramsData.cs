@@ -1,8 +1,8 @@
-﻿using HASH.OS.Programs;
+﻿using HASH;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 
-namespace HASH.OS.Shell
+namespace HASH
 {
     /// <summary>
     /// Holds all the program-related data.

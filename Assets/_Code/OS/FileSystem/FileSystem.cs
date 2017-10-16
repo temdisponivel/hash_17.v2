@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Text;
-using HASH.Data.FileSystem;
-using HASH.OS.FileSystem.FileTypes;
-using HASH.Util;
-using HASH.Util.Text;
+using HASH;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH.OS.FileSystem
+namespace HASH
 {
     /// <summary>
     /// Class that performs operations related to file system.
@@ -17,6 +14,7 @@ namespace HASH.OS.FileSystem
     {
         #region Properties
 
+        public const string RootDirName = "ROOT";
         public const string TextFileExtension = "txt";
         public const string ImageFileExtension = "img";
 
@@ -25,6 +23,17 @@ namespace HASH.OS.FileSystem
         #endregion
 
         #region Dir
+
+        /// <summary>
+        /// Changes the current dir to the given dir.
+        /// </summary>
+        public static void ChangeDir(HashDir dir)
+        {
+            var data = Global.FileSystemData;
+            data.CurrentDir = dir;
+
+            TerminalUtil.FillAvailableCommandBuffer();
+        }
 
         /// <summary>
         /// Returns the dir that has the given id.
@@ -62,7 +71,7 @@ namespace HASH.OS.FileSystem
             HashDir currentDir;
 
             // If a path starts with the separator, it means it starts on the root folder
-            if (path.StartsWith(PathUtil.PathSeparator))
+            if (path.StartsWith(RootDirName))
             {
                 currentDir = data.RootDir;
 
@@ -99,6 +108,28 @@ namespace HASH.OS.FileSystem
             return currentDir;
         }
 
+        /// <summary>
+        /// Finds and returns the root dir (the dir with parent id -1).
+        /// If no root dir is found, null is returned.
+        /// Only call this if the file system data was loaded.
+        /// </summary>
+        public static HashDir GetRootDir()
+        {
+            var data = Global.FileSystemData;
+            if (data.RootDir != null)
+                return data.RootDir;
+
+            foreach (var dir in data.AllDirectories)
+            {
+                if (dir.Value.ParentDirId == -1)
+                    return dir.Value;
+            }
+
+            DebugUtil.Error("Did not found any root folder!");
+
+            return null;
+        }
+
         private static HashDir ProcessPathPart(HashDir currentDir, string pathPart)
         {
             var folderName = pathPart;
@@ -132,7 +163,7 @@ namespace HASH.OS.FileSystem
             // Root folder is treated differently
             if (dir.ParentDirId == -1)
             {
-                DebugUtil.Assert(dir.Name != PathUtil.PathSeparator, string.Format("THE DIR {0} HAS NO PARENT AND IT'S THE ROOT DIR!", dir.DirId));
+                DebugUtil.Assert(dir.Name != RootDirName, string.Format("THE DIR {0} HAS NO PARENT AND IT'S THE ROOT DIR!", dir.DirId));
                 path = dir.Name;
             }
             else
@@ -140,7 +171,7 @@ namespace HASH.OS.FileSystem
 #if DEB
                 if (dir.ParentDirId == dir.DirId)
                 {
-                    DebugUtil.Log(string.Format("THE DIR {0} HAS ITSELF AS PARENT!", dir.DirId), Color.red, DebugUtil.DebugCondition.Always);
+                    DebugUtil.Log(string.Format("THE DIR {0} HAS ITSELF AS PARENT!", dir.DirId), Color.red, DebugUtil.DebugCondition.Always, DebugUtil.LogType.Info);
                     return null;
                 }
 #endif

@@ -1,7 +1,7 @@
-﻿using HASH.OS.FileSystem.FileTypes;
+﻿using HASH;
 using SimpleCollections.Hash;
 
-namespace HASH.OS.FileSystem
+namespace HASH
 {
     /// <summary>
     /// Represents a file on our virtual OS.

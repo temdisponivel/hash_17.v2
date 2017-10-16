@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using HASH.Util.Text;
+using HASH;
 using UnityEngine;
 using Debug = UnityEngine.Debug;
 
-namespace HASH.Util
+namespace HASH
 {
     /// <summary>
     /// Utility class for debugging.
@@ -42,7 +42,7 @@ namespace HASH.Util
         /// Logs the given message with the given color.
         /// </summary>
         [Conditional("DEB")]
-        public static void Log(string value, Color color, DebugCondition condition, LogType type = LogType.Info)
+        public static void Log(string value, Color color, DebugCondition condition, LogType type)
         {
             if (MathUtil.ContainsFlag((int) condition, (int)Global.DebugCondition))
             {

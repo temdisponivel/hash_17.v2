@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HASH.OS.FileSystem.FileTypes
+namespace HASH
 {
     /// <summary>
     /// Represents a text file on our virtual OS.

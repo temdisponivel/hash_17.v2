@@ -1,8 +1,8 @@
 ﻿using System;
-using HASH.OS.Programs;
+using HASH;
 using UnityEngine;
 
-namespace HASH.Data.Programs
+namespace HASH
 {
     /// <summary>
     /// Holds the serialized data of a program.

@@ -1,7 +1,7 @@
 ﻿using SimpleCollections.Lists;
 using SimpleCollections.Util;
 
-namespace HASH.OS.Programs
+namespace HASH
 {
     /// <summary>
     /// Holds options passed to program executions.

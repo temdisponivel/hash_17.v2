@@ -1,10 +1,6 @@
-﻿using HASH.OS.FileSystem;
-using HASH.OS.Shell;
-using HASH.Terminal;
-using HASH.Util.Input;
-using HASH.Util.Text;
+﻿using HASH;
 
-namespace HASH.Util
+namespace HASH
 {
     /// <summary>
     /// Class that holds global state.

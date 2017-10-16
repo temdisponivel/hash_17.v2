@@ -1,4 +1,4 @@
-﻿using HASH.Game;
+﻿using HASH;
 using UnityEngine;
 
 namespace Assets._Code.__TRASH

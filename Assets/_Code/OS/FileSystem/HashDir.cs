@@ -1,7 +1,7 @@
 ﻿using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 
-namespace HASH.OS.FileSystem
+namespace HASH
 {
     /// <summary>
     /// Class that represents a directory.

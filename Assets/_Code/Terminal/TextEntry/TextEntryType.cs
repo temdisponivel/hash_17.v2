@@ -1,4 +1,4 @@
-﻿namespace HASH.Terminal.TextEntry
+﻿namespace HASH
 {
     /// <summary>
     /// Enumerates all possible text entry types.

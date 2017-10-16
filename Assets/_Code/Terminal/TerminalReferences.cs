@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using HASH.Terminal.TextEntry;
-using HASH.Util;
+using HASH;
 using SimpleCollections.Lists;
 
-namespace HASH.Terminal
+namespace HASH
 {
     /// <summary>
     /// Holds references to stuff needed by the terminal.

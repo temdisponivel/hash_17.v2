@@ -1,15 +1,16 @@
 ﻿using System.Collections;
-using HASH.Data.FileSystem;
-using HASH.Data.Programs;
-using HASH.OS.FileSystem;
-using HASH.OS.Programs;
-using HASH.OS.Shell;
-using HASH.Util;
+using System.Collections.Generic;
+using System.IO;
+using HASH;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH.Data
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+namespace HASH
 {
     /// <summary>
     /// Utility class for the serialized data.
@@ -17,6 +18,9 @@ namespace HASH.Data
     public static class DataUtil
     {
         #region Properties
+
+        const string FILE_SYSTEM_FOLDER = "Assets/Resources/FileSystem/";
+        const string RESOURCE_FOLDER_PATH_IN_PROJECT = "Assets/Resources/";
 
 #if MOCK_DATA
         public const string FileSystemDataPath = "Data/Mock/SerializedFileSystem";
@@ -68,7 +72,7 @@ namespace HASH.Data
             for (int i = 0; i < dirs.Length; i++)
             {
                 var serializedDir = dirs[i];
-                var dir = OS.FileSystem.FileSystem.GetDirFromSerializedData(serializedDir);
+                var dir = HASH.FileSystem.GetDirFromSerializedData(serializedDir);
                 fileSystemData.AllDirectories[dir.DirId] = dir;
             }
 
@@ -77,14 +81,14 @@ namespace HASH.Data
             for (int i = 0; i < files.TextFiles.Length; i++)
             {
                 var txtFile = files.TextFiles[i];
-                var file = OS.FileSystem.FileSystem.GetTextFileFromSerializedData(txtFile);
+                var file = FileSystem.GetTextFileFromSerializedData(txtFile);
                 fileSystemData.AllFiles[file.FileId] = file;
             }
 
             for (int i = 0; i < files.ImageFiles.Length; i++)
             {
                 var imgFile = files.ImageFiles[i];
-                var file = OS.FileSystem.FileSystem.GetImageFileFromSerializedData(imgFile);
+                var file = HASH.FileSystem.GetImageFileFromSerializedData(imgFile);
                 fileSystemData.AllFiles[file.FileId] = file;
             }
 
@@ -126,11 +130,9 @@ namespace HASH.Data
         public static void CacheDirData()
         {
             var dirs = Global.FileSystemData.AllDirectories;
-            for (int i = 0; i < dirs.Count; i++)
-            {
-                var dir = dirs[i];
-                OS.FileSystem.FileSystem.CacheDirContent(dir);
-            }
+            
+            foreach (var dir in dirs)
+                FileSystem.CacheDirContent(dir.Value);
         }
 
         /// <summary>
@@ -139,11 +141,8 @@ namespace HASH.Data
         public static void CacheFilesData()
         {
             var files = Global.FileSystemData.AllFiles;
-            for (int i = 0; i < files.Count; i++)
-            {
-                var file = files[i];
-                OS.FileSystem.FileSystem.CacheFileContents(file);
-            }
+            foreach (var file in files)
+                FileSystem.CacheFileContents(file.Value);
         }
 
         /// <summary>
@@ -180,6 +179,116 @@ namespace HASH.Data
             SerializedPrograms = op.asset as SerializedPrograms;
             DebugUtil.Assert(SerializedFileSystem == null, string.Format("COULD NOT FIND PROGRAMS DATA AT {0}", ProgramsDataPath));
         }
+
+        #endregion
+
+        #region Baking
+
+#if UNITY_EDITOR
+
+        [MenuItem("HASH/Bake file system")]
+        public static void BakeFileSystemData()
+        {
+            var allDirs = new List<SerializedHashDir>();
+            var allTextFiles = new List<SerializedHashFileText>();
+            var allImageFiles = new List<SerializedHashFileImage>();
+
+            var folders = Directory.GetDirectories(FILE_SYSTEM_FOLDER);
+            for (int i = 0; i < folders.Length; i++)
+                FillDirsAndFiles(folders[i], -1, allDirs, allTextFiles, allImageFiles);
+
+            var fileSystem = Resources.Load<SerializedFileSystem>(FileSystemDataPath);
+
+            fileSystem.Dirs = allDirs.ToArray();
+            fileSystem.ImageFiles = allImageFiles.ToArray();
+            fileSystem.TextFiles = allTextFiles.ToArray();
+
+            EditorUtility.SetDirty(fileSystem);
+            Selection.activeObject = fileSystem;
+        }
+
+        private static void FillDirsAndFiles(
+            string dir,
+            int parentId,
+            List<SerializedHashDir> allDirs,
+            List<SerializedHashFileText> allTextFiles,
+            List<SerializedHashFileImage> allImageFiles)
+        {
+            var parent = new SerializedHashDir();
+
+            parent.Name = Path.GetFileName(dir);
+            parent.DirId = MathUtil.GetStringHash(dir);
+            parent.ParentDirId = parentId;
+
+            var childs = Directory.GetDirectories(dir);
+            var files = Directory.GetFiles(dir);
+
+            // TODO: user permission
+
+            var filesIds = new List<int>();
+            for (int i = 0; i < files.Length; i++)
+            {
+                var file = files[i];
+                var ext = Path.GetExtension(file);
+                var fileType = PathUtil.GetFileTypeByExtension(ext);
+
+                if (fileType == HashFileType.Invalid)
+                    continue;
+
+                var hashFile = new SerializedHashFile();
+
+                hashFile.Name = Path.GetFileName(file);
+                hashFile.FileId = MathUtil.GetStringHash(file);
+                hashFile.ParentDirId = parent.DirId;
+
+                // TODO: user permission
+
+                switch (fileType)
+                {
+                    case HashFileType.Text:
+                        var textFile = new SerializedHashFileText();
+                        textFile.File = hashFile;
+                        textFile.TextAssetPath = PathUtil.RemovePathPart(file, RESOURCE_FOLDER_PATH_IN_PROJECT);
+                        textFile.TextAssetPath = PathUtil.RemovePathPart(textFile.TextAssetPath, ext);
+
+                        allTextFiles.Add(textFile);
+                        break;
+                    case HashFileType.Image:
+                        var imageFile = new SerializedHashFileImage();
+                        imageFile.File = hashFile;
+                        imageFile.ImageAssetPath = PathUtil.RemovePathPart(file, RESOURCE_FOLDER_PATH_IN_PROJECT);
+                        imageFile.ImageAssetPath = PathUtil.RemovePathPart(imageFile.ImageAssetPath, ext);
+
+                        allImageFiles.Add(imageFile);
+                        break;
+                    default:
+                        Debug.LogError("Type " + fileType + " not implemented yet!");
+                        break;
+                }
+
+                filesIds.Add(hashFile.FileId);
+            }
+
+            parent.FilesId = filesIds.ToArray();
+            parent.ChildsDirId = new int[childs.Length];
+
+            for (int i = 0; i < childs.Length; i++)
+                parent.ChildsDirId[i] = MathUtil.GetStringHash(childs[i]);
+
+            allDirs.Add(parent);
+
+            for (int i = 0; i < childs.Length; i++)
+            {
+                FillDirsAndFiles(
+                    childs[i],
+                    parent.DirId,
+                    allDirs,
+                    allTextFiles,
+                    allImageFiles);
+            }
+        }
+
+#endif
 
         #endregion
     }

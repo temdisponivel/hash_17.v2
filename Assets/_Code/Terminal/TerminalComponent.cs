@@ -1,9 +1,8 @@
-﻿using HASH.Game;
-using HASH.Util;
+﻿using HASH;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH.Terminal
+namespace HASH
 {
     /// <summary>
     /// Component to serialize a terminal data.
@@ -14,7 +13,7 @@ namespace HASH.Terminal
 
         public void Initialize()
         {
-            DebugUtil.Log("TERMINAL COMPONENT INITIALIZED!", Color.green, DebugUtil.DebugCondition.Info);
+            DebugUtil.Log("TERMINAL COMPONENT INITIALIZED!", Color.green, DebugUtil.DebugCondition.Info, DebugUtil.LogType.Info);
             References.CommandCache = SList.Create<string>(50);
             References.AvailableCommands = SList.Create<string>(20);
             References.BatchEntries = SList.Create<TextBatchEntry>(10);

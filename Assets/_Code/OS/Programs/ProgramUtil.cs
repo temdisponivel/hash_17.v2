@@ -1,6 +1,6 @@
-﻿using HASH.Data.Programs;
+﻿using HASH;
 
-namespace HASH.OS.Programs
+namespace HASH
 {
     /// <summary>
     /// Utility class for handling programs.

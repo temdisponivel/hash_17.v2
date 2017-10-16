@@ -1,7 +1,7 @@
 ﻿using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH.Util.Text
+namespace HASH
 {
     /// <summary>
     /// Represents a line on a text table.

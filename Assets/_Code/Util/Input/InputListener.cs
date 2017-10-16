@@ -1,8 +1,9 @@
 ﻿using System;
+using HASH;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace HASH.Util.Input
+namespace HASH
 {
     /// <summary>
     /// Enumerates possible inputs to hear.

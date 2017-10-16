@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace HASH.Data.FileSystem
+namespace HASH
 {
     /// <summary>
     /// The serialized version of a hashfile.

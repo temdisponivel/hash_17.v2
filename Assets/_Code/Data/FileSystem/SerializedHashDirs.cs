@@ -1,8 +1,8 @@
 ﻿using System;
-using HASH.OS.FileSystem;
+using HASH;
 using SimpleCollections.Util;
 
-namespace HASH.Data.FileSystem
+namespace HASH
 {
     /// <summary>
     /// Empty class to "concretize" the class pair in order to serialized it.

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace HASH.Terminal.TextEntry
+namespace HASH
 {
     /// <summary>
     /// Class that holds data of a dual (two labels) text entry on the terminal.

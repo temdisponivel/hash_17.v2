@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using HASH;
+using UnityEngine;
 
-namespace HASH.Util.Input
+namespace HASH
 {
     /// <summary>
     /// Receives a click input and focus on the terminal.

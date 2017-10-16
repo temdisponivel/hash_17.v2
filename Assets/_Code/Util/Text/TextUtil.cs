@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Text;
+using HASH;
 using SimpleCollections.Lists;
 using UnityEngine;
 
-namespace HASH.Util.Text
+namespace HASH
 {
     /// <summary>
     /// Utility class for handling text.

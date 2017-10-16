@@ -1,13 +1,8 @@
 ﻿using System.Collections;
-using HASH.Data;
-using HASH.OS.Programs;
-using HASH.OS.Shell;
-using HASH.Terminal;
-using HASH.Util;
-using HASH.Util.Input;
+using HASH;
 using UnityEngine;
 
-namespace HASH.Game
+namespace HASH
 {
     /// <summary>
     /// Behaviour that holds references to useful components and sets everything up.
@@ -42,9 +37,12 @@ namespace HASH.Game
 
             InputListener.Initialize();
             TerminalComponent.Initialize();
+
+            Global.FileSystemData.RootDir = FileSystem.GetRootDir();
+            FileSystem.ChangeDir(Global.FileSystemData.RootDir);
         }
 
-#if UNITY_EDITOR && DEB
+#if DEB && UNITY_EDITOR
         [ContextMenu("BAKE")]
         void Bake()
         {

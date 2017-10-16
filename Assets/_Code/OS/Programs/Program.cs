@@ -1,6 +1,6 @@
 ﻿using SimpleCollections.Lists;
 
-namespace HASH.OS.Programs
+namespace HASH
 {
     /// <summary>
     /// Represents a program on our virtual OS.
