@@ -8,7 +8,7 @@ namespace HASH
     /// </summary>
     public class TextTableLine
     {
-        public SimpleList<TextTableItem> Items;
+        public SimpleList<TextTableColumn> Items;
 
         public string ItemsSeparator;
         public ModifyTextOptions SeparatorModifier;
@@ -26,7 +26,7 @@ namespace HASH
     /// <summary>
     /// Represents a item on a text line.
     /// </summary>
-    public class TextTableItem
+    public class TextTableColumn
     {
         public string Text;
         public string ModifiedText;
@@ -73,6 +73,7 @@ namespace HASH
     /// </summary>
     public static class TextModifiers
     {
+        public const int None = 0;
         public const int Bold = 1 << 0;
         public const int Italic = 1 << 1;
         public const int Stroke = 1 << 2;

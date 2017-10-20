@@ -197,6 +197,11 @@ namespace HASH
             for (int i = 0; i < folders.Length; i++)
                 FillDirsAndFiles(folders[i], -1, allDirs, allTextFiles, allImageFiles);
 
+            // change the name of the root folder to be the unix-like
+            var root = allDirs[0];
+            root.Name = PathUtil.PathSeparator;
+            allDirs[0] = root;
+
             var fileSystem = Resources.Load<SerializedFileSystem>(FileSystemDataPath);
 
             fileSystem.Dirs = allDirs.ToArray();

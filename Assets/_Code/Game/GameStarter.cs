@@ -29,7 +29,7 @@ namespace HASH
             if (TerminalComponent == null)
                 DebugUtil.Error("TERMINAL COMPONENT IS NULL. PLEASE BAKE THE GAME HOLDER!");
 #endif
-
+            
             Global.DebugCondition = DebugCondition;
 
             yield return DataUtil.Load();
@@ -40,6 +40,14 @@ namespace HASH
 
             Global.FileSystemData.RootDir = FileSystem.GetRootDir();
             FileSystem.ChangeDir(Global.FileSystemData.RootDir);
+            
+            SetupPrograms();
+        }
+
+        public void SetupPrograms()
+        {
+            CdProgram.Setup();
+            DirProgram.Setup();
         }
 
 #if DEB && UNITY_EDITOR

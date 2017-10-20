@@ -28,3 +28,5 @@ Assets/BuildReport/Scripts.meta
 Assets/BuildReport/Scripts/Editor.meta
 Assets/FacebookSDK.meta
 Assets/_Scripts/GUI/Panels/Feedback.meta
+
+.idea/*

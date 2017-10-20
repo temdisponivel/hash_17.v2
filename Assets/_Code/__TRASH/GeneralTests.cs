@@ -25,9 +25,9 @@ namespace Assets._Code.__TRASH
             string result = string.Empty;
             for (int i = 0; i < 5; i++)
             {
-                var list = SList.Create<TextTableItem>(3);
+                var list = SList.Create<TextTableColumn>(3);
 
-                var textOpt = new TextTableItem();
+                var textOpt = new TextTableColumn();
                 textOpt.Align = TextTableAlign.Right;
                 textOpt.Text = "THIS LEFT IS MY TEXT";
                 textOpt.WrapMode = WrapTextMode.AddDots;
@@ -39,7 +39,7 @@ namespace Assets._Code.__TRASH
 
                 SList.Add(list, textOpt);
 
-                textOpt = new TextTableItem();
+                textOpt = new TextTableColumn();
                 textOpt.Align = TextTableAlign.Center;
                 textOpt.Text = "THIS CENTER IS MY TEXT";
                 textOpt.WrapMode = WrapTextMode.AddDots;
@@ -51,7 +51,7 @@ namespace Assets._Code.__TRASH
 
                 SList.Add(list, textOpt);
 
-                textOpt = new TextTableItem();
+                textOpt = new TextTableColumn();
                 textOpt.Align = TextTableAlign.Right;
                 textOpt.Text = "THIS RIGHT IS MY TEXT";
                 textOpt.WrapMode = WrapTextMode.AddDots;

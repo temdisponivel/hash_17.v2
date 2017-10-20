@@ -56,29 +56,22 @@ namespace HASH
         /// </summary>
         public static string ApplyNGUIModifiers(string text, int modifiers)
         {
-            var builder = new StringBuilder(text.Length + 12);
-
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Bold))
-                builder.AppendFormat(NGUIBoldStringFormat, text);
+                text = string.Format(NGUIBoldStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Italic))
-                builder.AppendFormat(NGUIItalicStringFormat, text);
+                text = string.Format(NGUIItalicStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Ignorecolor))
-                builder.AppendFormat(NGUIIgnoreColorStringFormat, text);
+                text = string.Format(NGUIIgnoreColorStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Stroke))
-                builder.AppendFormat(NGUIStrokeStringFormat, text);
+                text = string.Format(NGUIStrokeStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Underline))
-                builder.AppendFormat(NGUIUnderlineStringFormat, text);
+                text = string.Format(NGUIUnderlineStringFormat, text);
 
-            var builderText = builder.ToString();
-
-            if (builderText.Length == 0)
-                return text;
-            else
-                return builderText;
+            return text;
         }
 
         /// <summary>
@@ -133,10 +126,10 @@ namespace HASH
             var builder = new StringBuilder(text.Length + 12);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Bold))
-                builder.AppendFormat(RichTextBoldStringFormat, text);
+                text = string.Format(RichTextBoldStringFormat, text);
 
             if (MathUtil.ContainsFlag(modifiers, TextModifiers.Italic))
-                builder.AppendFormat(RichTextItalicStringFormat, text);
+                text = string.Format(RichTextItalicStringFormat, text);
 
             DebugUtil.Assert(MathUtil.ContainsFlag(modifiers, TextModifiers.Ignorecolor), "IGNORE COLOR IS NOT A VALID RICH TEXT MODIFIER!");
             DebugUtil.Assert(MathUtil.ContainsFlag(modifiers, TextModifiers.Stroke), "STROKE IS NOT A VALID RICH TEXT MODIFIER!");
@@ -191,53 +184,53 @@ namespace HASH
         /// Formats a table item accordingly to the given option. The text should be without any modifiers or colors.
         /// It  also stores the returned result on the ModifiedText property of the item after applying the modifiers.
         /// </summary>
-        public static string FormatTableItem(TextTableItem item)
+        public static string FormatTableItem(TextTableColumn column)
         {
             const int AddDotWrapCount = 3;
 
-            string text = item.Text;
+            string text = column.Text;
 
-            if (text.Length > item.Size)
+            if (text.Length > column.Size)
             {
-                switch (item.WrapMode)
+                switch (column.WrapMode)
                 {
                     case WrapTextMode.Clamp:
-                        text = text.Substring(0, item.Size);
+                        text = text.Substring(0, column.Size);
                         break;
                     case WrapTextMode.AddDots:
                         DebugUtil.Assert(text.Length <= 3, "TO USE ADD POINTS WRAP THE TEXT MUST BE AT LEAST 3 CHARS LONG");
-                        text = text.Substring(0, item.Size - AddDotWrapCount);
-                        text = text.PadRight(item.Size, '.');
+                        text = text.Substring(0, column.Size - AddDotWrapCount);
+                        text = text.PadRight(column.Size, '.');
                         break;
                 }
             }
 
-            var diff = item.Size - item.Text.Length;
+            var diff = column.Size - column.Text.Length;
             if (diff > 0)
             {
-                switch (item.Align)
+                switch (column.Align)
                 {
                     case TextTableAlign.Left:
-                        text = text.PadRight(item.Size, item.PaddingChar);
+                        text = text.PadRight(column.Size, column.PaddingChar);
                         break;
                     case TextTableAlign.Center:
                         if (diff % 2 != 0)
                         {
                             diff++;
-                            item.Size++; // need to add one here to compensate for the one padding we are adding
+                            column.Size++; // need to add one here to compensate for the one padding we are adding
                         }
                         diff /= 2;
-                        text = text.PadLeft(item.Size - diff, item.PaddingChar);
-                        text = text.PadRight(item.Size, item.PaddingChar);
+                        text = text.PadLeft(column.Size - diff, column.PaddingChar);
+                        text = text.PadRight(column.Size, column.PaddingChar);
                         break;
                     case TextTableAlign.Right:
-                        text = text.PadLeft(item.Size, item.PaddingChar);
+                        text = text.PadLeft(column.Size, column.PaddingChar);
                         break;
                 }
             }
 
-            text = ModifyText(text, item.ModifyTextOptions);
-            item.ModifiedText = text;
+            text = ModifyText(text, column.ModifyTextOptions);
+            column.ModifiedText = text;
             return text;
         }
 
@@ -289,16 +282,16 @@ namespace HASH
         /// <summary>
         /// Shorthand for calling FormatTableItem and retuning the length of the result.
         /// </summary>
-        public static int CalculateTableItemLength(TextTableItem item, bool removeSymbolsLength)
+        public static int CalculateTableColumnLength(TextTableColumn column)
         {
-            var text = FormatTableItem(item);
+            var text = FormatTableItem(column);
             return text.Length;
         }
 
         /// <summary>
         /// Calculates and stores the sizes of the items of the given line accordingly to the maxLineSize and items weight.
         /// </summary>
-        public static TextTableLine GetIdealTableItemSize(TextTableLine line)
+        public static TextTableLine CalculateIdealTableItemSize(TextTableLine line)
         {
             int maxLineSize = line.MaxLineSize;
 
@@ -346,7 +339,7 @@ namespace HASH
         /// </summary>
         public static string FormatLineConsideringWeightsAndSize(TextTableLine line)
         {
-            line = GetIdealTableItemSize(line);
+            line = CalculateIdealTableItemSize(line);
             return FormatTableLine(line);
         }
 

@@ -3,6 +3,7 @@ using System.Collections;
 using HASH;
 using SimpleCollections.Lists;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace HASH
 {
@@ -39,7 +40,7 @@ namespace HASH
             data.Batching = false;
             while (data.BatchEntries.Count > 0)
             {
-                var entry = SList.Pop(data.BatchEntries);
+                var entry = SList.Dequeue(data.BatchEntries);
                 switch (entry.EntryType)
                 {
                     case TextEntryType.Single:
@@ -70,7 +71,7 @@ namespace HASH
                 var entry = new TextBatchEntry();
                 entry.EntryType = TextEntryType.Single;
                 entry.Texts = new string[] { text };
-                SList.Push(data.BatchEntries, entry);
+                SList.Enqueue(data.BatchEntries, entry);
             }
             else
                 Terminal.ShowSingleText(data, text);
@@ -87,7 +88,7 @@ namespace HASH
                 var entry = new TextBatchEntry();
                 entry.EntryType = TextEntryType.Dual;
                 entry.Texts = new string[] { leftText, rightText };
-                SList.Push(data.BatchEntries, entry);
+                SList.Enqueue(data.BatchEntries, entry);
             }
             else
                 Terminal.ShowDualText(data, leftText, rightText);
@@ -201,8 +202,9 @@ namespace HASH
        
             DebugUtil.Log("[Terminal Util] PLAYER INPUT: " + text, Color.green, DebugUtil.DebugCondition.Verbose, DebugUtil.LogType.Info);
 
-            var path = TextUtil.ApplyNGUIColor("/emails/background/attachement/images/", Color.green);
-            ShowDualText(path, text);
+            var line = CreatePlayerInputLine(text);
+            
+            ShowText(line.FormattedText);
             
             // TODO: remove this wait to fix label flickering, but fix table reposition
             yield return null;
@@ -334,6 +336,56 @@ namespace HASH
             Terminal.UpdateScroll(data);
         }
 
+        #endregion
+        
+        #region Tabling
+        
+        private static TextTableLine CreatePlayerInputLine(string command)
+        {
+            var path = Global.FileSystemData.CurrentDir.FullPath;
+            var pathColumn = CreatePlayerInputColumn(path, .65f, Color.green, TextModifiers.Italic);
+            var commandColumn = CreatePlayerInputColumn(command, .35f, Color.white, TextModifiers.Bold);
+            
+            var items = SList.Create<TextTableColumn>(2);
+            SList.Add(items, pathColumn);
+            SList.Add(items, commandColumn);
+            
+            var line = new TextTableLine();
+            line.Items = items;
+            
+            
+            line.MaxLineSizeIsForced = false;
+            line.MaxLineSize = Global.TerminalReferences.MaxLineWidthInChars;
+
+            line.ItemsSeparator = "> ";
+            line.SeparatorModifier.Color = Color.green;
+            line.SeparatorModifier.Modifiers = TextModifiers.None;
+            
+            TextUtil.FormatLineConsideringWeightsAndSize(line);
+
+            return line;
+        }
+        
+        private static TextTableColumn CreatePlayerInputColumn(
+            string text, 
+            float weight, 
+            Color color,
+            int textModifiers)
+        {
+            var item = new TextTableColumn();
+            
+            item.Align = TextTableAlign.Left;
+            item.Text = text;
+            item.ModifyTextOptions.Color = color;
+            item.PaddingChar = ' ';
+            item.WeightOnLine = weight;
+            item.WrapMode = WrapTextMode.AddDots;
+            item.ModifyTextOptions.Modifiers = textModifiers;
+            item.Size = text.Length;
+
+            return item;
+        }
+        
         #endregion
     }
 }

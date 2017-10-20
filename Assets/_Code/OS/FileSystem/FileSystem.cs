@@ -14,7 +14,6 @@ namespace HASH
     {
         #region Properties
 
-        public const string RootDirName = "ROOT";
         public const string TextFileExtension = "txt";
         public const string ImageFileExtension = "img";
 
@@ -60,6 +59,16 @@ namespace HASH
         }
 
         /// <summary>
+        /// Returns true if the dir exists. False otherwise.
+        /// Stores the dir (if exists) or null on the dir parameter.
+        /// </summary>
+        public static bool DirExists(string path, out HashDir dir)
+        {
+            dir = FindDirByPath(path);
+            return dir != null;
+        }
+
+        /// <summary>
         /// Returns the directory at the given path. Returns null if did not found a dir.
         /// </summary>
         public static HashDir FindDirByPath(string path)
@@ -71,7 +80,7 @@ namespace HASH
             HashDir currentDir;
 
             // If a path starts with the separator, it means it starts on the root folder
-            if (path.StartsWith(RootDirName))
+            if (path.StartsWith(PathUtil.PathSeparator))
             {
                 currentDir = data.RootDir;
 
@@ -163,7 +172,7 @@ namespace HASH
             // Root folder is treated differently
             if (dir.ParentDirId == -1)
             {
-                DebugUtil.Assert(dir.Name != RootDirName, string.Format("THE DIR {0} HAS NO PARENT AND IT'S THE ROOT DIR!", dir.DirId));
+                DebugUtil.Assert(dir.Name != PathUtil.PathSeparator, string.Format("THE DIR {0} HAS NO PARENT AND IT'S THE ROOT DIR!", dir.DirId));
                 path = dir.Name;
             }
             else
