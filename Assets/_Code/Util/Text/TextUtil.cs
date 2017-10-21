@@ -352,7 +352,26 @@ namespace HASH
             var stripped = StripNGUIModifiersAndColor(text).Length;
             return text.Length - stripped;
         }
+        
+        #endregion
+        
+        #region Helpers
 
+        public static string Default(string defaut)
+        {
+            return ApplyNGUIColor(defaut, Constants.Colors.Default);
+        }
+        
+        public static string Warning(string warning)
+        {
+            return ApplyNGUIColor(warning, Constants.Colors.Warning);
+        }
+
+        public static string Error(string error)
+        {
+            return ApplyNGUIColor(error, Constants.Colors.Error);
+        }
+        
         #endregion
     }
 }

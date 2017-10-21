@@ -22,7 +22,7 @@ namespace HASH
         /// </summary>
         public static void StartTextBatch()
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
 
             DebugUtil.Assert(data.Batching, "THERE'S ALREADY A TEXT BATCH HAPPENING!");
 
@@ -34,7 +34,7 @@ namespace HASH
         /// </summary>
         public static void EndTextBatch()
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
 
             DebugUtil.Assert(!data.Batching, "THERE'S NO TEXT BATCH HAPPENING!");
 
@@ -56,6 +56,8 @@ namespace HASH
                         break;
                 }
             }
+            
+            UpdateTableAndScroll();
         }
 
         #endregion
@@ -67,7 +69,7 @@ namespace HASH
         /// </summary>
         public static void ShowText(string text)
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
             if (data.Batching)
             {
                 var entry = new TextBatchEntry();
@@ -84,7 +86,7 @@ namespace HASH
         /// </summary>
         public static void ShowDualText(string leftText, string rightText)
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
             if (data.Batching)
             {
                 var entry = new TextBatchEntry();
@@ -164,7 +166,7 @@ namespace HASH
         public static void UpdateCurrentPathLabel()
         {
             var line = CreatePlayerInputLine(string.Empty);
-            Global.TerminalReferences.CurrentPath.text = line.FormattedText;
+            DataHolder.TerminalReferences.CurrentPath.text = line.FormattedText;
         }
 
         #endregion
@@ -173,7 +175,7 @@ namespace HASH
 
         public static void RemoveTextEntries(int quantity, TerminalEntryRemoveType removeType)
         {
-            var allEntries = Global.TerminalReferences.AllEntries;
+            var allEntries = DataHolder.TerminalReferences.AllEntries;
             quantity = Math.Min(quantity, allEntries.Count);
 
             if (quantity == 0)
@@ -212,7 +214,7 @@ namespace HASH
         /// </summary>
         public static void ClearInputText()
         {
-            Terminal.ShowTextOnInput(Global.TerminalReferences, string.Empty);
+            Terminal.ShowTextOnInput(DataHolder.TerminalReferences, string.Empty);
         }
 
         /// <summary>
@@ -220,7 +222,7 @@ namespace HASH
         /// </summary>
         public static void FocusOnInput()
         {
-            Global.TerminalReferences.Input.selectAllTextOnFocus = false;
+            DataHolder.TerminalReferences.Input.selectAllTextOnFocus = false;
         }
 
         /// <summary>
@@ -228,7 +230,7 @@ namespace HASH
         /// </summary>
         public static void CalculateMaxCharLenght()
         {
-            var references = Global.TerminalReferences;
+            var references = DataHolder.TerminalReferences;
             var font = references.Input.label.bitmapFont;
             var width = font.defaultSize;
             var screenWidth = references.ScrollView.bounds.size.x;
@@ -260,7 +262,7 @@ namespace HASH
             ClearInputText();
             FocusOnInput();
 
-            CacheCommand(Global.TerminalReferences, text);
+            CacheCommand(DataHolder.TerminalReferences, text);
             ResetCommandBufferIndex();
         }
 
@@ -281,7 +283,7 @@ namespace HASH
         /// </summary>
         public static void NavigateCommandBuffer(int direction, bool wrapsAround)
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
             var buffer = data.CurrentCommandBuffer;
             if (buffer.Count > 0)
             {
@@ -308,7 +310,7 @@ namespace HASH
         /// </summary>
         public static void ResetCommandBufferIndex()
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
 
             // Set to -1 because when the player presses the key again, we need this index to go to 0
             // if we set to 0, it will go either to 1 (if pressed up) or zero
@@ -321,7 +323,7 @@ namespace HASH
         /// </summary>
         public static void UpdateCommandBuffer()
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
             SList.Clear(data.AvailableCommands);
 
             var currentText = data.Input.value;
@@ -347,15 +349,18 @@ namespace HASH
         {
             StartTextBatch();
 
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
 
+            int index = data.CurrentCommandBufferIndex;
+            
             ResetCommandBufferIndex();
             for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
             {
                 var option = data.CurrentCommandBuffer[i];
                 ShowText(option);
             }
-            ResetCommandBufferIndex();
+
+            data.CurrentCommandBufferIndex = index;
 
             EndTextBatch();
         }
@@ -366,7 +371,7 @@ namespace HASH
         /// </summary>
         public static void ChangeToCommandCacheBuffer()
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
             if (data.CurrentCommandBuffer != data.CommandCache)
             {
                 data.CurrentCommandBuffer = data.CommandCache;
@@ -381,7 +386,7 @@ namespace HASH
         /// </summary>
         public static void ChangeToAvailableCommandsBuffer()
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
             if (data.CurrentCommandBuffer != data.AvailableCommands)
             {
                 data.CurrentCommandBuffer = data.AvailableCommands;
@@ -398,7 +403,7 @@ namespace HASH
         /// </summary>
         public static void UpdateTableAndScroll()
         {
-            var data = Global.TerminalReferences;
+            var data = DataHolder.TerminalReferences;
             Terminal.UpdateTable(data);
             Terminal.UpdateScroll(data);
         }
@@ -409,9 +414,9 @@ namespace HASH
 
         private static TextTableLine CreatePlayerInputLine(string command)
         {
-            var path = Global.FileSystemData.CurrentDir.FullPath;
-            var pathColumn = CreatePlayerInputColumn(path, .65f, Color.green, TextModifiers.Italic);
-            var commandColumn = CreatePlayerInputColumn(command, .35f, Color.white, TextModifiers.Bold);
+            var path = DataHolder.FileSystemData.CurrentDir.FullPath;
+            var pathColumn = CreatePlayerInputColumn(path, .65f, Constants.Colors.Path, TextModifiers.Italic);
+            var commandColumn = CreatePlayerInputColumn(command, .35f, Constants.Colors.Default, TextModifiers.None);
 
             var items = SList.Create<TextTableColumn>(2);
             SList.Add(items, pathColumn);
@@ -422,10 +427,10 @@ namespace HASH
 
 
             line.MaxLineSizeIsForced = false;
-            line.MaxLineSize = Global.TerminalReferences.MaxLineWidthInChars;
+            line.MaxLineSize = DataHolder.TerminalReferences.MaxLineWidthInChars;
 
             line.ItemsSeparator = "> ";
-            line.SeparatorModifier.Color = Color.green;
+            line.SeparatorModifier.Color = Constants.Colors.Path;
             line.SeparatorModifier.Modifiers = TextModifiers.None;
 
             TextUtil.FormatLineConsideringWeightsAndSize(line);

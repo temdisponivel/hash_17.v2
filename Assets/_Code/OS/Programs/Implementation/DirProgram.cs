@@ -19,24 +19,44 @@ namespace HASH
         public static TextTableLine HeaderLine;
         public static CommandLineArgValidationOption<string>[] ArgValidationOptions;
 
+        public static void Setup()
+        {
+            HeaderLine = CreateLine("NAME", "TYPE", HeaderColor, TextModifiers.Bold | TextModifiers.Underline);
+
+            var pathArgValidation = new CommandLineArgValidationOption<string>();
+
+            pathArgValidation.ArgumentName = string.Empty;
+            pathArgValidation.Requirements = ArgRequirement.ValueRequired;
+
+            ArgValidationOptions = new[] {pathArgValidation};
+        }
+
         /// <summary>
         /// Executes the dir program.
         /// </summary>
         public static void Execute(ProgramExecutionOptions option)
         {
-            HashDir currentDir;
+            HashDir currentDir = null;
 
             if (option.ParsedArguments.Count == 0)
-                currentDir = Global.FileSystemData.CurrentDir;
+                currentDir = DataHolder.FileSystemData.CurrentDir;
             else
             {
-                DebugUtil.Assert(!CommandLineUtil.ValidateArguments(option.ParsedArguments, ArgValidationOptions),
-                    "INVALID PATH");
                 var desiredDirPath = option.ParsedArguments[0].Value;
                 if (!FileSystem.DirExists(desiredDirPath, out currentDir))
                 {
-                    var msg = string.Format("No directory found at path: '{0}'", desiredDirPath);
-                    TerminalUtil.ShowColorizedText(msg, Color.red);
+                    string msg;
+
+                    HashFile file;
+                    if (FileSystem.FileExists(desiredDirPath, out file))
+                        msg = string.Format("The path '{0}' points to a file. Use 'open {0}' to open this file.",
+                            desiredDirPath);
+                    else
+                        msg = string.Format("The path '{0}' points nowhere. Please supply a valid path.",
+                            desiredDirPath);
+
+                    msg = TextUtil.Error(msg);
+                    TerminalUtil.ShowText(msg);
                     return;
                 }
             }
@@ -55,7 +75,7 @@ namespace HASH
                 for (int i = 0; i < files.Count; i++)
                 {
                     var file = files[i];
-                    var line = CreateLine(file.Name, "FILE", LineColor, TextModifiers.Italic);
+                    var line = CreateLine(file.FullName, "FILE", LineColor, TextModifiers.Italic);
                     TerminalUtil.ShowText(line.FormattedText);
                 }
 
@@ -73,25 +93,13 @@ namespace HASH
         public static void FillCommandBuffer()
         {
             FileSystem.FillCommandBufferWithAvailableDirectories();
-            
-            var data = Global.TerminalReferences;
+
+            var data = DataHolder.TerminalReferences;
             for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
             {
                 var option = data.CurrentCommandBuffer[i];
                 data.CurrentCommandBuffer[i] = option.Insert(0, "dir ");
             }
-        }
-
-        public static void Setup()
-        {
-            HeaderLine = CreateLine("NAME", "TYPE", HeaderColor, TextModifiers.Bold | TextModifiers.Underline);
-
-            var pathArgValidation = new CommandLineArgValidationOption<string>();
-
-            pathArgValidation.ArgumentName = "Path";
-            pathArgValidation.Requirements = ArgRequirement.ValueRequired;
-
-            ArgValidationOptions = new[] {pathArgValidation};
         }
 
         public static TextTableLine CreateLine(
@@ -110,7 +118,7 @@ namespace HASH
             var line = new TextTableLine();
             line.Items = items;
             line.ItemsSeparator = string.Empty;
-            line.MaxLineSize = Global.TerminalReferences.MaxLineWidthInChars;
+            line.MaxLineSize = DataHolder.TerminalReferences.MaxLineWidthInChars;
             line.MaxLineSizeIsForced = true;
 
             line.ItemsSeparator = " | ";

@@ -34,7 +34,7 @@ namespace Assets._Code.__TRASH
                 textOpt.Size = textOpt.Text.Length - 10;
                 textOpt.PaddingChar = '-';
                 textOpt.WeightOnLine = .1f;
-                textOpt.ModifyTextOptions.Color = Color.green;
+                textOpt.ModifyTextOptions.Color = Constants.Colors.Path;
                 Debug.Log(TextUtil.FormatTableItem(textOpt));
 
                 SList.Add(list, textOpt);
@@ -46,7 +46,7 @@ namespace Assets._Code.__TRASH
                 textOpt.Size = textOpt.Text.Length - 10;
                 textOpt.PaddingChar = '-';
                 textOpt.WeightOnLine = .5f;
-                textOpt.ModifyTextOptions.Color = Color.red;
+                textOpt.ModifyTextOptions.Color = Constants.Colors.Error;
                 Debug.Log(TextUtil.FormatTableItem(textOpt));
 
                 SList.Add(list, textOpt);
@@ -92,7 +92,7 @@ namespace Assets._Code.__TRASH
             cdProgram.Commands = new string[2] { "cd", "alo" };
             SList.Add(programData.AllPrograms, cdProgram);
 
-            Global.ProgramData = programData;
+            DataHolder.ProgramData = programData;
             
             var simpleCommand = "cd -p /path/ to/file.txt -c alo - d putamerda -e";
             var command = CommandLineUtil.GetCommandName(simpleCommand);
@@ -134,7 +134,7 @@ namespace Assets._Code.__TRASH
                     Debug.Log(pathName + " NOT FOUND");
             }
 
-            Global.FileSystemData.CurrentDir = FileSystem.FindDirByPath("dir1/dir2");
+            DataHolder.FileSystemData.CurrentDir = FileSystem.FindDirByPath("dir1/dir2");
 
             for (int i = 2; i < paths.Length; i++)
             {
@@ -163,12 +163,12 @@ namespace Assets._Code.__TRASH
             var data = new FileSystemData();
             data.PathStackHelper = SList.Create<string>(10);
             data.AllFiles = STable.Create<int, HashFile>(10, true);
-            Global.FileSystemData = data;
+            DataHolder.FileSystemData = data;
 
             var dir0 = CreateDir(0, "/", -1);
 
-            Global.FileSystemData.RootDir = dir0;
-            Global.FileSystemData.CurrentDir = dir0;
+            DataHolder.FileSystemData.RootDir = dir0;
+            DataHolder.FileSystemData.CurrentDir = dir0;
 
             var dir1 = CreateDir(1, "dir1", 0);
             var dir2 = CreateDir(2, "dir2", 1);

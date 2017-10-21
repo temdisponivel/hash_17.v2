@@ -48,7 +48,7 @@ namespace HASH
             ClearMode mode = ClearMode.Top;
 
             if (options.ParsedArguments.Count == 0)
-                count = Global.TerminalReferences.AllEntries.Count;
+                count = DataHolder.TerminalReferences.AllEntries.Count;
             else if (CommandLineUtil.ValidateArguments(options.ParsedArguments, Validations))
             {
                 Pair<string, string> modeArg;
@@ -62,7 +62,7 @@ namespace HASH
                 if (modePresent && !countPresent)
                 {
                     var msg = "You need to supply the number of line to clear when using the mode argument.";
-                    msg = TextUtil.ApplyNGUIColor(msg, Color.red);
+                    msg = TextUtil.Error(msg);
                     TerminalUtil.ShowText(msg);
                     everythingOk = false;
                 }
@@ -71,7 +71,7 @@ namespace HASH
                 {
                     var msg =
                         "You need to supply the mode argument when removing a specific quantity of lines.";
-                    msg = TextUtil.ApplyNGUIColor(msg, Color.red);
+                    msg = TextUtil.Error(msg);
                     TerminalUtil.ShowText(msg);
                     everythingOk = false;
                 }
@@ -82,14 +82,14 @@ namespace HASH
                     {
                         var msg = string.Format("'{0}' is not a valid clear mode. It must be either 'top' or 'down'.",
                             modeArg.Value);
-                        msg = TextUtil.ApplyNGUIColor(msg, Color.red);
+                        msg = TextUtil.Error(msg);
                         TerminalUtil.ShowText(msg);
                         everythingOk = false;
                     }
                     else if (!int.TryParse(countArg.Value, out count))
                     {
                         var msg = string.Format("'{0}' is not a valid number of lines!", countArg.Value);
-                        msg = TextUtil.ApplyNGUIColor(msg, Color.red);
+                        msg = TextUtil.Error(msg);
                         TerminalUtil.ShowText(msg);
                         everythingOk = false;
                     }
@@ -105,13 +105,13 @@ namespace HASH
                 if (MathUtil.ContainsFlag((int) modeResult, (int) ArgValidationResult.EmptyValue))
                 {
                     var msg = "The 'mode' argument must be either 'top' or 'down'.";
-                    msg = TextUtil.ApplyNGUIColor(msg, Color.red);
+                    msg = TextUtil.Error(msg);
                     TerminalUtil.ShowText(msg);
                 } 
                 else if (MathUtil.ContainsFlag((int) modeResult, (int) ArgValidationResult.Duplicated))
                 {
                     var msg = "Please supply only one 'mode' argument.";
-                    msg = TextUtil.ApplyNGUIColor(msg, Color.red);
+                    msg = TextUtil.Error(msg);
                     TerminalUtil.ShowText(msg);
                 }
             }

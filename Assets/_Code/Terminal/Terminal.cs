@@ -33,7 +33,7 @@ namespace HASH
             textEntry.EntryType = TextEntryType.Single;
             textEntry.SceneObject = singleTextObject;
 
-            SList.Push(Global.TerminalReferences.AllEntries, textEntry);
+            SList.Push(DataHolder.TerminalReferences.AllEntries, textEntry);
         }
 
         /// <summary>
@@ -58,7 +58,7 @@ namespace HASH
             textEntry.EntryType = TextEntryType.Single;
             textEntry.SceneObject = dualTextObject;
 
-            SList.Push(Global.TerminalReferences.AllEntries, textEntry);
+            SList.Push(DataHolder.TerminalReferences.AllEntries, textEntry);
         }
 
         #endregion

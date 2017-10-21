@@ -28,7 +28,7 @@ namespace HASH
         /// </summary>
         public static void ChangeDir(HashDir dir)
         {
-            var data = Global.FileSystemData;
+            var data = DataHolder.FileSystemData;
             data.CurrentDir = dir;
 
             TerminalUtil.UpdateCurrentPathLabel();
@@ -40,7 +40,7 @@ namespace HASH
         /// </summary>
         public static HashDir FindDir(int dirId)
         {
-            var data = Global.FileSystemData;
+            var data = DataHolder.FileSystemData;
             return STable.Find(data.AllDirectories, dirId);
         }
 
@@ -77,7 +77,7 @@ namespace HASH
             if (PathUtil.GetPathType(path) != PathType.Folder)
                 return null;
 
-            var data = Global.FileSystemData;
+            var data = DataHolder.FileSystemData;
             HashDir currentDir;
 
             // If a path starts with the separator, it means it starts on the root folder
@@ -125,7 +125,7 @@ namespace HASH
         /// </summary>
         public static HashDir GetRootDir()
         {
-            var data = Global.FileSystemData;
+            var data = DataHolder.FileSystemData;
             if (data.RootDir != null)
                 return data.RootDir;
 
@@ -185,7 +185,7 @@ namespace HASH
                     return null;
                 }
 #endif
-                var data = Global.FileSystemData;
+                var data = DataHolder.FileSystemData;
                 SList.Clear(data.PathStackHelper);
                 while (dir.ParentDirId != -1)
                 {
@@ -292,11 +292,17 @@ namespace HASH
         /// </summary>
         public static HashFile FindFile(int fileId)
         {
-            var data = Global.FileSystemData;
+            var data = DataHolder.FileSystemData;
             HashFile file;
             if (STable.TryGetValue(data.AllFiles, fileId, out file))
                 return file;
             return null;
+        }
+        
+        public static bool FileExists(string path, out HashFile file)
+        {
+            file = FindFileByPath(path);
+            return file != null;
         }
 
         /// <summary>
@@ -517,8 +523,8 @@ namespace HASH
 
         public static void FillCommandBufferWithAvailableDirectories()
         {
-            var commandBuffer = Global.TerminalReferences.AvailableCommands;
-            var data = Global.FileSystemData;
+            var commandBuffer = DataHolder.TerminalReferences.AvailableCommands;
+            var data = DataHolder.FileSystemData;
             
             SList.Clear(commandBuffer);
 

@@ -44,7 +44,7 @@ namespace HASH
         [Conditional("DEB")]
         public static void Log(string value, Color color, DebugCondition condition, LogType type)
         {
-            if (MathUtil.ContainsFlag((int) condition, (int)Global.DebugCondition))
+            if (MathUtil.ContainsFlag((int) condition, (int)DataHolder.DebugCondition))
             {
                 var msg = TextUtil.ApplyRichTextColor(value, color);
 
@@ -69,7 +69,7 @@ namespace HASH
         [Conditional("DEB")]
         public static void Error(string message)
         {
-            Log(message, Color.red, DebugCondition.Verbose, LogType.Error);
+            Log(message, Constants.Colors.Error, DebugCondition.Verbose, LogType.Error);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace HASH
         [Conditional("DEB")]
         public static void Warning(string message)
         {
-            Log(message, Color.yellow, DebugCondition.Always, LogType.Warning);
+            Log(message, Constants.Colors.Warning, DebugCondition.Always, LogType.Warning);
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace HASH
         [Conditional("DEB")]
         public static void LogContext(string value, Color color, UnityEngine.Object context, DebugCondition condition)
         {
-            if (MathUtil.ContainsFlag((int) Global.DebugCondition, (int) condition))
+            if (MathUtil.ContainsFlag((int) DataHolder.DebugCondition, (int) condition))
             {
                 var msg = TextUtil.ApplyRichTextColor(value, color);
                 Debug.Log(msg, context);

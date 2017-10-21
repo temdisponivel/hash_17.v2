@@ -44,7 +44,7 @@ namespace HASH
         /// </summary>
         public static Program FindProgramByCommand(string commandName)
         {
-            var data = Global.ProgramData;
+            var data = DataHolder.ProgramData;
             var programs = data.AllPrograms;
             for (int i = 0; i < programs.Count; i++)
             {

@@ -11,63 +11,62 @@ namespace HASH
     /// </summary>
     public static class CdProgram
     {
-        /// <summary>
-        /// Enumerates the arguments of the CD program.
-        /// </summary>
-        public enum Args
+        public static CommandLineArgValidationOption<object>[] Validations;
+        public static CommandLineArgValidationOption<object> PathValidation;
+        
+        public static void Setup()
         {
-            Path,
+            PathValidation = new CommandLineArgValidationOption<object>();
+            PathValidation.ArgumentName = string.Empty;
+            PathValidation.Requirements = ArgRequirement.Required | ArgRequirement.Unique | ArgRequirement.ValueRequired;
+            
+            Validations = new CommandLineArgValidationOption<object>[1];
+            Validations[0] = PathValidation;
         }
 
-        public static CommandLineArgValidationOption<Args>[] ValidationOptions;
-        public static string[] KnownArgs;
-        public static TextTableLine DirContentHeader;
-
-        /// <summary>
-        /// Executes the CD program.
-        /// </summary>
         public static void Execute(ProgramExecutionOptions options)
         {
-            bool argumentsOk, knownArgs;
-            CommandLineUtil.FullArgValidation(options.ParsedArguments, ValidationOptions, KnownArgs, out knownArgs,
-                out argumentsOk);
-            ValidateErrorsWithArgs(ValidationOptions);
-
-            Pair<string, string> command;
-            CommandLineUtil.TryGetArgumentByName(options.ParsedArguments, "", out command);
-            var path = command.Value;
-            var dir = FileSystem.FindDirByPath(path);
-            FileSystem.ChangeDir(dir);
-        }
-
-        public static void FillCommandBuffer()
-        {
-            var currentCommandLine = Global.TerminalReferences.Input.value;
-            currentCommandLine = TextUtil.CleanInputText(currentCommandLine);
-            var args = Shell.GetProgramExecutionOptions(currentCommandLine);
-            if (args.ParsedArguments.Count == 0)
-                FillCommandBufferWithAllFolders();
-            else
+            if (CommandLineUtil.ValidateArguments(options.ParsedArguments, Validations))
             {
-                var data = Global.FileSystemData;
-                var path = args.ParsedArguments[0];
-                HashDir currentDirCache = data.CurrentDir;
+                var path = options.ParsedArguments[0].Value;
 
                 HashDir dir;
-                if (FileSystem.DirExists(path.Value, out dir))
+                HashFile file;
+
+                if (FileSystem.DirExists(path, out dir))
+                    FileSystem.ChangeDir(dir);
+                else if (FileSystem.FileExists(path, out file))
                 {
-                    data.CurrentDir = dir;
-                    FillCommandBufferWithAllFolders();
-                    data.CurrentDir = currentDirCache;
+                    var msg = string.Format("The path '{0}' points to a file. Use 'open {0}' to open this file.", path);
+                    msg = TextUtil.Warning(msg);
+                    TerminalUtil.ShowText(msg);
+                }
+                else
+                {
+                    var msg = string.Format("The path '{0}' points nowhere. Please supply a valid path.", path);
+                    msg = TextUtil.Error(msg);
+                    TerminalUtil.ShowText(msg);
                 }
             }
+            else
+            {
+                string msg = null;
+                var result = PathValidation.ValidationResult;
+                if (MathUtil.ContainsFlag((int) result, (int) ArgValidationResult.EmptyValue))
+                    msg = string.Format("Please supply a path.");
+                else if (MathUtil.ContainsFlag((int) result, (int) ArgValidationResult.NotFound))
+                    msg = string.Format("Please supply a path.");
+                
+                msg = TextUtil.Error(msg);
+                TerminalUtil.ShowText(msg);
+            }
         }
-
-        private static void FillCommandBufferWithAllFolders()
+        
+        public static void FillCommandBuffer()
         {
             FileSystem.FillCommandBufferWithAvailableDirectories();
-
-            var data = Global.TerminalReferences;
+            
+            var data = DataHolder.TerminalReferences;
             for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
             {
                 var option = data.CurrentCommandBuffer[i];
@@ -75,74 +74,5 @@ namespace HASH
             }
         }
 
-        private static void ValidateErrorsWithArgs(CommandLineArgValidationOption<Args>[] args)
-        {
-            for (int i = 0; i < args.Length; i++)
-            {
-                var arg = args[i];
-                var result = (int) arg.ValidationResult;
-                var empty = (int) ArgValidationResult.EmptyValue;
-                if (MathUtil.ContainsFlag(result, empty))
-                {
-                    Debug.Log("EMPTY");
-                }
-            }
-        }
-
-        public static void Setup()
-        {
-            ValidationOptions = new CommandLineArgValidationOption<Args>[1];
-            var pathOpt = new CommandLineArgValidationOption<Args>();
-
-            pathOpt.AditionalData = Args.Path;
-            pathOpt.ArgumentName = string.Empty;
-            pathOpt.Requirements = ArgRequirement.Required | ArgRequirement.Unique | ArgRequirement.ValueRequired;
-
-            ValidationOptions[0] = pathOpt;
-
-            KnownArgs = new[] {"",};
-
-            DirContentHeader = new TextTableLine();
-            var items = SList.Create<TextTableColumn>(3);
-
-            DirContentHeader.ItemsSeparator = " | ";
-            DirContentHeader.SeparatorModifier.Color = Color.cyan;
-            DirContentHeader.MaxLineSize = Global.TerminalReferences.MaxLineWidthInChars;
-            DirContentHeader.Items = items;
-            DirContentHeader.MaxLineSize = 100;
-            DirContentHeader.MaxLineSizeIsForced = true;
-
-            var typeItem = new TextTableColumn();
-            typeItem.Text = "TYPE";
-            typeItem.Size = typeItem.Text.Length;
-            typeItem.WrapMode = WrapTextMode.Clamp;
-            typeItem.Align = TextTableAlign.Left;
-            typeItem.ModifyTextOptions.Color = Color.blue;
-            typeItem.WeightOnLine = .1f;
-            typeItem.PaddingChar = ' ';
-            SList.Add(items, typeItem);
-
-            typeItem = new TextTableColumn();
-            typeItem.Text = "PATH";
-            typeItem.Size = typeItem.Text.Length;
-            typeItem.WrapMode = WrapTextMode.Clamp;
-            typeItem.Align = TextTableAlign.Left;
-            typeItem.ModifyTextOptions.Color = Color.green;
-            typeItem.WeightOnLine = .5f;
-            typeItem.PaddingChar = ' ';
-            SList.Add(items, typeItem);
-
-            typeItem = new TextTableColumn();
-            typeItem.Text = "STATUS";
-            typeItem.Size = typeItem.Text.Length;
-            typeItem.WrapMode = WrapTextMode.Clamp;
-            typeItem.Align = TextTableAlign.Left;
-            typeItem.ModifyTextOptions.Color = Color.magenta;
-            typeItem.WeightOnLine = .4f;
-            typeItem.PaddingChar = ' ';
-            SList.Add(items, typeItem);
-
-            TextUtil.FormatLineConsideringWeightsAndSize(DirContentHeader);
-        }
     }
 }

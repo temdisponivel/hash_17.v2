@@ -12,6 +12,7 @@ namespace HASH
         public InputListener InputListener;
         public TerminalComponent TerminalComponent;
         public DebugUtil.DebugCondition DebugCondition;
+        public HashColors Colors;
         
         IEnumerator Start()
         {
@@ -29,8 +30,10 @@ namespace HASH
             if (TerminalComponent == null)
                 DebugUtil.Error("TERMINAL COMPONENT IS NULL. PLEASE BAKE THE GAME HOLDER!");
 #endif
+
+            Constants.Colors = Colors;
             
-            Global.DebugCondition = DebugCondition;
+            DataHolder.DebugCondition = DebugCondition;
 
             yield return DataUtil.Load();
             DataUtil.ProcessLoadedData();
@@ -38,8 +41,8 @@ namespace HASH
             InputListener.Initialize();
             TerminalComponent.Initialize();
 
-            Global.FileSystemData.RootDir = FileSystem.GetRootDir();
-            FileSystem.ChangeDir(Global.FileSystemData.RootDir);
+            DataHolder.FileSystemData.RootDir = FileSystem.GetRootDir();
+            FileSystem.ChangeDir(DataHolder.FileSystemData.RootDir);
             
             SetupPrograms();
         }

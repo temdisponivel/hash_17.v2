@@ -40,7 +40,7 @@ namespace HASH
 
         public void Initialize()
         {
-            Global.InputListener = this;
+            DataHolder.InputListener = this;
         }
         
         private void Update()

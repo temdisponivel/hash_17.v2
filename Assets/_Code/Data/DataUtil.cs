@@ -92,7 +92,7 @@ namespace HASH
                 fileSystemData.AllFiles[file.FileId] = file;
             }
 
-            Global.FileSystemData = fileSystemData;
+            DataHolder.FileSystemData = fileSystemData;
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace HASH
 
             programData.ArgNameHelper = SSet.Create<string>(10, false);
 
-            Global.ProgramData = programData;
+            DataHolder.ProgramData = programData;
         }
 
         /// <summary>
@@ -129,7 +129,7 @@ namespace HASH
         /// </summary>
         public static void CacheDirData()
         {
-            var dirs = Global.FileSystemData.AllDirectories;
+            var dirs = DataHolder.FileSystemData.AllDirectories;
             
             foreach (var dir in dirs)
                 FileSystem.CacheDirContent(dir.Value);
@@ -140,7 +140,7 @@ namespace HASH
         /// </summary>
         public static void CacheFilesData()
         {
-            var files = Global.FileSystemData.AllFiles;
+            var files = DataHolder.FileSystemData.AllFiles;
             foreach (var file in files)
                 FileSystem.CacheFileContents(file.Value);
         }
@@ -242,7 +242,8 @@ namespace HASH
 
                 var hashFile = new SerializedHashFile();
 
-                hashFile.Name = Path.GetFileName(file);
+                var name = Path.GetFileName(file);
+                hashFile.Name = PathUtil.RemovePathPart(name, ext); 
                 hashFile.FileId = MathUtil.GetStringHash(file);
                 hashFile.ParentDirId = parent.DirId;
 
@@ -253,16 +254,21 @@ namespace HASH
                     case HashFileType.Text:
                         var textFile = new SerializedHashFileText();
                         textFile.File = hashFile;
-                        textFile.TextAssetPath = PathUtil.RemovePathPart(file, RESOURCE_FOLDER_PATH_IN_PROJECT);
-                        textFile.TextAssetPath = PathUtil.RemovePathPart(textFile.TextAssetPath, ext);
+                        
+                        var textAssetPath = PathUtil.RemovePathPart(file, RESOURCE_FOLDER_PATH_IN_PROJECT);
+                        textAssetPath = PathUtil.RemovePathPart(textAssetPath, ext);
+
+                        textFile.TextAssetPath = textAssetPath;
 
                         allTextFiles.Add(textFile);
                         break;
                     case HashFileType.Image:
                         var imageFile = new SerializedHashFileImage();
                         imageFile.File = hashFile;
-                        imageFile.ImageAssetPath = PathUtil.RemovePathPart(file, RESOURCE_FOLDER_PATH_IN_PROJECT);
-                        imageFile.ImageAssetPath = PathUtil.RemovePathPart(imageFile.ImageAssetPath, ext);
+                        
+                        var imageAssetPath = PathUtil.RemovePathPart(file, RESOURCE_FOLDER_PATH_IN_PROJECT);
+                        imageAssetPath = PathUtil.RemovePathPart(imageAssetPath, ext);
+                        imageFile.ImageAssetPath = imageAssetPath;
 
                         allImageFiles.Add(imageFile);
                         break;

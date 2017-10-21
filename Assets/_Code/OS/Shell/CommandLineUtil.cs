@@ -226,7 +226,7 @@ namespace HASH
         /// </summary>
         public static bool IsArgumentDuplicated(SimpleList<Pair<string, string>> arguments, string parameterName)
         {
-            var set = Global.ProgramData.ArgNameHelper;
+            var set = DataHolder.ProgramData.ArgNameHelper;
             SSet.Clear(set);
             for (int i = 0; i < arguments.Count; i++)
             {
@@ -288,9 +288,6 @@ namespace HASH
 
                 if (result)
                     opt.ValidationResult = ArgValidationResult.EverythingOk;
-
-                // redefine because it's a struct and we've changed the copy of it, not the one on the list
-                options[i] = opt;
             }
 
             return result;
