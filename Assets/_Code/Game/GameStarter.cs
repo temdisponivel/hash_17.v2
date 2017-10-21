@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using HASH;
+using HASH.Window;
 using UnityEngine;
 
 namespace HASH
@@ -11,6 +12,7 @@ namespace HASH
     {
         public InputListener InputListener;
         public TerminalComponent TerminalComponent;
+        public WindowReferences WindowReferences;
         public DebugUtil.DebugCondition DebugCondition;
         public HashColors Colors;
         
@@ -34,6 +36,7 @@ namespace HASH
             Constants.Colors = Colors;
             
             DataHolder.DebugCondition = DebugCondition;
+            DataHolder.WindowReferences = WindowReferences;
 
             yield return DataUtil.Load();
             DataUtil.ProcessLoadedData();
@@ -45,6 +48,8 @@ namespace HASH
             FileSystem.ChangeDir(DataHolder.FileSystemData.RootDir);
             
             SetupPrograms();
+            
+            WindowUtil.Initialize();
         }
 
         public void SetupPrograms()

@@ -1,4 +1,5 @@
 ﻿using System;
+using HASH.Window;
 
 namespace HASH
 {
@@ -30,7 +31,13 @@ namespace HASH
                         case HashFileType.Text:
                             var textFile = file.Content as TextFile;
                             var textContent = textFile.TextContent;
-                            TerminalUtil.ShowText(textContent);
+
+                            // TODO: remove this shit and uncomment line
+                            var window = WindowUtil.CreateWindow(WindowType.TextWindow);
+                            (window.WindowContent as TextWindowComponent).TextComponent.text = textContent;
+                            
+                            
+                            //TerminalUtil.ShowText(textContent);
                             break;
                         case HashFileType.Image:
                             var imageFile = file.Content as ImageFile;

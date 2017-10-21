@@ -1,4 +1,5 @@
 ﻿using HASH;
+using HASH.Window;
 
 namespace HASH
 {
@@ -14,5 +15,7 @@ namespace HASH
         public static FileSystemData FileSystemData;
         
         public static ProgramsData ProgramData;
+
+        public static WindowReferences WindowReferences;
     }
 }

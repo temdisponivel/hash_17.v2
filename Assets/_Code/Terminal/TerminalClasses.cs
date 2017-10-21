@@ -17,6 +17,8 @@ namespace HASH
 
         public ImageEntry Image;
 
+        public UIRoot UIRoot;
+        
         public UITable TextTable;
         public UIScrollView ScrollView;
 
