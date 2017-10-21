@@ -20,7 +20,7 @@ namespace HASH
             References.CommandCache = SList.Create<string>(50);
             References.AvailableCommands = SList.Create<string>(20);
             References.BatchEntries = SList.Create<TextBatchEntry>(10);
-            References.AllEntries = SList.Create<TerminalTextEntry>(100);
+            References.AllEntries = SList.Create<TerminalEntry>(100);
             DataHolder.TerminalReferences = References;
             TerminalUtil.FocusOnInput();
             TerminalUtil.CalculateMaxCharLenght();

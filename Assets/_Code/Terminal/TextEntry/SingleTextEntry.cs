@@ -8,7 +8,7 @@ namespace HASH
     /// </summary>
     public class SingleTextEntry : MonoBehaviour
     {
-        public const TextEntryType EntryType = TextEntryType.Single;
+        public const TerminalEntryType EntryType = TerminalEntryType.SingleText;
         public UIWidget ParentWidget;
         public UILabel TextComponent;
     }

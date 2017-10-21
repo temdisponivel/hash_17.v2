@@ -8,7 +8,7 @@ namespace HASH
     /// </summary>
     public class DualTextEntry : MonoBehaviour
     {
-        public const TextEntryType EntryType = TextEntryType.Dual;
+        public const TerminalEntryType EntryType = TerminalEntryType.DualText;
         public UIWidget ParentWidget;
         public UILabel LeftTextComponent;
         public UILabel RightTextComponent;

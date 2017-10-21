@@ -28,9 +28,8 @@ namespace HASH
 
             singleTextObject.SetActive(true);
 
-            var textEntry = new TerminalTextEntry();
-            textEntry.Text = new[] {text};
-            textEntry.EntryType = TextEntryType.Single;
+            var textEntry = new TerminalEntry();
+            textEntry.EntryType = TerminalEntryType.SingleText;
             textEntry.SceneObject = singleTextObject;
 
             SList.Push(DataHolder.TerminalReferences.AllEntries, textEntry);
@@ -53,9 +52,8 @@ namespace HASH
 
             dualTextObject.SetActive(true);
 
-            var textEntry = new TerminalTextEntry();
-            textEntry.Text = new[] {leftText, rightText};
-            textEntry.EntryType = TextEntryType.Single;
+            var textEntry = new TerminalEntry();
+            textEntry.EntryType = TerminalEntryType.SingleText;
             textEntry.SceneObject = dualTextObject;
 
             SList.Push(DataHolder.TerminalReferences.AllEntries, textEntry);
@@ -100,6 +98,31 @@ namespace HASH
         public static void UpdateTable(TerminalReferences references)
         {
             references.TextTable.Reposition();
+        }
+
+        #endregion
+
+        #region Image
+
+        public static void ShowImage(Texture texture, int width, int height)
+        {
+            var data = DataHolder.TerminalReferences;
+
+            var imageObject = NGUITools.AddChild(data.TextTable.gameObject, data.Image.gameObject);
+            var image = imageObject.GetComponent<ImageEntry>();
+            image.Image.mainTexture = texture;
+            image.Image.aspectRatio = width / (float) height;
+            image.Image.width = width;
+            image.Image.height = height;
+            
+            imageObject.transform.SetAsFirstSibling();
+            imageObject.SetActive(true);
+
+            var entry = new TerminalEntry();
+            entry.EntryType = TerminalEntryType.Image;
+            entry.SceneObject = imageObject;
+            
+            SList.Push(DataHolder.TerminalReferences.AllEntries, entry);
         }
 
         #endregion

@@ -15,6 +15,8 @@ namespace HASH
         public SingleTextEntry SingleText;
         public DualTextEntry DualText;
 
+        public ImageEntry Image;
+
         public UITable TextTable;
         public UIScrollView ScrollView;
 
@@ -37,23 +39,23 @@ namespace HASH
         [NonSerialized]
         public int MaxLineWidthInChars;
 
-        public SimpleList<TerminalTextEntry> AllEntries;
+        public SimpleList<TerminalEntry> AllEntries;
     }
     
     /// <summary>
     /// Enumerates all possible text entry types.
     /// </summary>
-    public enum TextEntryType
+    public enum TerminalEntryType
     {
-        Single,
-        Dual,
+        SingleText,
+        DualText,
+        Image,
     }
 
-    public class TerminalTextEntry
+    public class TerminalEntry
     {
         public GameObject SceneObject;
-        public string[] Text;
-        public TextEntryType EntryType;
+        public TerminalEntryType EntryType;
     }
 
     public enum TerminalEntryRemoveType

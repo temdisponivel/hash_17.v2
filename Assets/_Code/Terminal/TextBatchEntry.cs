@@ -7,7 +7,7 @@ namespace HASH
     /// </summary>
     public struct TextBatchEntry
     {
-        public TextEntryType EntryType;
+        public TerminalEntryType EntryType;
         public string[] Texts;
     }
 }

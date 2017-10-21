@@ -1,4 +1,6 @@
-﻿namespace HASH
+﻿using System;
+
+namespace HASH
 {
     public static class OpenProgram
     {
@@ -23,9 +25,22 @@
                 HashDir dir;
                 if (FileSystem.FileExists(path, out file))
                 {
-                    var textFile = file.Content as TextFile;
-                    var content = textFile.TextContent;
-                    TerminalUtil.ShowText(content);
+                    switch (file.FileType)
+                    {
+                        case HashFileType.Text:
+                            var textFile = file.Content as TextFile;
+                            var textContent = textFile.TextContent;
+                            TerminalUtil.ShowText(textContent);
+                            break;
+                        case HashFileType.Image:
+                            var imageFile = file.Content as ImageFile;
+                            var imageContent = imageFile.ImageContent;
+                            TerminalUtil.ShowImage(imageContent);
+                            break;
+                        default:
+                            DebugUtil.Error(string.Format("The open program can't open file type: {0}", file.FileType));
+                            break;
+                    }
                 }
                 else
                 {
@@ -51,7 +66,7 @@
         public static void FillCommandBuffer()
         {
             FileSystem.FilleCommandBufferWithFileSystem(FillBufferFileSystemOptions.IncludeFile);
-            
+
             ProgramUtil.AddPrefixToCommandBuffer("open ");
         }
     }

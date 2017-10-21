@@ -44,10 +44,10 @@ namespace HASH
                 var entry = SList.Dequeue(data.BatchEntries);
                 switch (entry.EntryType)
                 {
-                    case TextEntryType.Single:
+                    case TerminalEntryType.SingleText:
                         ShowText(entry.Texts[0]);
                         break;
-                    case TextEntryType.Dual:
+                    case TerminalEntryType.DualText:
                         ShowDualText(entry.Texts[0], entry.Texts[1]);
                         break;
                     default:
@@ -73,7 +73,7 @@ namespace HASH
             if (data.Batching)
             {
                 var entry = new TextBatchEntry();
-                entry.EntryType = TextEntryType.Single;
+                entry.EntryType = TerminalEntryType.SingleText;
                 entry.Texts = new string[] {text};
                 SList.Enqueue(data.BatchEntries, entry);
             }
@@ -90,7 +90,7 @@ namespace HASH
             if (data.Batching)
             {
                 var entry = new TextBatchEntry();
-                entry.EntryType = TextEntryType.Dual;
+                entry.EntryType = TerminalEntryType.DualText;
                 entry.Texts = new string[] {leftText, rightText};
                 SList.Enqueue(data.BatchEntries, entry);
             }
@@ -169,6 +169,15 @@ namespace HASH
             DataHolder.TerminalReferences.CurrentPath.text = line.FormattedText;
         }
 
+        #endregion
+        
+        #region Image
+
+        public static void ShowImage(Texture texture)
+        {
+            Terminal.ShowImage(texture, texture.width, texture.height);
+        }
+        
         #endregion
 
         #region Remove Text
