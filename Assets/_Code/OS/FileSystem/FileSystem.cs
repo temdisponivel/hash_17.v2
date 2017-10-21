@@ -38,7 +38,7 @@ namespace HASH
         /// <summary>
         /// Returns the dir that has the given id.
         /// </summary>
-        public static HashDir FindDir(int dirId)
+        public static HashDir FindDirById(int dirId)
         {
             var data = DataHolder.FileSystemData;
             return STable.Find(data.AllDirectories, dirId);
@@ -190,7 +190,7 @@ namespace HASH
                 while (dir.ParentDirId != -1)
                 {
                     SList.Push(data.PathStackHelper, dir.Name);
-                    dir = FindDir(dir.ParentDirId);
+                    dir = FindDirById(dir.ParentDirId);
                 }
 
                 var builder = new StringBuilder(data.PathStackHelper.Count * 10);
@@ -219,21 +219,32 @@ namespace HASH
                 var fileId = dir.FilesId[i];
                 var file = FindFile(fileId);
                 DebugUtil.Assert(file == null, string.Format("THE DIR {0} HAS A INVALID FILE {1}", dir.Name, fileId));
+                
+                file.ParentDirId = dir.DirId;
+                file.ParentDir = dir;
+                
                 SList.Add(dir.Files, file);
             }
         }
 
         /// <summary>
-        /// Cache the parent of the given dir. This will add this dir as child of the its parent
-        /// and store its parent on the parent property.
+        /// Cache the dirs children based on the ChildsDirid values.
         /// </summary>
-        public static void CacheParentDir(HashDir dir)
+        public static void CacheDirChildren(HashDir dir)
         {
             SList.Clear(dir.Childs);
-
-            var parent = FindDir(dir.ParentDirId);
-            if (parent != null)
-                AddAsChild(parent, dir);
+            for (int i = 0; i < dir.ChildsDirId.Count; i++)
+            {
+                var childId = dir.ChildsDirId[i];
+                var child = FindDirById(childId);
+                
+                DebugUtil.Assert(child == null, string.Format("THE DIR {0} HAS A INVALID CHILD {1}", dir.Name, childId));
+                
+                child.ParentDirId = dir.DirId;
+                child.ParentDir = dir;
+                
+                SList.Add(dir.Childs, child);
+            }
         }
 
         /// <summary>
@@ -253,8 +264,8 @@ namespace HASH
         public static void CacheDirContent(HashDir dir)
         {
             CacheDirFullPath(dir);
+            CacheDirChildren(dir);
             CacheDirFiles(dir);
-            CacheParentDir(dir);
         }
 
         /// <summary>
@@ -433,7 +444,7 @@ namespace HASH
         /// </summary>
         public static void CacheFileDir(HashFile file)
         {
-            var parent = FindDir(file.ParentDirId);
+            var parent = FindDirById(file.ParentDirId);
             AddAsFile(parent, file);
         }
 
@@ -500,7 +511,6 @@ namespace HASH
         /// </summary>
         public static void CacheFileContents(HashFile file)
         {
-            CacheFileDir(file);
             CacheFilePaths(file);
             LoadFileContent(file);
         }
@@ -521,7 +531,7 @@ namespace HASH
         
         #region Buffer
 
-        public static void FillCommandBufferWithAvailableDirectories()
+        public static void FilleCommandBufferWithFileSystem(FillBufferFileSystemOptions option)
         {
             var commandBuffer = DataHolder.TerminalReferences.AvailableCommands;
             var data = DataHolder.FileSystemData;
@@ -530,18 +540,25 @@ namespace HASH
 
             var currentDir = data.CurrentDir;
             
-            if (currentDir.ParentDir != null)
-                SList.Add(commandBuffer, "..");
+            if (option == FillBufferFileSystemOptions.IncludeAll || option == FillBufferFileSystemOptions.IncludeDir)
+            {
             
-            SList.Add(commandBuffer, ".");
+                if (currentDir.ParentDir != null)
+                    SList.Add(commandBuffer, "..");
+            
+                SList.Add(commandBuffer, ".");
 
-            var childs = currentDir.Childs;
-            for (int i = 0; i < childs.Count; i++)
-                SList.Add(commandBuffer, childs[i].FullPath);
+                var childs = currentDir.Childs;
+                for (int i = 0; i < childs.Count; i++)
+                    SList.Add(commandBuffer, childs[i].FullPath);                
+            }
 
-            var files = currentDir.Files;
-            for (int i = 0; i < files.Count; i++)
-                SList.Add(commandBuffer, files[i].FullPath);
+            if (option == FillBufferFileSystemOptions.IncludeAll || option == FillBufferFileSystemOptions.IncludeFile)
+            {
+                var files = currentDir.Files;
+                for (int i = 0; i < files.Count; i++)
+                    SList.Add(commandBuffer, files[i].FullPath);
+            }
             
             TerminalUtil.ChangeToAvailableCommandsBuffer();
         }

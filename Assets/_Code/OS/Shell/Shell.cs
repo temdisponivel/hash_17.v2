@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using HASH;
+using JetBrains.Annotations;
 
 namespace HASH
 {
@@ -95,6 +96,8 @@ namespace HASH
                     return DirProgram.Execute;
                 case ProgramType.Clear:
                     return ClearProgram.Execute;
+                case ProgramType.Open:
+                    return OpenProgram.Execute;
                 default:
                     DebugUtil.Assert(true, "PROGRAM TYPE HAS NO RELATED CLASS. " + program.ProgramType);
                     break;
@@ -111,6 +114,11 @@ namespace HASH
                     return CdProgram.FillCommandBuffer;
                 case ProgramType.Dir:
                     return DirProgram.FillCommandBuffer;
+                case ProgramType.Open:
+                    return OpenProgram.FillCommandBuffer;
+                default:
+                    DebugUtil.Warning(string.Format("Program '{0}' doesn't have a fill buffer function.", program.ProgramType));
+                    break;
             }
 
             return null;

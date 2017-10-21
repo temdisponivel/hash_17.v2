@@ -53,9 +53,9 @@ namespace HASH
                 string msg = null;
                 var result = PathValidation.ValidationResult;
                 if (MathUtil.ContainsFlag((int) result, (int) ArgValidationResult.EmptyValue))
-                    msg = string.Format("Please supply a path.");
+                    msg = "Please supply a path.";
                 else if (MathUtil.ContainsFlag((int) result, (int) ArgValidationResult.NotFound))
-                    msg = string.Format("Please supply a path.");
+                    msg = "Please supply a path.";
                 
                 msg = TextUtil.Error(msg);
                 TerminalUtil.ShowText(msg);
@@ -64,15 +64,8 @@ namespace HASH
         
         public static void FillCommandBuffer()
         {
-            FileSystem.FillCommandBufferWithAvailableDirectories();
-            
-            var data = DataHolder.TerminalReferences;
-            for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
-            {
-                var option = data.CurrentCommandBuffer[i];
-                data.CurrentCommandBuffer[i] = option.Insert(0, "cd ");
-            }
+            FileSystem.FilleCommandBufferWithFileSystem(FillBufferFileSystemOptions.IncludeDir);
+            ProgramUtil.AddPrefixToCommandBuffer("cd ");
         }
-
     }
 }

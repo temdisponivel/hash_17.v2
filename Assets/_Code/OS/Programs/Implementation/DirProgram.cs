@@ -72,6 +72,13 @@ namespace HASH
 
                 TerminalUtil.ShowText(HeaderLine.FormattedText);
 
+                for (int i = 0; i < childs.Count; i++)
+                {
+                    var child = childs[i];
+                    var line = CreateLine(child.Name, "DIRECTORY", LineColor, TextModifiers.Italic);
+                    TerminalUtil.ShowText(line.FormattedText);
+                }
+                
                 for (int i = 0; i < files.Count; i++)
                 {
                     var file = files[i];
@@ -79,12 +86,6 @@ namespace HASH
                     TerminalUtil.ShowText(line.FormattedText);
                 }
 
-                for (int i = 0; i < childs.Count; i++)
-                {
-                    var child = childs[i];
-                    var line = CreateLine(child.Name, "DIRECTORY", LineColor, TextModifiers.Italic);
-                    TerminalUtil.ShowText(line.FormattedText);
-                }
 
                 TerminalUtil.EndTextBatch();
             }
@@ -92,14 +93,8 @@ namespace HASH
 
         public static void FillCommandBuffer()
         {
-            FileSystem.FillCommandBufferWithAvailableDirectories();
-
-            var data = DataHolder.TerminalReferences;
-            for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
-            {
-                var option = data.CurrentCommandBuffer[i];
-                data.CurrentCommandBuffer[i] = option.Insert(0, "dir ");
-            }
+            FileSystem.FilleCommandBufferWithFileSystem(FillBufferFileSystemOptions.IncludeDir);
+            ProgramUtil.AddPrefixToCommandBuffer("dir ");
         }
 
         public static TextTableLine CreateLine(

@@ -338,7 +338,7 @@ namespace HASH
                 bufferFiller = Shell.GetProgramBufferFillerMethod(program);
 
             if (bufferFiller == null)
-                FileSystem.FillCommandBufferWithAvailableDirectories();
+                FileSystem.FilleCommandBufferWithFileSystem(FillBufferFileSystemOptions.IncludeAll);
             else
                 bufferFiller();
 

@@ -52,6 +52,7 @@ namespace HASH
             CdProgram.Setup();
             DirProgram.Setup();
             ClearProgram.Setup();
+            OpenProgram.Setup();
         }
 
 #if DEB && UNITY_EDITOR

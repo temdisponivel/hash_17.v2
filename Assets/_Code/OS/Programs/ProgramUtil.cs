@@ -35,5 +35,15 @@ namespace HASH
             opt.Option = serialized.Option;
             return opt;
         }
+
+        public static void AddPrefixToCommandBuffer(string prefix)
+        {
+            var data = DataHolder.TerminalReferences;
+            for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
+            {
+                var option = data.CurrentCommandBuffer[i];
+                data.CurrentCommandBuffer[i] = option.Insert(0, prefix);
+            }
+        }
     }
 }
