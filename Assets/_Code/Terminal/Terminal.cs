@@ -16,7 +16,8 @@ namespace HASH
         /// </summary>
         public static void ShowSingleText(TerminalReferences references, string text)
         {
-            var singleTextObject = NGUITools.AddChild(references.TextTable.gameObject, references.SingleText.gameObject);
+            var singleTextObject =
+                NGUITools.AddChild(references.TextTable.gameObject, references.SingleText.gameObject);
             var singleText = singleTextObject.GetComponent<SingleTextEntry>();
             singleText.TextComponent.text = text;
             singleText.transform.SetAsFirstSibling();
@@ -26,6 +27,13 @@ namespace HASH
             widget.rightAnchor.target = references.ScrollView.transform;
 
             singleTextObject.SetActive(true);
+
+            var textEntry = new TerminalTextEntry();
+            textEntry.Text = new[] {text};
+            textEntry.EntryType = TextEntryType.Single;
+            textEntry.SceneObject = singleTextObject;
+
+            SList.Push(Global.TerminalReferences.AllEntries, textEntry);
         }
 
         /// <summary>
@@ -44,6 +52,13 @@ namespace HASH
             widget.rightAnchor.target = references.ScrollView.transform;
 
             dualTextObject.SetActive(true);
+
+            var textEntry = new TerminalTextEntry();
+            textEntry.Text = new[] {leftText, rightText};
+            textEntry.EntryType = TextEntryType.Single;
+            textEntry.SceneObject = dualTextObject;
+
+            SList.Push(Global.TerminalReferences.AllEntries, textEntry);
         }
 
         #endregion

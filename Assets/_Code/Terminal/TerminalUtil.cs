@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Runtime.CompilerServices;
 using HASH;
 using SimpleCollections.Lists;
 using UnityEngine;
@@ -50,7 +51,8 @@ namespace HASH
                         ShowDualText(entry.Texts[0], entry.Texts[1]);
                         break;
                     default:
-                        DebugUtil.Log(string.Format("THE TEXT ENTRY TYPE {0} IS NOT IMPLEMENTED!", entry.EntryType), Color.red, DebugUtil.DebugCondition.Always, DebugUtil.LogType.Info);
+                        DebugUtil.Log(string.Format("THE TEXT ENTRY TYPE {0} IS NOT IMPLEMENTED!", entry.EntryType),
+                            Color.red, DebugUtil.DebugCondition.Always, DebugUtil.LogType.Info);
                         break;
                 }
             }
@@ -70,7 +72,7 @@ namespace HASH
             {
                 var entry = new TextBatchEntry();
                 entry.EntryType = TextEntryType.Single;
-                entry.Texts = new string[] { text };
+                entry.Texts = new string[] {text};
                 SList.Enqueue(data.BatchEntries, entry);
             }
             else
@@ -87,7 +89,7 @@ namespace HASH
             {
                 var entry = new TextBatchEntry();
                 entry.EntryType = TextEntryType.Dual;
-                entry.Texts = new string[] { leftText, rightText };
+                entry.Texts = new string[] {leftText, rightText};
                 SList.Enqueue(data.BatchEntries, entry);
             }
             else
@@ -159,6 +161,48 @@ namespace HASH
             ShowDualText(leftModifiedText, rightModifiedText);
         }
 
+        public static void UpdateCurrentPathLabel()
+        {
+            var line = CreatePlayerInputLine(string.Empty);
+            Global.TerminalReferences.CurrentPath.text = line.FormattedText;
+        }
+
+        #endregion
+
+        #region Remove Text
+
+        public static void RemoveTextEntries(int quantity, TerminalEntryRemoveType removeType)
+        {
+            var allEntries = Global.TerminalReferences.AllEntries;
+            quantity = Math.Min(quantity, allEntries.Count);
+
+            if (quantity == 0)
+                return;
+
+            switch (removeType)
+            {
+                case TerminalEntryRemoveType.OlderEntries:
+                    for (int i = 0; i < quantity; i++)
+                    {
+                        var item = SList.Dequeue(allEntries);
+                        GameObject.Destroy(item.SceneObject);
+                    }
+                    break;
+                case TerminalEntryRemoveType.NewerEntries:
+                    for (int i = 0; i < quantity; i++)
+                    {
+                        var item = SList.Pop(allEntries);
+                        GameObject.Destroy(item.SceneObject);
+                    }
+                    break;
+                default:
+                    DebugUtil.Error(string.Format("TERMINAL ENTRY REMOVE TYPE '{0}' NOT IMPLEMENTED!", removeType));
+                    break;
+            }
+
+            UpdateTableAndScroll();
+        }
+
         #endregion
 
         #region Commands
@@ -199,13 +243,14 @@ namespace HASH
             var text = TextUtil.CleanInputText(rawInput);
             if (string.IsNullOrEmpty(text))
                 yield break;
-       
-            DebugUtil.Log("[Terminal Util] PLAYER INPUT: " + text, Color.green, DebugUtil.DebugCondition.Verbose, DebugUtil.LogType.Info);
+
+            DebugUtil.Log("[Terminal Util] PLAYER INPUT: " + text, Color.green, DebugUtil.DebugCondition.Verbose,
+                DebugUtil.LogType.Info);
 
             var line = CreatePlayerInputLine(text);
-            
+
             ShowText(line.FormattedText);
-            
+
             // TODO: remove this wait to fix label flickering, but fix table reposition
             yield return null;
 
@@ -274,26 +319,52 @@ namespace HASH
         /// <summary>
         /// Fills the available command buffer with the current available options.
         /// </summary>
-        public static void FillAvailableCommandBuffer()
+        public static void UpdateCommandBuffer()
         {
-            // TODO: real stuff
-
             var data = Global.TerminalReferences;
             SList.Clear(data.AvailableCommands);
 
             var currentText = data.Input.value;
-            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 1"));
-            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 2"));
-            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 3"));
-            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 4"));
-            SList.Add(data.AvailableCommands, string.Format("{0}{1}", currentText, "DOIDOMEMO 5"));
+
+            var programName = CommandLineUtil.GetCommandName(currentText);
+            var program = Shell.FindProgramByCommand(programName);
+
+            Action bufferFiller;
+            if (program == null)
+                bufferFiller = null;
+            else
+                bufferFiller = Shell.GetProgramBufferFillerMethod(program);
+
+            if (bufferFiller == null)
+                FileSystem.FillCommandBufferWithAvailableDirectories();
+            else
+                bufferFiller();
+
+            ChangeToAvailableCommandsBuffer();
+        }
+
+        public static void ShowAllCommandBufferOptions()
+        {
+            StartTextBatch();
+
+            var data = Global.TerminalReferences;
+
+            ResetCommandBufferIndex();
+            for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
+            {
+                var option = data.CurrentCommandBuffer[i];
+                ShowText(option);
+            }
+            ResetCommandBufferIndex();
+
+            EndTextBatch();
         }
 
         /// <summary>
         /// Checks to see if the current buffer is equals to the commands cache buffer and, if not
         /// changes the current buffer to the commands cache buffer and resets the buffer index.
         /// </summary>
-        public static void ChangeToCommandCacheBufferIfNeeded()
+        public static void ChangeToCommandCacheBuffer()
         {
             var data = Global.TerminalReferences;
             if (data.CurrentCommandBuffer != data.CommandCache)
@@ -308,18 +379,14 @@ namespace HASH
         /// changes the current buffer to the available commands buffer and resets the buffer index.
         /// Returns true if it changed the current buffer, false otherwise.
         /// </summary>
-        public static bool ChangeToAvailableCommandsBufferIfNeeded()
+        public static void ChangeToAvailableCommandsBuffer()
         {
             var data = Global.TerminalReferences;
             if (data.CurrentCommandBuffer != data.AvailableCommands)
             {
                 data.CurrentCommandBuffer = data.AvailableCommands;
                 ResetCommandBufferIndex();
-
-                return true;
             }
-            else
-                return false;
         }
 
         #endregion
@@ -337,43 +404,43 @@ namespace HASH
         }
 
         #endregion
-        
+
         #region Tabling
-        
+
         private static TextTableLine CreatePlayerInputLine(string command)
         {
             var path = Global.FileSystemData.CurrentDir.FullPath;
             var pathColumn = CreatePlayerInputColumn(path, .65f, Color.green, TextModifiers.Italic);
             var commandColumn = CreatePlayerInputColumn(command, .35f, Color.white, TextModifiers.Bold);
-            
+
             var items = SList.Create<TextTableColumn>(2);
             SList.Add(items, pathColumn);
             SList.Add(items, commandColumn);
-            
+
             var line = new TextTableLine();
             line.Items = items;
-            
-            
+
+
             line.MaxLineSizeIsForced = false;
             line.MaxLineSize = Global.TerminalReferences.MaxLineWidthInChars;
 
             line.ItemsSeparator = "> ";
             line.SeparatorModifier.Color = Color.green;
             line.SeparatorModifier.Modifiers = TextModifiers.None;
-            
+
             TextUtil.FormatLineConsideringWeightsAndSize(line);
 
             return line;
         }
-        
+
         private static TextTableColumn CreatePlayerInputColumn(
-            string text, 
-            float weight, 
+            string text,
+            float weight,
             Color color,
             int textModifiers)
         {
             var item = new TextTableColumn();
-            
+
             item.Align = TextTableAlign.Left;
             item.Text = text;
             item.ModifyTextOptions.Color = color;
@@ -385,7 +452,7 @@ namespace HASH
 
             return item;
         }
-        
+
         #endregion
     }
 }

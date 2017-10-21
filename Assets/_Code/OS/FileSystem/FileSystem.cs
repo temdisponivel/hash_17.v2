@@ -31,7 +31,8 @@ namespace HASH
             var data = Global.FileSystemData;
             data.CurrentDir = dir;
 
-            TerminalUtil.FillAvailableCommandBuffer();
+            TerminalUtil.UpdateCurrentPathLabel();
+            TerminalUtil.UpdateCommandBuffer();
         }
 
         /// <summary>
@@ -510,6 +511,35 @@ namespace HASH
             return (AccessPermission)Math.Min((int)permissionA, (int)permissionB);
         }
 
+        #endregion
+        
+        #region Buffer
+
+        public static void FillCommandBufferWithAvailableDirectories()
+        {
+            var commandBuffer = Global.TerminalReferences.AvailableCommands;
+            var data = Global.FileSystemData;
+            
+            SList.Clear(commandBuffer);
+
+            var currentDir = data.CurrentDir;
+            
+            if (currentDir.ParentDir != null)
+                SList.Add(commandBuffer, "..");
+            
+            SList.Add(commandBuffer, ".");
+
+            var childs = currentDir.Childs;
+            for (int i = 0; i < childs.Count; i++)
+                SList.Add(commandBuffer, childs[i].FullPath);
+
+            var files = currentDir.Files;
+            for (int i = 0; i < files.Count; i++)
+                SList.Add(commandBuffer, files[i].FullPath);
+            
+            TerminalUtil.ChangeToAvailableCommandsBuffer();
+        }
+        
         #endregion
     }
 }

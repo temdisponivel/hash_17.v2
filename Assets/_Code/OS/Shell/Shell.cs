@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using HASH;
 
 namespace HASH
@@ -92,9 +93,24 @@ namespace HASH
                     return CdProgram.Execute;
                 case ProgramType.Dir:
                     return DirProgram.Execute;
+                case ProgramType.Clear:
+                    return ClearProgram.Execute;
                 default:
                     DebugUtil.Assert(true, "PROGRAM TYPE HAS NO RELATED CLASS. " + program.ProgramType);
                     break;
+            }
+
+            return null;
+        }
+
+        public static Action GetProgramBufferFillerMethod(Program program)
+        {
+            switch (program.ProgramType)
+            {
+                case ProgramType.Cd:
+                    return CdProgram.FillCommandBuffer;
+                case ProgramType.Dir:
+                    return DirProgram.FillCommandBuffer;
             }
 
             return null;

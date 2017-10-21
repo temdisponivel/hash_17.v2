@@ -185,8 +185,8 @@ namespace HASH
         public static Pair<string, string> CreateArgPair(string argName, string argValue)
         {
             var pair = new Pair<string, string>();
-            pair.Key = argName;
-            pair.Value = argValue;
+            pair.Key = argName.Trim();
+            pair.Value = argValue.Trim();
             return pair;
         }
 

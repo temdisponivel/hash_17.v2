@@ -29,7 +29,8 @@ namespace HASH
         public static void Execute(ProgramExecutionOptions options)
         {
             bool argumentsOk, knownArgs;
-            CommandLineUtil.FullArgValidation(options.ParsedArguments, ValidationOptions, KnownArgs, out knownArgs, out argumentsOk);
+            CommandLineUtil.FullArgValidation(options.ParsedArguments, ValidationOptions, KnownArgs, out knownArgs,
+                out argumentsOk);
             ValidateErrorsWithArgs(ValidationOptions);
 
             Pair<string, string> command;
@@ -39,20 +40,55 @@ namespace HASH
             FileSystem.ChangeDir(dir);
         }
 
+        public static void FillCommandBuffer()
+        {
+            var currentCommandLine = Global.TerminalReferences.Input.value;
+            currentCommandLine = TextUtil.CleanInputText(currentCommandLine);
+            var args = Shell.GetProgramExecutionOptions(currentCommandLine);
+            if (args.ParsedArguments.Count == 0)
+                FillCommandBufferWithAllFolders();
+            else
+            {
+                var data = Global.FileSystemData;
+                var path = args.ParsedArguments[0];
+                HashDir currentDirCache = data.CurrentDir;
+
+                HashDir dir;
+                if (FileSystem.DirExists(path.Value, out dir))
+                {
+                    data.CurrentDir = dir;
+                    FillCommandBufferWithAllFolders();
+                    data.CurrentDir = currentDirCache;
+                }
+            }
+        }
+
+        private static void FillCommandBufferWithAllFolders()
+        {
+            FileSystem.FillCommandBufferWithAvailableDirectories();
+
+            var data = Global.TerminalReferences;
+            for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
+            {
+                var option = data.CurrentCommandBuffer[i];
+                data.CurrentCommandBuffer[i] = option.Insert(0, "cd ");
+            }
+        }
+
         private static void ValidateErrorsWithArgs(CommandLineArgValidationOption<Args>[] args)
         {
             for (int i = 0; i < args.Length; i++)
             {
                 var arg = args[i];
-                var result = (int)arg.ValidationResult;
-                var empty = (int)ArgValidationResult.EmptyValue;
+                var result = (int) arg.ValidationResult;
+                var empty = (int) ArgValidationResult.EmptyValue;
                 if (MathUtil.ContainsFlag(result, empty))
                 {
                     Debug.Log("EMPTY");
                 }
             }
         }
-        
+
         public static void Setup()
         {
             ValidationOptions = new CommandLineArgValidationOption<Args>[1];
@@ -64,7 +100,7 @@ namespace HASH
 
             ValidationOptions[0] = pathOpt;
 
-            KnownArgs = new[] { "", };
+            KnownArgs = new[] {"",};
 
             DirContentHeader = new TextTableLine();
             var items = SList.Create<TextTableColumn>(3);

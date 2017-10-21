@@ -10,6 +10,9 @@ namespace HASH
     public class TerminalComponent : MonoBehaviour
     {
         public TerminalReferences References;
+        public float LastTabPressedTime;
+
+        public const float DoubleTabPressedInterval = .3f; 
 
         public void Initialize()
         {
@@ -17,6 +20,7 @@ namespace HASH
             References.CommandCache = SList.Create<string>(50);
             References.AvailableCommands = SList.Create<string>(20);
             References.BatchEntries = SList.Create<TextBatchEntry>(10);
+            References.AllEntries = SList.Create<TerminalTextEntry>(100);
             Global.TerminalReferences = References;
             TerminalUtil.FocusOnInput();
             TerminalUtil.CalculateMaxCharLenght();
@@ -27,9 +31,13 @@ namespace HASH
         public void OnInputChanged()
         {
             var text = References.Input.value;
-
-            if (text.EndsWith("\n"))
+            
+            if (string.IsNullOrEmpty(text))
+                TerminalUtil.ChangeToCommandCacheBuffer();
+            else if (text.EndsWith("\n"))
                 StartCoroutine(TerminalUtil.HandlePlayerInput(text));
+            else
+                TerminalUtil.UpdateCommandBuffer();
         }
 
         public void OnInputSubimit()
@@ -39,13 +47,13 @@ namespace HASH
 
         public void UpPressed()
         {
-            TerminalUtil.ChangeToCommandCacheBufferIfNeeded();
+            TerminalUtil.ChangeToCommandCacheBuffer();
             TerminalUtil.NavigateCommandBuffer(1, false);
         }
 
         public void DownPressed()
         {
-            TerminalUtil.ChangeToCommandCacheBufferIfNeeded();
+            TerminalUtil.ChangeToCommandCacheBuffer();
             TerminalUtil.NavigateCommandBuffer(-1, false);
         }
 
@@ -57,16 +65,23 @@ namespace HASH
 
         public void TabPressed()
         {
-            // If we changed to the available command buffer, 
-            // we need to make sure it has the right options, so we fill the buffer
-            if (TerminalUtil.ChangeToAvailableCommandsBufferIfNeeded())
-                TerminalUtil.FillAvailableCommandBuffer();
+            TerminalUtil.ChangeToAvailableCommandsBuffer();
             
-            var shiftPressed = Input.GetKey(KeyCode.LeftShift);
-            if (shiftPressed)
-                TerminalUtil.NavigateCommandBuffer(-1, true);
+            if (Time.time - LastTabPressedTime <= DoubleTabPressedInterval)
+            {
+                TerminalUtil.ShowAllCommandBufferOptions();
+                LastTabPressedTime = 0;
+            }
             else
-                TerminalUtil.NavigateCommandBuffer(1, true);
+            {
+                LastTabPressedTime = Time.time;
+            
+                var shiftPressed = Input.GetKey(KeyCode.LeftShift);
+                if (shiftPressed)
+                    TerminalUtil.NavigateCommandBuffer(-1, true);
+                else
+                    TerminalUtil.NavigateCommandBuffer(1, true);
+            }
         }
 
         #endregion

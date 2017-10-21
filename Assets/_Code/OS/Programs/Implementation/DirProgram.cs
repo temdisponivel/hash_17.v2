@@ -70,6 +70,18 @@ namespace HASH
             }
         }
 
+        public static void FillCommandBuffer()
+        {
+            FileSystem.FillCommandBufferWithAvailableDirectories();
+            
+            var data = Global.TerminalReferences;
+            for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
+            {
+                var option = data.CurrentCommandBuffer[i];
+                data.CurrentCommandBuffer[i] = option.Insert(0, "dir ");
+            }
+        }
+
         public static void Setup()
         {
             HeaderLine = CreateLine("NAME", "TYPE", HeaderColor, TextModifiers.Bold | TextModifiers.Underline);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using HASH;
 using SimpleCollections.Lists;
+using UnityEngine;
 
 namespace HASH
 {
@@ -18,6 +19,7 @@ namespace HASH
         public UIScrollView ScrollView;
 
         public UIInput Input;
+        public UILabel CurrentPath;
 
         [NonSerialized]
         public bool Batching;
@@ -34,5 +36,29 @@ namespace HASH
 
         [NonSerialized]
         public int MaxLineWidthInChars;
+
+        public SimpleList<TerminalTextEntry> AllEntries;
     }
+    
+    /// <summary>
+    /// Enumerates all possible text entry types.
+    /// </summary>
+    public enum TextEntryType
+    {
+        Single,
+        Dual,
+    }
+
+    public class TerminalTextEntry
+    {
+        public GameObject SceneObject;
+        public string[] Text;
+        public TextEntryType EntryType;
+    }
+
+    public enum TerminalEntryRemoveType
+    {
+        OlderEntries,
+        NewerEntries,
+    }   
 }
