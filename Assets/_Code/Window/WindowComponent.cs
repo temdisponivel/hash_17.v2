@@ -4,8 +4,14 @@ namespace HASH.Window
 {
     public class WindowComponent : MonoBehaviour
     {
-        public UIWidget ContentParent;
+        public UIWidget WindowWidget;
+        public UIPanel ContentParent;
         public UILabel TitleLabel;
+
+        public UIDragObject DragObject;
+
+        public bool Maximized;
+        public WindowMaximizeProperties MaximizeProperties;
 
         public void OnCloseClicked()
         {

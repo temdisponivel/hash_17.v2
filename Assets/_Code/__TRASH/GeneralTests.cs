@@ -2,7 +2,11 @@
 using HASH;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
+
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
+
 using UnityEngine;
 
 namespace Assets._Code.__TRASH

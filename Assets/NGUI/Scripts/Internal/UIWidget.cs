@@ -193,7 +193,7 @@ public class UIWidget : UIRect
 	/// Widget's width in pixels.
 	/// </summary>
 
-	public int width
+public int 	width
 	{
 		get
 		{

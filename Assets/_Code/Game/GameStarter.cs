@@ -44,6 +44,8 @@ namespace HASH
             InputListener.Initialize();
             TerminalComponent.Initialize();
 
+            Cursor.lockState = CursorLockMode.Confined;
+
             DataHolder.FileSystemData.RootDir = FileSystem.GetRootDir();
             FileSystem.ChangeDir(DataHolder.FileSystemData.RootDir);
             

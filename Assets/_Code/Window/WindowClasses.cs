@@ -1,4 +1,6 @@
-﻿namespace HASH.Window
+﻿using UnityEngine;
+
+namespace HASH.Window
 {
     public enum WindowType
     {
@@ -12,5 +14,11 @@
         public WindowType Type;
         public WindowComponent SceneWindow;
         public object WindowContent;
+    }
+
+    public struct WindowMaximizeProperties
+    {
+        public Vector2 PreviousPosition;
+        public Vector2 PreviousSize;
     }
 }

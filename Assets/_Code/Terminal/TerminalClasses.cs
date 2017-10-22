@@ -18,6 +18,8 @@ namespace HASH
         public ImageEntry Image;
 
         public UIRoot UIRoot;
+        public UIPanel MainPanel;
+        public UIPanel WindowsPanel;
         
         public UITable TextTable;
         public UIScrollView ScrollView;

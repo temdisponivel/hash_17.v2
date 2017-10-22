@@ -15,8 +15,10 @@ namespace HASH.GUI
         public Color PressedColor;
 
         public EventDelegate ClickCallback;
+        public EventDelegate DoubleClickCallback;
 
         public event Action OnClickCallback;
+        public event Action OnDoubleClickCallback;
 
         // Called by NGUI
         void OnHover(bool isOver)
@@ -27,7 +29,7 @@ namespace HASH.GUI
                 Texture.color = NormalColor;
         }
 
-        // called by NGUI
+        // Called by NGUI
         void OnPress(bool isDown)
         {
             if (isDown)
@@ -39,14 +41,20 @@ namespace HASH.GUI
                 // validation needed because the player can release the press outside this button
                 if (UICamera.hoveredObject == gameObject)
                 {
-                    Debug.Log("CLICK");
-                    
                     ClickCallback.Execute();
 
                     if (OnClickCallback != null)
                         OnClickCallback();
                 }
             }
+        }
+
+        // Called by NGUI
+        void OnDoubleClick()
+        {
+            DoubleClickCallback.Execute();
+            if (OnDoubleClickCallback != null)
+                OnDoubleClickCallback();
         }
     }
 }
