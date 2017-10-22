@@ -11,9 +11,16 @@ namespace HASH
         public static void AnchorToParentKeepingValues(GameObject parent, UIWidget child)
         {
             child.topAnchor.target = parent.transform;
+            child.topAnchor.absolute = 0;
+            
             child.rightAnchor.target = parent.transform;
+            child.rightAnchor.absolute = 0;
+            
             child.bottomAnchor.target = parent.transform;
+            child.bottomAnchor.absolute = 0;
+            
             child.leftAnchor.target = parent.transform;
+            child.leftAnchor.absolute = 0;
         }
 
         public static Bounds GetDragObjectBounds(UIDragObject dragObject)
