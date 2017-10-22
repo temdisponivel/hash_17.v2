@@ -8,10 +8,15 @@ namespace HASH.Window
         public UIPanel ContentParent;
         public UILabel TitleLabel;
 
+        public UIWidget ControlBox;
+
         public UIDragObject DragObject;
 
         public bool Maximized;
-        public WindowMaximizeProperties MaximizeProperties;
+        public WindowResizingProperties MaximizedProperties;
+        
+        public bool Minimized;
+        public WindowResizingProperties MinimizedProperties;
 
         public void OnCloseClicked()
         {

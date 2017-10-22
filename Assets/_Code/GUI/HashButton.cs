@@ -23,6 +23,9 @@ namespace HASH.GUI
         // Called by NGUI
         void OnHover(bool isOver)
         {
+            if (!Texture)
+                return;
+            
             if (isOver)
                 Texture.color = HoverColor;
             else
@@ -33,10 +36,14 @@ namespace HASH.GUI
         void OnPress(bool isDown)
         {
             if (isDown)
-                Texture.color = PressedColor;
+            {
+                if (Texture)
+                    Texture.color = PressedColor;
+            }
             else
             {
-                Texture.color = NormalColor;
+                if (Texture)
+                    Texture.color = NormalColor;
                 
                 // validation needed because the player can release the press outside this button
                 if (UICamera.hoveredObject == gameObject)

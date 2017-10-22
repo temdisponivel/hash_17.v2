@@ -1,4 +1,5 @@
-﻿using SimpleCollections.Lists;
+﻿using System.Text;
+using SimpleCollections.Lists;
 using UnityEngine;
 
 namespace HASH.Window
@@ -66,21 +67,24 @@ namespace HASH.Window
 
         public static void MaximizeWindowComponent(WindowComponent window)
         {
+            if (window.Minimized)
+                MinimizeWindowComponent(window);
+            
             if (window.Maximized)
             {
-                window.WindowWidget.width = Mathf.RoundToInt(window.MaximizeProperties.PreviousSize.x);
-                window.WindowWidget.height = Mathf.RoundToInt(window.MaximizeProperties.PreviousSize.y);
-                window.transform.position = window.MaximizeProperties.PreviousPosition;
+                window.WindowWidget.width = Mathf.RoundToInt(window.MaximizedProperties.PreviousSize.x);
+                window.WindowWidget.height = Mathf.RoundToInt(window.MaximizedProperties.PreviousSize.y);
+                window.transform.position = window.MaximizedProperties.PreviousPosition;
             }
             else
             {
-                window.MaximizeProperties.PreviousSize = new Vector2(window.WindowWidget.width, window.WindowWidget.height);
-                window.MaximizeProperties.PreviousPosition = window.transform.position;
+                window.MaximizedProperties.PreviousSize = new Vector2(window.WindowWidget.width, window.WindowWidget.height);
+                window.MaximizedProperties.PreviousPosition = window.transform.position;
 
                 window.WindowWidget.width = Screen.currentResolution.width;
                 window.WindowWidget.height = Screen.currentResolution.height;
             }
-
+            
             window.Maximized = !window.Maximized;
             var bounds = GameObjectUtil.GetDragObjectBounds(window.DragObject);
             window.DragObject.panelRegion.ConstrainTargetToBounds(window.transform, ref bounds, true);
@@ -88,7 +92,26 @@ namespace HASH.Window
 
         public static void MinimizeWindowComponent(WindowComponent window)
         {
-            Debug.Log("MINIMIZE");
+            if (window.Maximized)
+                MaximizeWindowComponent(window);
+            
+            if (window.Minimized)
+            {
+                window.WindowWidget.width = Mathf.RoundToInt(window.MinimizedProperties.PreviousSize.x);
+                window.WindowWidget.height = Mathf.RoundToInt(window.MinimizedProperties.PreviousSize.y);
+                window.transform.position = window.MinimizedProperties.PreviousPosition;
+            }
+            else
+            {
+                window.MinimizedProperties.PreviousSize = new Vector2(window.WindowWidget.width, window.WindowWidget.height);
+                window.MinimizedProperties.PreviousPosition = window.transform.position;
+
+                window.WindowWidget.height = window.ControlBox.height;
+            }
+
+            window.Minimized = !window.Minimized;
+            var bounds = GameObjectUtil.GetDragObjectBounds(window.DragObject);
+            window.DragObject.panelRegion.ConstrainTargetToBounds(window.transform, ref bounds, true);
         }
 
         public static Window GetWindowFromWindowComponent(WindowComponent windowComponent)

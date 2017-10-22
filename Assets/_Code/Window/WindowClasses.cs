@@ -16,7 +16,7 @@ namespace HASH.Window
         public object WindowContent;
     }
 
-    public struct WindowMaximizeProperties
+    public struct WindowResizingProperties
     {
         public Vector2 PreviousPosition;
         public Vector2 PreviousSize;
