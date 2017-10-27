@@ -42,7 +42,7 @@ namespace HASH
     public class ImageFile
     {
         public string ImageContentAssetPath;
-        public Texture ImageContent;
+        public Texture2D ImageContent;
     }
     
     /// <summary>

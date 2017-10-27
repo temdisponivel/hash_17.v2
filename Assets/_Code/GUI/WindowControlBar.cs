@@ -9,13 +9,17 @@ namespace HASH.GUI
         public UIWidget ControlBox;
         public UIDragObject DragObject;
 
+        public HashButton CloseButton;
+        public HashButton MaximizeButton;
+        public HashButton MinimizeButton;
+
         void OnHover(bool hover)
         {
             var window = WindowUtil.GetWindowFromWindowComponent(Window);
 
             if (hover)
             {
-                if (window.CanBeMoved)
+                if (window.State.CanBeMoved)
                     GUIUtil.SetCursorTexture(CursorTexture.Move);
                 else
                     GUIUtil.SetCursorTexture(CursorTexture.Block);

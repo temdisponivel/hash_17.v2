@@ -16,6 +16,7 @@ namespace HASH.GUI
     {
         public WindowComponent WindowPrefab;
         public TextWindowComponent TextWindowPrefab;
+        public ImageWindowComponent ImageWindowPrefab;
 
         public CursorTextureConfig[] CursorTextures;
     }

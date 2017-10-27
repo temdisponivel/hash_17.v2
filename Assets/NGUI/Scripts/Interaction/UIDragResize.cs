@@ -67,6 +67,9 @@ public class UIDragResize : MonoBehaviour
 
 	void OnDragStart ()
 	{
+		if (!enabled)
+			return;
+		
 		if (target != null)
 		{
 			var corners = target.worldCorners;
@@ -91,6 +94,9 @@ public class UIDragResize : MonoBehaviour
 
 	void OnDrag (Vector2 delta)
 	{
+		if (!enabled)
+			return;
+		
 		if (mDragging && target != null)
 		{
 			float dist;

@@ -145,6 +145,9 @@ public class UIDragObject : MonoBehaviour
 
 	void OnPress (bool pressed)
 	{
+		if (!enabled)
+			return;
+		
 		if (UICamera.currentTouchID == -2 || UICamera.currentTouchID == -3) return;
 
 		// Unity's physics seems to break when timescale is not quite zero. Raycasts start to fail completely.
@@ -193,6 +196,9 @@ public class UIDragObject : MonoBehaviour
 
 	void OnDrag (Vector2 delta)
 	{
+		if (!enabled)
+			return;
+		
 		if (mPressed && mTouchID == UICamera.currentTouchID && enabled && NGUITools.GetActive(gameObject) && target != null)
 		{
 			UICamera.currentTouch.clickNotification = UICamera.ClickNotification.BasedOnDelta;
@@ -246,6 +252,9 @@ public class UIDragObject : MonoBehaviour
 
 	void Move (Vector3 worldDelta)
 	{
+		if (!enabled)
+			return;
+		
 		if (panelRegion != null)
 		{
 			mTargetPos += worldDelta;
@@ -361,6 +370,9 @@ public class UIDragObject : MonoBehaviour
 
 	void OnScroll (float delta)
 	{
+		if (!enabled)
+			return;
+		
 		if (enabled && NGUITools.GetActive(gameObject))
 			mScroll -= scrollMomentum * (delta * 0.05f);
 	}

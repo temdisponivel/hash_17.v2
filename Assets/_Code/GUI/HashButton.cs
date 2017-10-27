@@ -20,9 +20,18 @@ namespace HASH.GUI
         public event Action OnClickCallback;
         public event Action OnDoubleClickCallback;
 
+        public CursorTexture OnHoverCursor;
+
+        public bool IgnoreClick;
+
         // Called by NGUI
         void OnHover(bool isOver)
         {
+            if (isOver)
+                GUIUtil.SetCursorTexture(OnHoverCursor);
+            else
+                GUIUtil.SetCursorToDefault();
+            
             if (!Texture)
                 return;
             
@@ -35,6 +44,9 @@ namespace HASH.GUI
         // Called by NGUI
         void OnPress(bool isDown)
         {
+            if (IgnoreClick)
+                return;
+            
             if (isDown)
             {
                 if (Texture)
@@ -59,6 +71,9 @@ namespace HASH.GUI
         // Called by NGUI
         void OnDoubleClick()
         {
+            if (IgnoreClick)
+                return;
+            
             DoubleClickCallback.Execute();
             if (OnDoubleClickCallback != null)
                 OnDoubleClickCallback();

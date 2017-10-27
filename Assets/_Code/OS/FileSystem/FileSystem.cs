@@ -420,7 +420,7 @@ namespace HASH
         {
             DebugUtil.Assert(imageFile == null, "THE GIVEN IMAGE FILE IS NULL!");
 
-            var texture = ContentUtil.Load<Texture>(imageFile.ImageContentAssetPath);
+            var texture = ContentUtil.Load<Texture2D>(imageFile.ImageContentAssetPath);
             imageFile.ImageContent = texture;
 
             // Do not unload texture (like we unload text asset)

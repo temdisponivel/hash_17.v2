@@ -25,7 +25,7 @@ namespace HASH
             var texture = GetCursorTextureFromWindowResizePivot(pivot);
             SetCursorTexture(texture);
         }
-        
+
         public static CursorTexture GetCursorTextureFromWindowResizePivot(UIWidget.Pivot pivot)
         {
             switch (pivot)
@@ -64,6 +64,14 @@ namespace HASH
             }
 
             return null;
+        }
+
+        public static void UpdateButtonCursor(HashButton button)
+        {
+            if (button.IgnoreClick)
+                button.OnHoverCursor = CursorTexture.Block;
+            else
+                button.OnHoverCursor = CursorTexture.Normal;
         }
     }
 }

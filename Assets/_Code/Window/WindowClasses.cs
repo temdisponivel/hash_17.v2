@@ -15,6 +15,12 @@ namespace HASH.Window
         public WindowComponent SceneWindow;
         public object WindowContent;
 
+        public WindowState State;
+    }
+
+    public class WindowState
+    {
+        public bool CanBeClosed;
         public bool CanBeMoved;
         public bool CanBeResized;
     }

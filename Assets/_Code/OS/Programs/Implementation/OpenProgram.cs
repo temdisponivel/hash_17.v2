@@ -33,16 +33,15 @@ namespace HASH
                             var textContent = textFile.TextContent;
 
                             // TODO: remove this shit and uncomment line
-                            var window = WindowUtil.CreateWindow(WindowType.TextWindow, true, true);
-                            (window.WindowContent as TextWindowComponent).TextComponent.text = textContent;
-                            
-                            
+                            WindowUtil.CreateTextWindow(textContent);
                             //TerminalUtil.ShowText(textContent);
                             break;
                         case HashFileType.Image:
                             var imageFile = file.Content as ImageFile;
                             var imageContent = imageFile.ImageContent;
-                            TerminalUtil.ShowImage(imageContent);
+
+                            WindowUtil.CreateImageWindow(imageContent);
+                            // TerminalUtil.ShowImage(imageContent);
                             break;
                         default:
                             DebugUtil.Error(string.Format("The open program can't open file type: {0}", file.FileType));

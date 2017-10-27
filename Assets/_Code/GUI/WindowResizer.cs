@@ -19,7 +19,7 @@ namespace HASH.GUI
             var window = WindowUtil.GetWindowFromWindowComponent(Window);
             if (hover)
             {
-                if (window.CanBeResized)
+                if (window.State.CanBeResized)
                     GUIUtil.SetCursorToWindowResizer(DragResize.pivot);
                 else
                     GUIUtil.SetCursorTexture(CursorTexture.Block);
