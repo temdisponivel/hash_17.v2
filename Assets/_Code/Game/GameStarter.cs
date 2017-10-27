@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using HASH;
+using HASH.GUI;
 using HASH.Window;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace HASH
     {
         public InputListener InputListener;
         public TerminalComponent TerminalComponent;
-        public WindowReferences WindowReferences;
+        public GUIReferences GUIReferences;
         public DebugUtil.DebugCondition DebugCondition;
         public HashColors Colors;
         
@@ -36,7 +37,9 @@ namespace HASH
             Constants.Colors = Colors;
             
             DataHolder.DebugCondition = DebugCondition;
-            DataHolder.WindowReferences = WindowReferences;
+            DataHolder.GUIReferences = GUIReferences;
+            
+            GUIUtil.SetCursorToDefault();
 
             yield return DataUtil.Load();
             DataUtil.ProcessLoadedData();

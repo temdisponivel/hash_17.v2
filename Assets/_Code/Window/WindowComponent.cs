@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using HASH.GUI;
+using UnityEngine;
 
 namespace HASH.Window
 {
@@ -8,15 +9,14 @@ namespace HASH.Window
         public UIPanel ContentParent;
         public UILabel TitleLabel;
 
-        public UIWidget ControlBox;
-
-        public UIDragObject DragObject;
-
         public bool Maximized;
         public WindowResizingProperties MaximizedProperties;
         
         public bool Minimized;
         public WindowResizingProperties MinimizedProperties;
+
+        public WindowResizer[] Resizers;
+        public WindowControlBar ControlBar;
 
         public void OnCloseClicked()
         {

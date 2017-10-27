@@ -1,4 +1,5 @@
 ﻿using HASH;
+using HASH.GUI;
 using HASH.Window;
 
 namespace HASH
@@ -16,6 +17,6 @@ namespace HASH
         
         public static ProgramsData ProgramData;
 
-        public static WindowReferences WindowReferences;
+        public static GUIReferences GUIReferences;
     }
 }

@@ -14,6 +14,9 @@ namespace HASH.Window
         public WindowType Type;
         public WindowComponent SceneWindow;
         public object WindowContent;
+
+        public bool CanBeMoved;
+        public bool CanBeResized;
     }
 
     public struct WindowResizingProperties

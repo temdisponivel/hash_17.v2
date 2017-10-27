@@ -33,7 +33,7 @@ namespace HASH
                             var textContent = textFile.TextContent;
 
                             // TODO: remove this shit and uncomment line
-                            var window = WindowUtil.CreateWindow(WindowType.TextWindow);
+                            var window = WindowUtil.CreateWindow(WindowType.TextWindow, true, true);
                             (window.WindowContent as TextWindowComponent).TextComponent.text = textContent;
                             
                             

@@ -15,24 +15,27 @@ namespace HASH.Window
             CurrentlyOpenWindows = SList.Create<Window>(5);
         }
 
-        public static Window CreateWindow(WindowType type)
+        public static Window CreateWindow(WindowType type, bool canBeMoved, bool canBeResized)
         {
-            var references = DataHolder.WindowReferences;
+            var references = DataHolder.GUIReferences;
 
             var windowObj = NGUITools.AddChild(DataHolder.TerminalReferences.WindowsPanel.gameObject, references.WindowPrefab.gameObject);
 
             var windowComponent = windowObj.GetComponent<WindowComponent>();
             var textWindow = CreateTextWindow(windowComponent.ContentParent);
 
-            windowComponent.DragObject.contentRect = windowComponent.WindowWidget;
-            windowComponent.DragObject.panelRegion = DataHolder.TerminalReferences.WindowsPanel;
+            windowComponent.ControlBar.DragObject.contentRect = windowComponent.WindowWidget;
+            windowComponent.ControlBar.DragObject.panelRegion = DataHolder.TerminalReferences.WindowsPanel;
 
             var window = new Window();
-
+            
             window.WindowId = WindowIds++;
             window.SceneWindow = windowComponent;
             window.Type = type;
             window.WindowContent = textWindow;
+            
+            SetWindowMovement(window, canBeMoved);
+            SetWindowResize(window, canBeResized);
 
             windowObj.SetActive(true);
 
@@ -43,7 +46,7 @@ namespace HASH.Window
 
         public static TextWindowComponent CreateTextWindow(UIPanel parent)
         {
-            var textWindowObj = NGUITools.AddChild(parent.gameObject, DataHolder.WindowReferences.TextWindowPrefab.gameObject);
+            var textWindowObj = NGUITools.AddChild(parent.gameObject, DataHolder.GUIReferences.TextWindowPrefab.gameObject);
             var textWindow = textWindowObj.GetComponent<TextWindowComponent>();
 
             GameObjectUtil.AnchorToParentKeepingValues(parent.gameObject, textWindow.MainWidget);
@@ -86,8 +89,8 @@ namespace HASH.Window
             }
             
             window.Maximized = !window.Maximized;
-            var bounds = GameObjectUtil.GetDragObjectBounds(window.DragObject);
-            window.DragObject.panelRegion.ConstrainTargetToBounds(window.transform, ref bounds, true);
+            var bounds = GameObjectUtil.GetDragObjectBounds(window.ControlBar.DragObject);
+            window.ControlBar.DragObject.panelRegion.ConstrainTargetToBounds(window.transform, ref bounds, true);
         }
 
         public static void MinimizeWindowComponent(WindowComponent window)
@@ -106,12 +109,12 @@ namespace HASH.Window
                 window.MinimizedProperties.PreviousSize = new Vector2(window.WindowWidget.width, window.WindowWidget.height);
                 window.MinimizedProperties.PreviousPosition = window.transform.position;
 
-                window.WindowWidget.height = window.ControlBox.height;
+                window.WindowWidget.height = window.ControlBar.ControlBox.height;
             }
 
             window.Minimized = !window.Minimized;
-            var bounds = GameObjectUtil.GetDragObjectBounds(window.DragObject);
-            window.DragObject.panelRegion.ConstrainTargetToBounds(window.transform, ref bounds, true);
+            var bounds = GameObjectUtil.GetDragObjectBounds(window.ControlBar.DragObject);
+            window.ControlBar.DragObject.panelRegion.ConstrainTargetToBounds(window.transform, ref bounds, true);
         }
 
         public static Window GetWindowFromWindowComponent(WindowComponent windowComponent)
@@ -119,6 +122,34 @@ namespace HASH.Window
             var window = SList.Find(CurrentlyOpenWindows, w => w.SceneWindow == windowComponent);
             DebugUtil.Assert(window == null, "CLOSING A INVALID WINDOW");
             return window;
+        }
+
+        public static void KeepWindowInsideScreen(WindowComponent windowComponent)
+        {
+            var bounds = GameObjectUtil.GetDragObjectBounds(windowComponent.ControlBar.DragObject);
+            windowComponent.ControlBar.DragObject.panelRegion.ConstrainTargetToBounds(windowComponent.transform, ref bounds, true);
+        }
+
+        public static void SetWindowMovement(Window window, bool canMove)
+        {
+            if (window.CanBeMoved == canMove)
+                return;
+
+            window.CanBeMoved = canMove;
+            window.SceneWindow.ControlBar.DragObject.enabled = canMove;
+        }
+        
+        public static void SetWindowResize(Window window, bool canResize)
+        {
+            if (window.CanBeResized == canResize)
+                return;
+
+            window.CanBeResized = canResize;
+            for (int i = 0; i < window.SceneWindow.Resizers.Length; i++)
+            {
+                var resizer = window.SceneWindow.Resizers[i];
+                resizer.DragResize.enabled = canResize;
+            }
         }
     }
 }
