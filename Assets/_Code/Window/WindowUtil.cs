@@ -1,7 +1,4 @@
-﻿using System.Text;
-using HASH.GUI;
-using NUnit.Framework.Api;
-using SimpleCollections.Lists;
+﻿using SimpleCollections.Lists;
 using UnityEngine;
 
 namespace HASH.Window
@@ -13,6 +10,8 @@ namespace HASH.Window
 
         public static WindowState DefaultTextState;
         public static WindowState DefaultImageState;
+
+        public const float UpdateScrollBarsInterval = .1f;
 
         public static void Initialize()
         {
@@ -28,6 +27,8 @@ namespace HASH.Window
             DefaultImageState.CanBeClosed = true;
             DefaultImageState.CanBeMoved = true;
             DefaultImageState.CanBeResized = false;
+            
+            LoopUtil.CallForever(UpdateWindowsScrollBars, UpdateScrollBarsInterval);
         }
 
         public static void CreateTextWindow(string content)
@@ -161,30 +162,36 @@ namespace HASH.Window
             SetWindowSize(windowComponent, width, height);
         }
 
-        public static void MinimizeWindowComponent(WindowComponent window)
+        public static void MinimizeWindowComponent(WindowComponent windowComponent)
         {
-            if (window.Maximized)
-                MaximizeWindowComponent(window);
+            if (windowComponent.Maximized)
+                MaximizeWindowComponent(windowComponent);
 
             int width = -1;
             int height = 0;
 
-            if (window.Minimized)
+            if (windowComponent.Minimized)
             {
-                width = Mathf.RoundToInt(window.MinimizedProperties.PreviousSize.x);
-                height = Mathf.RoundToInt(window.MinimizedProperties.PreviousSize.y);
-                window.transform.position = window.MinimizedProperties.PreviousPosition;
+                width = Mathf.RoundToInt(windowComponent.MinimizedProperties.PreviousSize.x);
+                height = Mathf.RoundToInt(windowComponent.MinimizedProperties.PreviousSize.y);
+                windowComponent.transform.position = windowComponent.MinimizedProperties.PreviousPosition;
+                
+                var window = GetWindowFromWindowComponent(windowComponent);
+                SetWindowResizable(window, true);
             }
             else
             {
-                window.MinimizedProperties.PreviousSize = new Vector2(window.WindowWidget.width, window.WindowWidget.height);
-                window.MinimizedProperties.PreviousPosition = window.transform.position;
+                windowComponent.MinimizedProperties.PreviousSize = new Vector2(windowComponent.WindowWidget.width, windowComponent.WindowWidget.height);
+                windowComponent.MinimizedProperties.PreviousPosition = windowComponent.transform.position;
 
-                height = window.ControlBar.ControlBox.height;
+                height = windowComponent.ControlBar.ControlBox.height;
+
+                var window = GetWindowFromWindowComponent(windowComponent);
+                SetWindowResizable(window, false);
             }
 
-            window.Minimized = !window.Minimized;
-            SetWindowSize(window, width, height);
+            windowComponent.Minimized = !windowComponent.Minimized;
+            SetWindowSize(windowComponent, width, height);
         }
 
         public static Window GetWindowFromWindowComponent(WindowComponent windowComponent)
@@ -244,6 +251,25 @@ namespace HASH.Window
             SetWindowMovable(window, state.CanBeMoved);
             SetWindowClosable(window, state.CanBeClosed);
             SetWindowResizable(window, state.CanBeResized);
+        }
+
+        public static void UpdateWindowsScrollBars()
+        {
+            for (int i = 0; i < CurrentlyOpenWindows.Count; i++)
+            {
+                var window = CurrentlyOpenWindows[i];
+                if (window.Type == WindowType.TextWindow)
+                {
+                    var textWindow = window.WindowContent as TextWindowComponent;
+                    var size = new Vector2(textWindow.MainWidget.width, textWindow.MainWidget.height);
+                    var diff = textWindow.LastSize - size;
+                    if (diff.sqrMagnitude > 0.1f)
+                    {
+                        GUIUtil.UpdateScrollBar(textWindow.ScrollView);
+                        textWindow.LastSize = size;
+                    }
+                }
+            }
         }
     }
 }

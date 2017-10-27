@@ -73,5 +73,17 @@ namespace HASH
             else
                 button.OnHoverCursor = CursorTexture.Normal;
         }
+        
+        public static void UpdateScrollBar(UIScrollView scroll)
+        {
+            var backgroundWidget = scroll.verticalScrollBar.backgroundWidget;
+            var foregroundWidget = scroll.verticalScrollBar.foregroundWidget;
+
+            if (backgroundWidget)
+                foregroundWidget.height = backgroundWidget.height;
+            
+            scroll.UpdateScrollbars(true);
+            scroll.UpdatePosition();
+        }
     }
 }

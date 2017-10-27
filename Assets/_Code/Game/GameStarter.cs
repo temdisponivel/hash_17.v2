@@ -33,6 +33,8 @@ namespace HASH
             if (TerminalComponent == null)
                 DebugUtil.Error("TERMINAL COMPONENT IS NULL. PLEASE BAKE THE GAME HOLDER!");
 #endif
+            
+            LoopUtil.Init();
 
             Constants.Colors = Colors;
             

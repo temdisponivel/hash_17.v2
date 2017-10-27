@@ -9,5 +9,7 @@ namespace HASH.Window
         public UIWidget MainWidget;
         public UILabel TextComponent;
         public UIScrollView ScrollView;
+
+        public Vector2 LastSize;
     }
 }
