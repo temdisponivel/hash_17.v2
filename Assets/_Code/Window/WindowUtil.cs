@@ -104,16 +104,16 @@ namespace HASH.Window
             return textWindow;
         }
 
-        public static void SetWindowSize(WindowComponent window, int width, int height)
+        public static void SetWindowSize(WindowComponent windowComponent, int width, int height)
         {
             if (width >= 0)
-                window.WindowWidget.width = width;
+                windowComponent.WindowWidget.width = width;
             
             if (height >= 0)
-                window.WindowWidget.height = height;
+                windowComponent.WindowWidget.height = height;
 
-            var bounds = GameObjectUtil.GetDragObjectBounds(window.ControlBar.DragObject);
-            window.ControlBar.DragObject.panelRegion.ConstrainTargetToBounds(window.transform, ref bounds, true);
+            var bounds = GameObjectUtil.GetDragObjectBounds(windowComponent.ControlBar.DragObject);
+            windowComponent.ControlBar.DragObject.panelRegion.ConstrainTargetToBounds(windowComponent.transform, ref bounds, true);
         }
 
         public static void CloseWindow(Window window)

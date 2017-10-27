@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace HASH.Window
 {
@@ -6,5 +8,6 @@ namespace HASH.Window
     {
         public UIWidget MainWidget;
         public UILabel TextComponent;
+        public UIScrollView ScrollView;
     }
 }
