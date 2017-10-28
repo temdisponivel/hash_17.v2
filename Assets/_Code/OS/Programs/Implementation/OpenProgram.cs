@@ -105,7 +105,14 @@ namespace HASH
             else
             {
                 string title = FileSystem.GetWindowTitleForFile(file);
-                WindowUtil.CreateImageWindow(imageContent, title);
+                ImageWindowComponent imageWindow = WindowUtil.CreateImageWindow(imageContent, title);
+
+                if (file.Status == FileStatus.Encrypted)
+                {
+                    var materialPrefab = DataHolder.GUIReferences.EncryptedImageMaterial;
+                    var material = new Material(materialPrefab);
+                    imageWindow.ImageHolder.material = material;
+                }
             }
         }
         

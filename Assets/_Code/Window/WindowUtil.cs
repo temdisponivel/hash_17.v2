@@ -53,7 +53,7 @@ namespace HASH.Window
             Focus(window.SceneWindow);
         }
 
-        public static void CreateImageWindow(Texture2D content, string title)
+        public static ImageWindowComponent CreateImageWindow(Texture2D content, string title)
         {
             var window = CreateWindow(DefaultImageState);
             window.Type = WindowType.ImageWindow;
@@ -71,6 +71,8 @@ namespace HASH.Window
 
             CacheComponents(window.SceneWindow);
             Focus(window.SceneWindow);
+
+            return imageWindow;
         }
 
         private static Window CreateWindow(WindowState defaultState)

@@ -42,6 +42,8 @@ namespace HASH.GUI
         public ImageWindowComponent ImageWindowPrefab;
 
         public CursorTextureConfig[] CursorTextures;
+
+        public Material EncryptedImageMaterial;
     }
 
     public enum CursorTexture
