@@ -17,7 +17,8 @@ namespace HASH.Window
 
         public static WindowComponent CurrentlyFocusedWindow;
 
-        public const int FocusedWindowDepthIncrement = 999;
+        public const int FocusedWindowDepth = 999;
+        public const int UnfocusedWindowDepth = 399;
 
         public static void Initialize()
         {
@@ -46,7 +47,7 @@ namespace HASH.Window
             textWindow.TextComponent.text = content;
             window.WindowContent = textWindow;
 
-            CacheDepths(window.SceneWindow);
+            CacheComponents(window.SceneWindow);
             Focus(window.SceneWindow);
         }
 
@@ -64,7 +65,7 @@ namespace HASH.Window
 
             window.WindowContent = imageWindow;
 
-            CacheDepths(window.SceneWindow);
+            CacheComponents(window.SceneWindow);
             Focus(window.SceneWindow);
         }
 
@@ -72,12 +73,12 @@ namespace HASH.Window
         {
             var references = DataHolder.GUIReferences;
 
-            var windowObj = NGUITools.AddChild(DataHolder.GUIReferences.WindowsPanel.gameObject, references.WindowPrefab.gameObject);
+            var windowObj = NGUITools.AddChild(DataHolder.GUIReferences.WindowPanel.gameObject, references.WindowPrefab);
 
             var windowComponent = windowObj.GetComponent<WindowComponent>();
 
             windowComponent.ControlBar.DragObject.contentRect = windowComponent.WindowWidget;
-            windowComponent.ControlBar.DragObject.panelRegion = DataHolder.GUIReferences.WindowsPanel;
+            windowComponent.ControlBar.DragObject.panelRegion = DataHolder.GUIReferences.WindowPanel;
 
             var window = new Window();
 
@@ -90,8 +91,10 @@ namespace HASH.Window
 
             SList.Add(CurrentlyOpenWindows, window);
 
-            windowComponent.WidgetsDefaultDepth = SList.Create<Pair<UIWidget, int>>(3);
-            windowComponent.PanelsDefaultDepth = SList.Create<Pair<UIPanel, int>>(3);
+            windowComponent.Widgets = SList.Create<UIWidget>(3);
+            windowComponent.Panels = SList.Create<UIPanel>(3);
+            
+            Focus(windowComponent);
 
             return window;
         }
@@ -288,121 +291,66 @@ namespace HASH.Window
             }
         }
 
-        public static void CacheWidgetDepths(WindowComponent windowComponent)
+        public static void CacheWidgets(WindowComponent windowComponent)
         {
-            SList.Clear(windowComponent.WidgetsDefaultDepth);
+            SList.Clear(windowComponent.Widgets);
 
             var widgets = windowComponent.gameObject.GetComponentsInChildren<UIWidget>(true);
             for (int i = 0; i < widgets.Length; i++)
             {
                 var widget = widgets[i];
-
-                var pair = new Pair<UIWidget, int>();
-                pair.Key = widget;
-                pair.Value = widget.depth;
-
-                SList.Add(windowComponent.WidgetsDefaultDepth, pair);
+                SList.Add(windowComponent.Widgets, widget);
             }
         }
 
-        public static void CachePanelDepths(WindowComponent windowComponent)
+        public static void CachePanels(WindowComponent windowComponent)
         {
-            SList.Clear(windowComponent.PanelsDefaultDepth);
+            SList.Clear(windowComponent.Panels);
 
             var panels = windowComponent.gameObject.GetComponentsInChildren<UIPanel>(true);
             for (int i = 0; i < panels.Length; i++)
             {
                 var panel = panels[i];
-
-                var pair = new Pair<UIPanel, int>();
-                pair.Key = panel;
-                pair.Value = panel.depth;
-
-                SList.Add(windowComponent.PanelsDefaultDepth, pair);
+                SList.Add(windowComponent.Panels, panel);
             }
         }
 
-        public static void CacheDepths(WindowComponent windowComponent)
+        public static void CacheComponents(WindowComponent windowComponent)
         {
-            CacheWidgetDepths(windowComponent);
-            CachePanelDepths(windowComponent);
-        }
-
-        public static void SetDepthsToCachedValue(WindowComponent windowComponent)
-        {
-            var widgets = windowComponent.WidgetsDefaultDepth;
-            for (int i = 0; i < widgets.Count; i++)
-            {
-                var widget = widgets[i];
-                widget.Key.depth = widget.Value;
-            }
-
-            var panels = windowComponent.PanelsDefaultDepth;
-            for (int i = 0; i < panels.Count; i++)
-            {
-                var panel = panels[i];
-                panel.Key.depth = panel.Value;
-            }
-        }
-
-        public static void SetWidgetDepths(WindowComponent windowComponent, int depth, SetDepthMode mode)
-        {
-            var widgets = windowComponent.WidgetsDefaultDepth;
-            for (int i = 0; i < widgets.Count; i++)
-            {
-                var widget = widgets[i];
-                switch (mode)
-                {
-                    case SetDepthMode.Absolute:
-                        widget.Key.depth = depth;
-                        break;
-                    case SetDepthMode.Increment:
-                        widget.Key.depth = widget.Value + depth;
-                        break;
-                    case SetDepthMode.Decrement:
-                        widget.Key.depth = widget.Value - depth;
-                        break;
-                }
-            }
-        }
-        
-        public static void SetPanelDepths(WindowComponent windowComponent, int depth, SetDepthMode mode)
-        {
-            var panels = windowComponent.PanelsDefaultDepth;
-            for (int i = 0; i < panels.Count; i++)
-            {
-                var panel = panels[i];
-                switch (mode)
-                {
-                    case SetDepthMode.Absolute:
-                        panel.Key.depth = depth;
-                        break;
-                    case SetDepthMode.Increment:
-                        panel.Key.depth = panel.Value + depth;
-                        break;
-                    case SetDepthMode.Decrement:
-                        panel.Key.depth = panel.Value - depth;
-                        break;
-                }
-            }
-        }
-
-        public static void SetDepths(WindowComponent windowComponent, int depth, SetDepthMode mode)
-        {
-            SetWidgetDepths(windowComponent, depth, mode);
-            SetPanelDepths(windowComponent, depth, mode);
+            CacheWidgets(windowComponent);
+            CachePanels(windowComponent);
         }
 
         public static void Focus(WindowComponent windowComponent)
         {
-            if (windowComponent == CurrentlyFocusedWindow)
-                return;
-
-            if (CurrentlyFocusedWindow)
-                SetDepthsToCachedValue(CurrentlyFocusedWindow);
-            
-            SetDepths(windowComponent, FocusedWindowDepthIncrement, SetDepthMode.Increment);
             CurrentlyFocusedWindow = windowComponent;
+            UpdateWindowsDepth();
+        }
+
+        public static void SetDepthOnPanels(WindowComponent window, int startDepth)
+        {
+            // starts at 1 because the main panel is always the first
+            for (int i = 0; i < window.Panels.Count; i++)
+            {
+                var panel = window.Panels[i];
+                panel.depth = ++startDepth;
+            }
+        }
+        
+        public static void UpdateWindowsDepth()
+        {
+            if (CurrentlyFocusedWindow)
+                SetDepthOnPanels(CurrentlyFocusedWindow, FocusedWindowDepth);
+
+            var depth = UnfocusedWindowDepth;
+            for (int i = CurrentlyOpenWindows.Count - 1; i >= 0; i--)
+            {
+                var window = CurrentlyOpenWindows[i];
+                if (window.SceneWindow == CurrentlyFocusedWindow)
+                    continue;
+                
+                SetDepthOnPanels(window.SceneWindow, depth++);
+            }
         }
     }
 }

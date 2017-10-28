@@ -31,13 +31,12 @@ namespace HASH.GUI
         
         public InputListener InputListener;
         
-        [Header("WINDOW")]
         public TerminalComponent TerminalComponent;
+
+        [Header("WINDOW")] 
+        public UIPanel WindowPanel;
         
-        public UIPanel WindowsPanel;
-        public UIPanel FocusedWindowsPanel;
-        
-        public WindowComponent WindowPrefab;
+        public GameObject WindowPrefab;
         public TextWindowComponent TextWindowPrefab;
         public ImageWindowComponent ImageWindowPrefab;
 
@@ -57,12 +56,5 @@ namespace HASH.GUI
         ResizeTopLeft,
         ResizeTopRight,
         Loading,
-    }
-
-    public enum SetDepthMode
-    {
-        Increment,
-        Decrement,
-        Absolute,
     }
 }

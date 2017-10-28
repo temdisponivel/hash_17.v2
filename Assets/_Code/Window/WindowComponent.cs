@@ -20,8 +20,8 @@ namespace HASH.Window
         public WindowResizer[] Resizers;
         public WindowControlBar ControlBar;
 
-        public SimpleList<Pair<UIWidget, int>> WidgetsDefaultDepth;
-        public SimpleList<Pair<UIPanel, int>> PanelsDefaultDepth;
+        public SimpleList<UIWidget> Widgets;
+        public SimpleList<UIPanel> Panels;
 
         public void OnCloseClicked()
         {
