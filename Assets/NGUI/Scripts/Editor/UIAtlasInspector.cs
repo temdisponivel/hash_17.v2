@@ -134,7 +134,7 @@ public class UIAtlasInspector : Editor
 				"swapping an SD atlas with an HD one, or " +
 				"replacing an English atlas with a Chinese " +
 				"one. All the sprites referencing this atlas " +
-				"will update their references to the new one.", MessageType.Info);
+				"will update their data to the new one.", MessageType.Info);
 
 			if (mReplacement != mAtlas && mAtlas.replacement != mReplacement)
 			{

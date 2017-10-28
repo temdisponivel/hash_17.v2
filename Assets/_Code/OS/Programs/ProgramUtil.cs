@@ -38,7 +38,7 @@ namespace HASH
 
         public static void AddPrefixToCommandBuffer(string prefix)
         {
-            var data = DataHolder.TerminalReferences;
+            var data = DataHolder.TerminalData;
             for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
             {
                 var option = data.CurrentCommandBuffer[i];

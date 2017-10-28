@@ -533,7 +533,7 @@ namespace HASH
 
         public static void FilleCommandBufferWithFileSystem(FillBufferFileSystemOptions option)
         {
-            var commandBuffer = DataHolder.TerminalReferences.AvailableCommands;
+            var commandBuffer = DataHolder.TerminalData.AvailableCommands;
             var data = DataHolder.FileSystemData;
             
             SList.Clear(commandBuffer);

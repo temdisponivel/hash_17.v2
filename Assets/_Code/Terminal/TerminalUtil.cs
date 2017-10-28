@@ -22,7 +22,7 @@ namespace HASH
         /// </summary>
         public static void StartTextBatch()
         {
-            var data = DataHolder.TerminalReferences;
+            var data = DataHolder.TerminalData;
 
             DebugUtil.Assert(data.Batching, "THERE'S ALREADY A TEXT BATCH HAPPENING!");
 
@@ -34,7 +34,7 @@ namespace HASH
         /// </summary>
         public static void EndTextBatch()
         {
-            var data = DataHolder.TerminalReferences;
+            var data = DataHolder.TerminalData;
 
             DebugUtil.Assert(!data.Batching, "THERE'S NO TEXT BATCH HAPPENING!");
 
@@ -69,7 +69,8 @@ namespace HASH
         /// </summary>
         public static void ShowText(string text)
         {
-            var data = DataHolder.TerminalReferences;
+            var references = DataHolder.GUIReferences;
+            var data = DataHolder.TerminalData;
             if (data.Batching)
             {
                 var entry = new TextBatchEntry();
@@ -78,7 +79,7 @@ namespace HASH
                 SList.Enqueue(data.BatchEntries, entry);
             }
             else
-                Terminal.ShowSingleText(data, text);
+                Terminal.ShowSingleText(references, text);
         }
 
         /// <summary>
@@ -86,7 +87,8 @@ namespace HASH
         /// </summary>
         public static void ShowDualText(string leftText, string rightText)
         {
-            var data = DataHolder.TerminalReferences;
+            var references = DataHolder.GUIReferences;
+            var data = DataHolder.TerminalData;
             if (data.Batching)
             {
                 var entry = new TextBatchEntry();
@@ -95,7 +97,7 @@ namespace HASH
                 SList.Enqueue(data.BatchEntries, entry);
             }
             else
-                Terminal.ShowDualText(data, leftText, rightText);
+                Terminal.ShowDualText(references, leftText, rightText);
         }
 
         /// <summary>
@@ -166,7 +168,7 @@ namespace HASH
         public static void UpdateCurrentPathLabel()
         {
             var line = CreatePlayerInputLine(string.Empty);
-            DataHolder.TerminalReferences.CurrentPath.text = line.FormattedText;
+            DataHolder.GUIReferences.CurrentPath.text = line.FormattedText;
         }
 
         #endregion
@@ -184,7 +186,7 @@ namespace HASH
 
         public static void RemoveTextEntries(int quantity, TerminalEntryRemoveType removeType)
         {
-            var allEntries = DataHolder.TerminalReferences.AllEntries;
+            var allEntries = DataHolder.TerminalData.AllEntries;
             quantity = Math.Min(quantity, allEntries.Count);
 
             if (quantity == 0)
@@ -223,7 +225,7 @@ namespace HASH
         /// </summary>
         public static void ClearInputText()
         {
-            Terminal.ShowTextOnInput(DataHolder.TerminalReferences, string.Empty);
+            Terminal.ShowTextOnInput(DataHolder.GUIReferences, string.Empty);
         }
 
         /// <summary>
@@ -231,19 +233,21 @@ namespace HASH
         /// </summary>
         public static void FocusOnInput()
         {
-            DataHolder.TerminalReferences.Input.selectAllTextOnFocus = false;
+            DataHolder.GUIReferences.Input.selectAllTextOnFocus = false;
         }
 
         /// <summary>
-        /// Calculates and stores the max char lenght on the terminal references.
+        /// Calculates and stores the max char lenght on the terminal data.
         /// </summary>
         public static void CalculateMaxCharLenght()
         {
-            var references = DataHolder.TerminalReferences;
+            var references = DataHolder.GUIReferences;
             var font = references.Input.label.bitmapFont;
             var width = font.defaultSize;
             var screenWidth = references.ScrollView.bounds.size.x;
-            references.MaxLineWidthInChars = Mathf.FloorToInt(screenWidth / width);
+
+            var data = DataHolder.TerminalData;
+            data.MaxLineWidthInChars = Mathf.FloorToInt(screenWidth / width);
         }
 
         /// <summary>
@@ -271,7 +275,7 @@ namespace HASH
             ClearInputText();
             FocusOnInput();
 
-            CacheCommand(DataHolder.TerminalReferences, text);
+            CacheCommand(DataHolder.TerminalData, text);
             ResetCommandBufferIndex();
         }
 
@@ -279,9 +283,9 @@ namespace HASH
         /// Caches the command on the terminal data.
         /// This will enable the user to up/down typed commands.
         /// </summary>
-        public static void CacheCommand(TerminalReferences references, string command)
+        public static void CacheCommand(TerminalData data, string command)
         {
-            SList.Insert(references.CommandCache, command, 0);
+            SList.Insert(data.CommandCache, command, 0);
         }
 
         /// <summary>
@@ -292,7 +296,8 @@ namespace HASH
         /// </summary>
         public static void NavigateCommandBuffer(int direction, bool wrapsAround)
         {
-            var data = DataHolder.TerminalReferences;
+            var references = DataHolder.GUIReferences;
+            var data = DataHolder.TerminalData;
             var buffer = data.CurrentCommandBuffer;
             if (buffer.Count > 0)
             {
@@ -310,7 +315,7 @@ namespace HASH
                     index = Mathf.Clamp(index, 0, buffer.Count - 1);
 
                 data.CurrentCommandBufferIndex = index;
-                Terminal.ShowCommandFromBuffer(data);
+                Terminal.ShowCommandFromBuffer(data, references);
             }
         }
 
@@ -319,7 +324,7 @@ namespace HASH
         /// </summary>
         public static void ResetCommandBufferIndex()
         {
-            var data = DataHolder.TerminalReferences;
+            var data = DataHolder.TerminalData;
 
             // Set to -1 because when the player presses the key again, we need this index to go to 0
             // if we set to 0, it will go either to 1 (if pressed up) or zero
@@ -332,10 +337,11 @@ namespace HASH
         /// </summary>
         public static void UpdateCommandBuffer()
         {
-            var data = DataHolder.TerminalReferences;
+            var references = DataHolder.GUIReferences;
+            var data = DataHolder.TerminalData;
             SList.Clear(data.AvailableCommands);
 
-            var currentText = data.Input.value;
+            var currentText = references.Input.value;
 
             var programName = CommandLineUtil.GetCommandName(currentText);
             var program = Shell.FindProgramByCommand(programName);
@@ -358,7 +364,7 @@ namespace HASH
         {
             StartTextBatch();
 
-            var data = DataHolder.TerminalReferences;
+            var data = DataHolder.TerminalData;
 
             int index = data.CurrentCommandBufferIndex;
             
@@ -380,7 +386,7 @@ namespace HASH
         /// </summary>
         public static void ChangeToCommandCacheBuffer()
         {
-            var data = DataHolder.TerminalReferences;
+            var data = DataHolder.TerminalData;
             if (data.CurrentCommandBuffer != data.CommandCache)
             {
                 data.CurrentCommandBuffer = data.CommandCache;
@@ -395,7 +401,7 @@ namespace HASH
         /// </summary>
         public static void ChangeToAvailableCommandsBuffer()
         {
-            var data = DataHolder.TerminalReferences;
+            var data = DataHolder.TerminalData;
             if (data.CurrentCommandBuffer != data.AvailableCommands)
             {
                 data.CurrentCommandBuffer = data.AvailableCommands;
@@ -412,7 +418,7 @@ namespace HASH
         /// </summary>
         public static void UpdateTableAndScroll()
         {
-            var data = DataHolder.TerminalReferences;
+            var data = DataHolder.GUIReferences;
             Terminal.UpdateTable(data);
             Terminal.UpdateScroll(data);
         }
@@ -436,7 +442,7 @@ namespace HASH
 
 
             line.MaxLineSizeIsForced = false;
-            line.MaxLineSize = DataHolder.TerminalReferences.MaxLineWidthInChars;
+            line.MaxLineSize = DataHolder.TerminalData.MaxLineWidthInChars;
 
             line.ItemsSeparator = "> ";
             line.SeparatorModifier.Color = Constants.Colors.Path;

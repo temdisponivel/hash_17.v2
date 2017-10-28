@@ -37,11 +37,6 @@ namespace HASH
     {
         public bool Listen;
         public InputEventConfig[] EventsToListen;
-
-        public void Initialize()
-        {
-            DataHolder.InputListener = this;
-        }
         
         private void Update()
         {

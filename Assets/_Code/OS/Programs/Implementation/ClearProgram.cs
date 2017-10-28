@@ -39,7 +39,7 @@ namespace HASH
             ClearMode mode = ClearMode.Top;
 
             if (options.ParsedArguments.Count == 0)
-                count = DataHolder.TerminalReferences.AllEntries.Count;
+                count = DataHolder.TerminalData.AllEntries.Count;
             else if (CommandLineUtil.ValidateArguments(options.ParsedArguments, Validations))
             {
                 Pair<string, string> modeArg;

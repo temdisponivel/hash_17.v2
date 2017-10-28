@@ -449,7 +449,7 @@ public abstract class UIRect : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Set anchor rect references on start.
+	/// Set anchor rect data on start.
 	/// </summary>
 
 	protected void Start ()
@@ -712,7 +712,7 @@ public abstract class UIRect : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Ensure that all rect references are set correctly on the anchors.
+	/// Ensure that all rect data are set correctly on the anchors.
 	/// </summary>
 
 	public void ResetAnchors ()
@@ -783,7 +783,7 @@ public abstract class UIRect : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Abstract start functionality, ensured to happen after the anchor rect references have been set.
+	/// Abstract start functionality, ensured to happen after the anchor rect data have been set.
 	/// </summary>
 
 	protected abstract void OnStart ();

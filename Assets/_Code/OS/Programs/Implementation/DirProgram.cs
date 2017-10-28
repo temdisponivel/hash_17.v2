@@ -113,7 +113,7 @@ namespace HASH
             var line = new TextTableLine();
             line.Items = items;
             line.ItemsSeparator = string.Empty;
-            line.MaxLineSize = DataHolder.TerminalReferences.MaxLineWidthInChars;
+            line.MaxLineSize = DataHolder.TerminalData.MaxLineWidthInChars;
             line.MaxLineSizeIsForced = true;
 
             line.ItemsSeparator = " | ";

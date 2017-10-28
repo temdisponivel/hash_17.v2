@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 /// <summary>
 /// Unity doesn't keep the values of static variables after scripts change get recompiled. One way around this
-/// is to store the references in EditorPrefs -- retrieve them at start, and save them whenever something changes.
+/// is to store the data in EditorPrefs -- retrieve them at start, and save them whenever something changes.
 /// </summary>
 
 public class NGUISettings

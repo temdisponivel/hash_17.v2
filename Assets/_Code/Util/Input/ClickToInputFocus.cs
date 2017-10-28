@@ -11,7 +11,7 @@ namespace HASH
         // Called by NGUI's UI Root
         private void OnClick()
         {
-            DataHolder.TerminalReferences.Input.isSelected = true;
+            DataHolder.GUIReferences.Input.isSelected = true;
         }
     }
 }

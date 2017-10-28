@@ -9,7 +9,6 @@ namespace HASH
     /// </summary>
     public class TerminalComponent : MonoBehaviour
     {
-        public TerminalReferences References;
         public float LastTabPressedTime;
 
         public const float DoubleTabPressedInterval = .3f; 
@@ -17,11 +16,12 @@ namespace HASH
         public void Initialize()
         {
             DebugUtil.Log("TERMINAL COMPONENT INITIALIZED!", Color.green, DebugUtil.DebugCondition.Info, DebugUtil.LogType.Info);
-            References.CommandCache = SList.Create<string>(50);
-            References.AvailableCommands = SList.Create<string>(20);
-            References.BatchEntries = SList.Create<TextBatchEntry>(10);
-            References.AllEntries = SList.Create<TerminalEntry>(100);
-            DataHolder.TerminalReferences = References;
+            
+            DataHolder.TerminalData = new TerminalData();
+            DataHolder.TerminalData.CommandCache = SList.Create<string>(50);
+            DataHolder.TerminalData.AvailableCommands = SList.Create<string>(20);
+            DataHolder.TerminalData.BatchEntries = SList.Create<TextBatchEntry>(10);
+            DataHolder.TerminalData.AllEntries = SList.Create<TerminalEntry>(100);
             TerminalUtil.FocusOnInput();
             TerminalUtil.CalculateMaxCharLenght();
         }
@@ -30,7 +30,7 @@ namespace HASH
 
         public void OnInputChanged()
         {
-            var text = References.Input.value;
+            var text = DataHolder.GUIReferences.Input.value;
             
             if (string.IsNullOrEmpty(text))
                 TerminalUtil.ChangeToCommandCacheBuffer();
@@ -42,7 +42,7 @@ namespace HASH
 
         public void OnInputSubimit()
         {
-            StartCoroutine(TerminalUtil.HandlePlayerInput(References.Input.value));
+            StartCoroutine(TerminalUtil.HandlePlayerInput(DataHolder.GUIReferences.Input.value));
         }
 
         public void UpPressed()

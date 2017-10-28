@@ -1250,7 +1250,7 @@ public int 	width
 #endif
 
 	/// <summary>
-	/// Clear references.
+	/// Clear data.
 	/// </summary>
 
 	protected override void OnDisable ()

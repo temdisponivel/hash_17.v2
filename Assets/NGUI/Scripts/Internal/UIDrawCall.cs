@@ -722,7 +722,7 @@ public class UIDrawCall : MonoBehaviour
 	void OnEnable () { mRebuildMat = true; }
 
 	/// <summary>
-	/// Clear all references.
+	/// Clear all data.
 	/// </summary>
 
 	void OnDisable ()

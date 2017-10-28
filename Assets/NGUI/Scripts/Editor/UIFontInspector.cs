@@ -123,7 +123,7 @@ public class UIFontInspector : Editor
 				"swapping an SD font with an HD one, or " +
 				"replacing an English font with a Chinese " +
 				"one. All the labels referencing this font " +
-				"will update their references to the new one.", MessageType.Info);
+				"will update their data to the new one.", MessageType.Info);
 
 			if (mReplacement != mFont && mFont.replacement != mReplacement)
 			{

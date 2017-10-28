@@ -1,4 +1,5 @@
 ﻿using HASH;
+using HASH.GUI;
 using SimpleCollections.Lists;
 using UnityEngine;
 
@@ -14,17 +15,17 @@ namespace HASH
         /// <summary>
         /// Shows a single text at the bottom of the terminal.
         /// </summary>
-        public static void ShowSingleText(TerminalReferences references, string text)
+        public static void ShowSingleText(GUIReferences data, string text)
         {
             var singleTextObject =
-                NGUITools.AddChild(references.TextTable.gameObject, references.SingleText.gameObject);
+                NGUITools.AddChild(data.TextTable.gameObject, data.SingleText.gameObject);
             var singleText = singleTextObject.GetComponent<SingleTextEntry>();
             singleText.TextComponent.text = text;
             singleText.transform.SetAsFirstSibling();
 
             var widget = singleText.ParentWidget;
-            widget.leftAnchor.target = references.ScrollView.transform;
-            widget.rightAnchor.target = references.ScrollView.transform;
+            widget.leftAnchor.target = data.ScrollView.transform;
+            widget.rightAnchor.target = data.ScrollView.transform;
 
             singleTextObject.SetActive(true);
 
@@ -32,23 +33,23 @@ namespace HASH
             textEntry.EntryType = TerminalEntryType.SingleText;
             textEntry.SceneObject = singleTextObject;
 
-            SList.Push(DataHolder.TerminalReferences.AllEntries, textEntry);
+            SList.Push(DataHolder.TerminalData.AllEntries, textEntry);
         }
 
         /// <summary>
         /// Shows a dual text at the bottom of the terminal.
         /// </summary>
-        public static void ShowDualText(TerminalReferences references, string leftText, string rightText)
+        public static void ShowDualText(GUIReferences data, string leftText, string rightText)
         {
-            var dualTextObject = NGUITools.AddChild(references.TextTable.gameObject, references.DualText.gameObject);
+            var dualTextObject = NGUITools.AddChild(data.TextTable.gameObject, data.DualText.gameObject);
             var dualText = dualTextObject.GetComponent<DualTextEntry>();
             dualText.LeftTextComponent.text = leftText;
             dualText.RightTextComponent.text = rightText;
             dualText.transform.SetAsFirstSibling();
 
             var widget = dualText.ParentWidget;
-            widget.leftAnchor.target = references.ScrollView.transform;
-            widget.rightAnchor.target = references.ScrollView.transform;
+            widget.leftAnchor.target = data.ScrollView.transform;
+            widget.rightAnchor.target = data.ScrollView.transform;
 
             dualTextObject.SetActive(true);
 
@@ -56,7 +57,7 @@ namespace HASH
             textEntry.EntryType = TerminalEntryType.SingleText;
             textEntry.SceneObject = dualTextObject;
 
-            SList.Push(DataHolder.TerminalReferences.AllEntries, textEntry);
+            SList.Push(DataHolder.TerminalData.AllEntries, textEntry);
         }
 
         #endregion
@@ -66,18 +67,18 @@ namespace HASH
         /// <summary>
         /// Shows the command from the command buffer accordingly to the index on TerminalData.
         /// </summary>
-        public static void ShowCommandFromBuffer(TerminalReferences references)
+        public static void ShowCommandFromBuffer(TerminalData data, GUIReferences references)
         {
-            var command = references.CurrentCommandBuffer[references.CurrentCommandBufferIndex];
+            var command = data.CurrentCommandBuffer[data.CurrentCommandBufferIndex];
             ShowTextOnInput(references, command);
         }
 
         /// <summary>
         /// Shows the given text on the input.
         /// </summary>
-        public static void ShowTextOnInput(TerminalReferences references, string text)
+        public static void ShowTextOnInput(GUIReferences data, string text)
         {
-            references.Input.value = text;
+            data.Input.value = text;
         }
 
         #endregion
@@ -87,17 +88,17 @@ namespace HASH
         /// <summary>
         /// Updates the scroll view position and bounds.
         /// </summary>
-        public static void UpdateScroll(TerminalReferences references)
+        public static void UpdateScroll(GUIReferences data)
         {
-            references.ScrollView.UpdateScrollbars(true);
+            data.ScrollView.UpdateScrollbars(true);
         }
 
         /// <summary>
         /// Calls reposition on the table.
         /// </summary>
-        public static void UpdateTable(TerminalReferences references)
+        public static void UpdateTable(GUIReferences data)
         {
-            references.TextTable.Reposition();
+            data.TextTable.Reposition();
         }
 
         #endregion
@@ -106,7 +107,7 @@ namespace HASH
 
         public static void ShowImage(Texture texture, int width, int height)
         {
-            var data = DataHolder.TerminalReferences;
+            var data = DataHolder.GUIReferences;
 
             var imageObject = NGUITools.AddChild(data.TextTable.gameObject, data.Image.gameObject);
             var image = imageObject.GetComponent<ImageEntry>();
@@ -122,7 +123,7 @@ namespace HASH
             entry.EntryType = TerminalEntryType.Image;
             entry.SceneObject = imageObject;
             
-            SList.Push(DataHolder.TerminalReferences.AllEntries, entry);
+            SList.Push(DataHolder.TerminalData.AllEntries, entry);
         }
 
         #endregion

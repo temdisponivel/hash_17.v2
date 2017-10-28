@@ -342,7 +342,7 @@ public class UIDragDropItem : MonoBehaviour
 				mTrans.parent = mParent;
 			}
 
-			// Update the grid and table references
+			// Update the grid and table data
 			mParent = mTrans.parent;
 			mGrid = NGUITools.FindInParents<UIGrid>(mParent);
 			mTable = NGUITools.FindInParents<UITable>(mParent);

@@ -163,7 +163,7 @@ public class PropertyReference
 	}
 
 	/// <summary>
-	/// Reset the cached references.
+	/// Reset the cached data.
 	/// </summary>
 
 	public void Reset ()

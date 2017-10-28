@@ -72,12 +72,12 @@ namespace HASH.Window
         {
             var references = DataHolder.GUIReferences;
 
-            var windowObj = NGUITools.AddChild(DataHolder.TerminalReferences.WindowsPanel.gameObject, references.WindowPrefab.gameObject);
+            var windowObj = NGUITools.AddChild(DataHolder.GUIReferences.WindowsPanel.gameObject, references.WindowPrefab.gameObject);
 
             var windowComponent = windowObj.GetComponent<WindowComponent>();
 
             windowComponent.ControlBar.DragObject.contentRect = windowComponent.WindowWidget;
-            windowComponent.ControlBar.DragObject.panelRegion = DataHolder.TerminalReferences.WindowsPanel;
+            windowComponent.ControlBar.DragObject.panelRegion = DataHolder.GUIReferences.WindowsPanel;
 
             var window = new Window();
 

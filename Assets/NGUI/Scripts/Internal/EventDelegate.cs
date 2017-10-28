@@ -22,7 +22,7 @@ using UnityEngine;
 public class EventDelegate
 {
 	/// <summary>
-	/// Delegates can have parameters, and this class makes it possible to save references to properties
+	/// Delegates can have parameters, and this class makes it possible to save data to properties
 	/// that can then be passed as function arguments, such as transform.position or widget.color.
 	/// </summary>
 
@@ -563,7 +563,7 @@ public class EventDelegate
 					Debug.LogError(msg);
 				}
 
-				// Clear the parameters so that references are not kept
+				// Clear the parameters so that data are not kept
 				for (int i = 0, imax = mArgs.Length; i < imax; ++i)
 				{
 					if (mParameterInfos[i].IsIn || mParameterInfos[i].IsOut)

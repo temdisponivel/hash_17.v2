@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using HASH;
 using HASH.GUI;
 using HASH.Window;
 using UnityEngine;
@@ -7,12 +6,10 @@ using UnityEngine;
 namespace HASH
 {
     /// <summary>
-    /// Behaviour that holds references to useful components and sets everything up.
+    /// Behaviour that holds data to useful components and sets everything up.
     /// </summary>
     public class GameStarter : MonoBehaviour
     {
-        public InputListener InputListener;
-        public TerminalComponent TerminalComponent;
         public GUIReferences GUIReferences;
         public DebugUtil.DebugCondition DebugCondition;
         public HashColors Colors;
@@ -26,16 +23,14 @@ namespace HASH
         /// Initialized the game.
         /// </summary>
         public IEnumerator InitializeGame()
-        {
+        {        
 #if DEB
-            if (InputListener == null)
+            if (GUIReferences.InputListener == null)
                 DebugUtil.Error("INPUT LISTENER IS NULL. PLEASE BAKE THE GAME HOLDER!");
-            if (TerminalComponent == null)
+            if (GUIReferences.TerminalComponent == null)
                 DebugUtil.Error("TERMINAL COMPONENT IS NULL. PLEASE BAKE THE GAME HOLDER!");
 #endif
             
-            LoopUtil.Init();
-
             Constants.Colors = Colors;
             
             DataHolder.DebugCondition = DebugCondition;
@@ -46,8 +41,9 @@ namespace HASH
             yield return DataUtil.Load();
             DataUtil.ProcessLoadedData();
 
-            InputListener.Initialize();
-            TerminalComponent.Initialize();
+            LoopUtil.Init();
+            
+            DataHolder.GUIReferences.TerminalComponent.Initialize();
 
             Cursor.lockState = CursorLockMode.Confined;
 
@@ -71,11 +67,11 @@ namespace HASH
         [ContextMenu("BAKE")]
         void Bake()
         {
-            InputListener = FindObjectOfType<InputListener>();
-            DebugUtil.Assert(InputListener == null, "DID NOT FOUND INPUTLISTENER. IS IT ACTIVE ON THE SCENE?");
+            GUIReferences.InputListener = FindObjectOfType<InputListener>();
+            DebugUtil.Assert(GUIReferences.InputListener == null, "DID NOT FOUND INPUTLISTENER. IS IT ACTIVE ON THE SCENE?");
 
-            TerminalComponent = FindObjectOfType<TerminalComponent>();
-            DebugUtil.Assert(TerminalComponent == null, "DID NOT FOUND TERMINALCOMPONENT. IS IT ACTIVE ON THE SCENE?");
+            GUIReferences.TerminalComponent = FindObjectOfType<TerminalComponent>();
+            DebugUtil.Assert(GUIReferences.TerminalComponent == null, "DID NOT FOUND TERMINALCOMPONENT. IS IT ACTIVE ON THE SCENE?");
         }
 #endif
     }
