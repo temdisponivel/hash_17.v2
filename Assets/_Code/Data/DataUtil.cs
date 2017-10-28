@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using HASH;
@@ -210,6 +211,8 @@ namespace HASH
 
             EditorUtility.SetDirty(fileSystem);
             Selection.activeObject = fileSystem;
+            
+            Debug.Log("Baking done!");
         }
 
         private static void FillDirsAndFiles(
@@ -226,26 +229,39 @@ namespace HASH
             parent.ParentDirId = parentId;
 
             var childs = Directory.GetDirectories(dir);
-            var files = Directory.GetFiles(dir);
-
-            // TODO: user permission
-
+            var parentDirPath = PathUtil.RemovePathPart(dir, RESOURCE_FOLDER_PATH_IN_PROJECT);
+            var files = Resources.LoadAll<HashFileSO>(parentDirPath);
+            
             var filesIds = new List<int>();
             for (int i = 0; i < files.Length; i++)
             {
                 var file = files[i];
-                var ext = Path.GetExtension(file);
-                var fileType = PathUtil.GetFileTypeByExtension(ext);
+                var fileType = file.Type;
+                
+                var filePath = AssetDatabase.GetAssetPath(file);
 
+                {
+                    // We need this validation because Resources.LoadAll will return files on subdirectory as well
+                    var filePathRelativeToResource = PathUtil.RemovePathPart(filePath, RESOURCE_FOLDER_PATH_IN_PROJECT);
+                    var fileName = Path.GetFileName(filePathRelativeToResource);
+
+                    var fileDirPath = PathUtil.RemovePathPart(filePathRelativeToResource, fileName); 
+                    PathUtil.MathPathFashion(ref fileDirPath, ref parentDirPath);
+                    if (fileDirPath != parentDirPath)
+                        continue;
+                }
+                
                 if (fileType == HashFileType.Invalid)
                     continue;
 
                 var hashFile = new SerializedHashFile();
 
-                var name = Path.GetFileName(file);
-                hashFile.Name = PathUtil.RemovePathPart(name, ext); 
-                hashFile.FileId = MathUtil.GetStringHash(file);
+                var name = file.name;
+                hashFile.Name = name; 
+                hashFile.FileId = MathUtil.GetStringHash(filePath);
                 hashFile.ParentDirId = parent.DirId;
+
+                hashFile.UserPermission = file.Permissions;
 
                 // TODO: user permission
 
@@ -255,10 +271,9 @@ namespace HASH
                         var textFile = new SerializedHashFileText();
                         textFile.File = hashFile;
                         
-                        var textAssetPath = PathUtil.RemovePathPart(file, RESOURCE_FOLDER_PATH_IN_PROJECT);
-                        textAssetPath = PathUtil.RemovePathPart(textAssetPath, ext);
-
-                        textFile.TextAssetPath = textAssetPath;
+                        textFile.TextAsset = file.Content as TextAsset;
+                        if (textFile.TextAsset == null)
+                            Debug.LogError("This file [CLICK ME] is marked as text but it's content is not a text asset!", file);
 
                         allTextFiles.Add(textFile);
                         break;
@@ -266,9 +281,10 @@ namespace HASH
                         var imageFile = new SerializedHashFileImage();
                         imageFile.File = hashFile;
                         
-                        var imageAssetPath = PathUtil.RemovePathPart(file, RESOURCE_FOLDER_PATH_IN_PROJECT);
-                        imageAssetPath = PathUtil.RemovePathPart(imageAssetPath, ext);
-                        imageFile.ImageAssetPath = imageAssetPath;
+                        imageFile.ImageAsset = file.Content as Texture2D;
+                        
+                        if (imageFile.ImageAsset == null)
+                            Debug.LogError("This file [CLICK ME] is marked as image but it's content is not a texture asset!", file);
 
                         allImageFiles.Add(imageFile);
                         break;

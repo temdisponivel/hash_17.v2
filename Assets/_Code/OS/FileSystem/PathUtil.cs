@@ -59,6 +59,15 @@ namespace HASH
         }
 
         /// <summary>
+        /// Returns the dir path of the given file path.
+        /// </summary>
+        public static string GetDirPath(string filePath)
+        {
+            var fileName = GetFileName(filePath);
+            return RemovePathPart(filePath, fileName);
+        }
+
+        /// <summary>
         /// Returns the extension that the given path ends in.
         /// If there's no extension in the path or the extension is not known, returns empty.
         /// </summary>
@@ -159,6 +168,25 @@ namespace HASH
                 return HashFileType.Image;
             else
                 return HashFileType.Invalid;
+        }
+
+        public static string ToUnityPath(string path)
+        {
+            return path.Replace("\\", "/");
+        }
+
+        public static void MathPathFashion(ref string pathA, ref string pathB)
+        {
+            pathA = ToUnityPath(pathA);
+            pathB = ToUnityPath(pathB);
+            bool finalTrailingA = pathA.EndsWith("/");
+            bool finalTrailingB = pathB.EndsWith("/");
+
+            if (finalTrailingA && !finalTrailingB)
+                pathB += "/";
+            
+            if (finalTrailingB && !finalTrailingA)
+                pathA += "/";
         }
     }
 

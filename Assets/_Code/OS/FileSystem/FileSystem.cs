@@ -348,27 +348,6 @@ namespace HASH
         }
 
         /// <summary>
-        /// Loads the file content into their content property.
-        /// </summary>
-        public static void LoadFileContent(HashFile file)
-        {
-            DebugUtil.Assert(file == null, "THE GIVEN FILE IS NULL!");
-
-            switch (file.FileType)
-            {
-                case HashFileType.Text:
-                    LoadTextFileContent(file.Content as TextFile);
-                    break;
-                case HashFileType.Image:
-                    LoadImageFileContent(file.Content as ImageFile);
-                    break;
-                default:
-                    DebugUtil.Assert(true, "PLEASE IMPLEMENT THE LOADING OF " + file.FileType);
-                    break;
-            }
-        }
-
-        /// <summary>
         /// Creates and returns a file from the given serialized data.
         /// </summary>
         public static HashFile GetFileFromSerializedData(SerializedHashFile serializedFile)
@@ -389,18 +368,6 @@ namespace HASH
         }
 
         /// <summary>
-        /// Loads the content of a text file into their Content property.
-        /// </summary>
-        public static void LoadTextFileContent(TextFile textFile)
-        {
-            DebugUtil.Assert(textFile == null, "THE GIVEN TEXT FILE IS NULL!");
-
-            var textAsset = ContentUtil.Load<TextAsset>(textFile.TextContentAssetPath);
-            textFile.TextContent = textAsset.text;
-            ContentUtil.Unload(textAsset);
-        }
-
-        /// <summary>
         /// Creates and returns a text file from the given serialized data.
         /// </summary>
         public static HashFile GetTextFileFromSerializedData(SerializedHashFileText serialized)
@@ -408,22 +375,9 @@ namespace HASH
             var file = GetFileFromSerializedData(serialized.File);
             file.FileType = HashFileType.Text;
             var txtFile = new TextFile();
-            txtFile.TextContentAssetPath = serialized.TextAssetPath;
+            txtFile.TextContent = serialized.TextAsset.text;
             file.Content = txtFile;
             return file;
-        }
-
-        /// <summary>
-        /// Loads the content of the given image file.
-        /// </summary>
-        public static void LoadImageFileContent(ImageFile imageFile)
-        {
-            DebugUtil.Assert(imageFile == null, "THE GIVEN IMAGE FILE IS NULL!");
-
-            var texture = ContentUtil.Load<Texture2D>(imageFile.ImageContentAssetPath);
-            imageFile.ImageContent = texture;
-
-            // Do not unload texture (like we unload text asset)
         }
 
         /// <summary>
@@ -434,7 +388,7 @@ namespace HASH
             var file = GetFileFromSerializedData(serialized.File);
             file.FileType = HashFileType.Image;
             var imageFile = new ImageFile();
-            imageFile.ImageContentAssetPath = serialized.ImageAssetPath;
+            imageFile.ImageContent = serialized.ImageAsset;
             file.Content = imageFile;
             return file;
         }
@@ -500,7 +454,7 @@ namespace HASH
         /// <summary>
         /// Caches the file full path and full name.
         /// </summary>
-        public static void CacheFilePaths(HashFile file)
+        public static void CacheFile(HashFile file)
         {
             file.FullPath = GetFileFullPath(file);
             file.FullName = GetFileFullName(file);
@@ -511,8 +465,7 @@ namespace HASH
         /// </summary>
         public static void CacheFileContents(HashFile file)
         {
-            CacheFilePaths(file);
-            LoadFileContent(file);
+            CacheFile(file);
         }
 
         #endregion

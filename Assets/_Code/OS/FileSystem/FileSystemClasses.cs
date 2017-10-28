@@ -32,7 +32,6 @@ namespace HASH
     /// </summary>
     public class TextFile
     {
-        public string TextContentAssetPath;
         public string TextContent;
     }
     
@@ -41,7 +40,6 @@ namespace HASH
     /// </summary>
     public class ImageFile
     {
-        public string ImageContentAssetPath;
         public Texture2D ImageContent;
     }
     

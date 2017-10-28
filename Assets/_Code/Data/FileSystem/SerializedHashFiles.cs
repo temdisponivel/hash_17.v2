@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace HASH
 {
@@ -21,7 +22,7 @@ namespace HASH
     public struct SerializedHashFileText
     {
         public SerializedHashFile File;
-        public string TextAssetPath;
+        public TextAsset TextAsset;
     }
 
     /// <summary>
@@ -31,6 +32,6 @@ namespace HASH
     public struct SerializedHashFileImage
     {
         public SerializedHashFile File;
-        public string ImageAssetPath;
+        public Texture2D ImageAsset;
     }
 }
