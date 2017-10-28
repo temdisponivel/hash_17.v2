@@ -17,8 +17,8 @@ namespace HASH.Window
 
         public static WindowComponent CurrentlyFocusedWindow;
 
-        public const int FocusedWindowDepth = 1000;
-        public const int UnfocusedWindowDepth = 399;
+        public const int FocusedWindowDepth = 10000;
+        public const int UnfocusedWindowDepth = 100;
 
         public static void Initialize()
         {
@@ -79,12 +79,12 @@ namespace HASH.Window
         {
             var references = DataHolder.GUIReferences;
 
-            var windowObj = NGUITools.AddChild(DataHolder.GUIReferences.WindowPanel.gameObject, references.WindowPrefab);
+            var windowObj = NGUITools.AddChild(DataHolder.GUIReferences.UIRoot.gameObject, references.WindowPrefab);
 
             var windowComponent = windowObj.GetComponent<WindowComponent>();
 
             windowComponent.ControlBar.DragObject.contentRect = windowComponent.WindowWidget;
-            windowComponent.ControlBar.DragObject.panelRegion = DataHolder.GUIReferences.WindowPanel;
+            windowComponent.ControlBar.DragObject.panelRegion = DataHolder.GUIReferences.MainPanel;
 
             var window = new Window();
 
@@ -325,6 +325,7 @@ namespace HASH.Window
         {
             CacheWidgets(windowComponent);
             CachePanels(windowComponent);
+            AddClickListersToColliders(windowComponent);
         }
 
         public static void Focus(WindowComponent windowComponent)
@@ -346,10 +347,7 @@ namespace HASH.Window
         public static void UpdateWindowsDepth()
         {
             if (CurrentlyFocusedWindow)
-            {
-                CurrentlyFocusedWindow.gameObject.transform.SetParent(DataHolder.GUIReferences.FocusedWindowPanel.transform);
                 SetDepthOnPanels(CurrentlyFocusedWindow, FocusedWindowDepth);
-            }
 
             var depth = UnfocusedWindowDepth;
             for (int i = CurrentlyOpenWindows.Count - 1; i >= 0; i--)
@@ -358,8 +356,19 @@ namespace HASH.Window
                 if (window.SceneWindow == CurrentlyFocusedWindow)
                     continue;
                 
-                CurrentlyFocusedWindow.gameObject.transform.SetParent(DataHolder.GUIReferences.WindowPanel.transform);
-                SetDepthOnPanels(window.SceneWindow, depth++);
+                SetDepthOnPanels(window.SceneWindow, depth);
+                depth += 100;
+            }
+        }
+
+        public static void AddClickListersToColliders(WindowComponent window)
+        {
+            var colliders = window.GetComponentsInChildren<Collider>();
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                var collider = colliders[i];
+                var clickListener = collider.gameObject.AddComponent<WindowClickListener>();
+                clickListener.Callback = window.OnClick;
             }
         }
     }

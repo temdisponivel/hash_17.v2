@@ -33,10 +33,7 @@ namespace HASH.GUI
         
         public TerminalComponent TerminalComponent;
 
-        [Header("WINDOW")] 
-        public UIPanel WindowPanel;
-        public UIPanel FocusedWindowPanel;
-        
+        [Header("WINDOW")]
         public GameObject WindowPrefab;
         public TextWindowComponent TextWindowPrefab;
         public ImageWindowComponent ImageWindowPrefab;

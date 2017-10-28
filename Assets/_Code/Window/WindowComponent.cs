@@ -38,8 +38,8 @@ namespace HASH.Window
             WindowUtil.MinimizeWindowComponent(this);
         }
 
-        // Called by NGUI
-        void OnClick()
+        // Called by WindowClickListener
+        public void OnClick()
         {
             WindowUtil.Focus(this);
         }
