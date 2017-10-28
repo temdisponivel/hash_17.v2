@@ -90,6 +90,8 @@ namespace HASH
         /// </summary>
         public static void UpdateScroll(GUIReferences data)
         {
+            data.ScrollView.ResetPosition();
+            data.ScrollView.UpdatePosition();
             data.ScrollView.UpdateScrollbars(true);
         }
 
