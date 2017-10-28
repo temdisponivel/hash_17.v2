@@ -35,6 +35,7 @@ namespace HASH.GUI
 
         [Header("WINDOW")] 
         public UIPanel WindowPanel;
+        public UIPanel FocusedWindowPanel;
         
         public GameObject WindowPrefab;
         public TextWindowComponent TextWindowPrefab;

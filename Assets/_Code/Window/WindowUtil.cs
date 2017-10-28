@@ -17,7 +17,7 @@ namespace HASH.Window
 
         public static WindowComponent CurrentlyFocusedWindow;
 
-        public const int FocusedWindowDepth = 999;
+        public const int FocusedWindowDepth = 1000;
         public const int UnfocusedWindowDepth = 399;
 
         public static void Initialize()
@@ -340,7 +340,10 @@ namespace HASH.Window
         public static void UpdateWindowsDepth()
         {
             if (CurrentlyFocusedWindow)
+            {
+                CurrentlyFocusedWindow.gameObject.transform.SetParent(DataHolder.GUIReferences.FocusedWindowPanel.transform);
                 SetDepthOnPanels(CurrentlyFocusedWindow, FocusedWindowDepth);
+            }
 
             var depth = UnfocusedWindowDepth;
             for (int i = CurrentlyOpenWindows.Count - 1; i >= 0; i--)
@@ -349,6 +352,7 @@ namespace HASH.Window
                 if (window.SceneWindow == CurrentlyFocusedWindow)
                     continue;
                 
+                CurrentlyFocusedWindow.gameObject.transform.SetParent(DataHolder.GUIReferences.WindowPanel.transform);
                 SetDepthOnPanels(window.SceneWindow, depth++);
             }
         }
