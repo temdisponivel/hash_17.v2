@@ -356,6 +356,7 @@ namespace HASH
             file.FileId = serializedFile.FileId;
             file.Name = serializedFile.Name;
             file.ParentDirId = serializedFile.ParentDirId;
+            file.Status = serializedFile.Status;
 
             file.UserPermission = STable.Create<string, AccessPermission>(serializedFile.UserPermission.Length, true);
             for (int i = 0; i < serializedFile.UserPermission.Length; i++)
@@ -376,6 +377,7 @@ namespace HASH
             file.FileType = HashFileType.Text;
             var txtFile = new TextFile();
             txtFile.TextContent = serialized.TextAsset.text;
+            txtFile.EncryptedTextContent = TextUtil.EncryptString(txtFile.TextContent);
             file.Content = txtFile;
             return file;
         }

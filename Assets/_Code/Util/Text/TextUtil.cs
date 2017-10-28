@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using System.Net;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using HASH;
 using SimpleCollections.Lists;
@@ -370,6 +373,30 @@ namespace HASH
         public static string Error(string error)
         {
             return ApplyNGUIColor(error, Constants.Colors.Error);
+        }
+        
+        #endregion
+        
+        #region Encryption
+
+        public static string EncryptString(string text)
+        {
+            BinaryFormatter formatter = new BinaryFormatter();
+            MemoryStream writeStream = new MemoryStream();
+            
+            formatter.Serialize(writeStream, text);
+
+            int length = (int) writeStream.Position;
+            byte[] buffer = writeStream.GetBuffer();
+            
+            StringBuilder builder = new StringBuilder(length);
+            for (int i = 0; i < length; i++)
+            {
+                builder.Append(Convert.ToString(buffer[i], 2));
+            }
+            
+            writeStream.Dispose();
+            return builder.ToString();
         }
         
         #endregion

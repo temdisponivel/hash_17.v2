@@ -33,6 +33,7 @@ namespace HASH
     public class TextFile
     {
         public string TextContent;
+        public string EncryptedTextContent;
     }
     
     /// <summary>
@@ -61,6 +62,8 @@ namespace HASH
         public object Content;
 
         public SimpleTable<string, AccessPermission> UserPermission;
+
+        public FileStatus Status;
     }
     
     

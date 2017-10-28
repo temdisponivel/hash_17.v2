@@ -260,10 +260,8 @@ namespace HASH
                 hashFile.Name = name; 
                 hashFile.FileId = MathUtil.GetStringHash(filePath);
                 hashFile.ParentDirId = parent.DirId;
-
                 hashFile.UserPermission = file.Permissions;
-
-                // TODO: user permission
+                hashFile.Status = file.Status;
 
                 switch (fileType)
                 {

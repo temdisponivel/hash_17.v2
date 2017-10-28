@@ -7,6 +7,7 @@ namespace HASH
     {
         public PermissionPair[] Permissions;
         public HashFileType Type;
+        public FileStatus Status;
         public Object Content;
 
         private void OnValidate()

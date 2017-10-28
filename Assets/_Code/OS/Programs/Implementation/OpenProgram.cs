@@ -1,4 +1,4 @@
-﻿using System;
+﻿    using System;
 using HASH.Window;
 using SimpleCollections.Util;
 using UnityEngine;
@@ -47,21 +47,11 @@ namespace HASH
                     {
                         case HashFileType.Text:
                             var textFile = file.Content as TextFile;
-                            var textContent = textFile.TextContent;
-
-                            if (openOnTerminal)
-                                TerminalUtil.ShowText(textContent);
-                            else
-                                WindowUtil.CreateTextWindow(textContent);
+                            OpenTextFile(file, textFile, openOnTerminal);
                             break;
                         case HashFileType.Image:
                             var imageFile = file.Content as ImageFile;
-                            var imageContent = imageFile.ImageContent;
-
-                            if (openOnTerminal)
-                                TerminalUtil.ShowImage(imageContent);
-                            else
-                                WindowUtil.CreateImageWindow(imageContent);
+                            OpenImageFile(file, imageFile, openOnTerminal);
                             break;
                         default:
                             DebugUtil.Error(string.Format("The open program can't open file type: {0}", file.FileType));
@@ -89,6 +79,30 @@ namespace HASH
             }
         }
 
+        public static void OpenTextFile(HashFile file, TextFile textFile, bool openOnTerminal)
+        {
+            string textContent;
+            if (file.Status == FileStatus.Encrypted)
+                textContent = textFile.EncryptedTextContent;
+            else
+                textContent = textFile.TextContent;
+
+            if (openOnTerminal)
+                TerminalUtil.ShowText(textContent);
+            else
+                WindowUtil.CreateTextWindow(textContent);            
+        }
+
+        public static void OpenImageFile(HashFile file, ImageFile imageFile, bool openOnTerminal)
+        {
+            var imageContent = imageFile.ImageContent;
+
+            if (openOnTerminal)
+                TerminalUtil.ShowImage(imageContent);
+            else
+                WindowUtil.CreateImageWindow(imageContent);
+        }
+        
         public static void FillCommandBuffer()
         {
             FileSystem.FilleCommandBufferWithFileSystem(FillBufferFileSystemOptions.IncludeFile);
