@@ -519,5 +519,23 @@ namespace HASH
         }
         
         #endregion
+        
+        #region String
+
+        public static string GetWindowTitleForFile(HashFile file)
+        {
+            string format = "{0}{1}";
+            string status = string.Empty;
+            if (file.Status != FileStatus.Normal)
+                status = string.Format(" - {0}", GetStatusString(file.Status));
+            return string.Format(format, file.FullName, status);
+        }
+
+        public static string GetStatusString(FileStatus staus)
+        {
+            return staus.ToString();
+        }
+        
+        #endregion
     }
 }

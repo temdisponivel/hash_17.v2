@@ -90,7 +90,10 @@ namespace HASH
             if (openOnTerminal)
                 TerminalUtil.ShowText(textContent);
             else
-                WindowUtil.CreateTextWindow(textContent);            
+            {
+                string title = FileSystem.GetWindowTitleForFile(file);
+                WindowUtil.CreateTextWindow(textContent, title);
+            }            
         }
 
         public static void OpenImageFile(HashFile file, ImageFile imageFile, bool openOnTerminal)
@@ -100,7 +103,10 @@ namespace HASH
             if (openOnTerminal)
                 TerminalUtil.ShowImage(imageContent);
             else
-                WindowUtil.CreateImageWindow(imageContent);
+            {
+                string title = FileSystem.GetWindowTitleForFile(file);
+                WindowUtil.CreateImageWindow(imageContent, title);
+            }
         }
         
         public static void FillCommandBuffer()

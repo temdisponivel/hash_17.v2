@@ -21,7 +21,7 @@ namespace HASH
 
         public static void Setup()
         {
-            HeaderLine = CreateLine("NAME", "TYPE", HeaderColor, TextModifiers.Bold | TextModifiers.Underline);
+            HeaderLine = CreateLine("NAME", "TYPE", "STATUS", HeaderColor, TextModifiers.Bold | TextModifiers.Underline);
 
             var pathArgValidation = new CommandLineArgValidationOption();
 
@@ -75,17 +75,18 @@ namespace HASH
                 for (int i = 0; i < childs.Count; i++)
                 {
                     var child = childs[i];
-                    var line = CreateLine(child.Name, "DIRECTORY", LineColor, TextModifiers.Italic);
+                    var line = CreateLine(child.Name, "DIRECTORY", string.Empty, LineColor, TextModifiers.Italic);
                     TerminalUtil.ShowText(line.FormattedText);
                 }
                 
                 for (int i = 0; i < files.Count; i++)
                 {
                     var file = files[i];
-                    var line = CreateLine(file.FullName, "FILE", LineColor, TextModifiers.Italic);
+
+                    var status = FileSystem.GetStatusString(file.Status);
+                    var line = CreateLine(file.FullName, "FILE", status, LineColor, TextModifiers.Italic);
                     TerminalUtil.ShowText(line.FormattedText);
                 }
-
 
                 TerminalUtil.EndTextBatch();
             }
@@ -100,15 +101,18 @@ namespace HASH
         public static TextTableLine CreateLine(
             string nameColumnText,
             string typeColumnText,
+            string statusColumnText,
             Color color,
             int textModifiers)
         {
             var nameColumnItem = CreateColumn(nameColumnText, .6f, color, textModifiers);
-            var typeColumnItem = CreateColumn(typeColumnText, .4f, color, textModifiers);
+            var typeColumnItem = CreateColumn(typeColumnText, .2f, color, textModifiers);
+            var statusColumnItem = CreateColumn(statusColumnText, .2f, color, textModifiers);
 
             var items = SList.Create<TextTableColumn>(2);
             SList.Add(items, nameColumnItem);
             SList.Add(items, typeColumnItem);
+            SList.Add(items, statusColumnItem);
 
             var line = new TextTableLine();
             line.Items = items;

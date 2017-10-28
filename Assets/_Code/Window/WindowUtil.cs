@@ -38,10 +38,12 @@ namespace HASH.Window
             LoopUtil.CallForever(UpdateWindowsScrollBars, UpdateScrollBarsInterval);
         }
 
-        public static void CreateTextWindow(string content)
+        public static void CreateTextWindow(string content, string title)
         {
             var window = CreateWindow(DefaultTextState);
             window.Type = WindowType.TextWindow;
+            
+            window.SceneWindow.TitleLabel.text = title;
 
             var textWindow = CreateTextWindow(window.SceneWindow.ContentParent);
             textWindow.TextComponent.text = content;
@@ -51,10 +53,12 @@ namespace HASH.Window
             Focus(window.SceneWindow);
         }
 
-        public static void CreateImageWindow(Texture2D content)
+        public static void CreateImageWindow(Texture2D content, string title)
         {
             var window = CreateWindow(DefaultImageState);
             window.Type = WindowType.ImageWindow;
+
+            window.SceneWindow.TitleLabel.text = title;
 
             var texture = content;
 
