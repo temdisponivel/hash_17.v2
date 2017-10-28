@@ -5,12 +5,10 @@ namespace HASH
     /// <summary>
     /// Defines a set of configurations for validating command line arguments.
     /// </summary>
-    public class CommandLineArgValidationOption<T>
+    public class CommandLineArgValidationOption
     {
         public string ArgumentName;
         public ArgRequirement Requirements;
-
-        public T AditionalData;
 
         public ArgValidationResult ValidationResult;
     }

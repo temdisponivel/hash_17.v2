@@ -35,4 +35,11 @@ namespace HASH.GUI
         ResizeTopRight,
         Loading,
     }
+
+    public enum SetDepthMode
+    {
+        Increment,
+        Decrement,
+        Absolute,
+    }
 }

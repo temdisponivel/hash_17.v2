@@ -37,6 +37,8 @@ namespace HASH
                 Debug.Break();
             }
         }
+        
+        
 
         /// <summary>
         /// Logs the given message with the given color.
@@ -61,6 +63,18 @@ namespace HASH
                         break;
                 }
             }
+        }
+
+        [Conditional("DEB")]
+        public static void Log(string value)
+        {
+            Log(value, Constants.Colors.Default, DebugCondition.Info, LogType.Info);
+        }
+        
+        [Conditional("DEB")]
+        public static void LogContext(string value, UnityEngine.Object obj)
+        {
+            LogContext(value, Constants.Colors.Default, obj, DebugCondition.Info);
         }
 
         /// <summary>

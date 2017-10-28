@@ -11,16 +11,16 @@ namespace HASH
     /// </summary>
     public static class CdProgram
     {
-        public static CommandLineArgValidationOption<object>[] Validations;
-        public static CommandLineArgValidationOption<object> PathValidation;
+        public static CommandLineArgValidationOption[] Validations;
+        public static CommandLineArgValidationOption PathValidation;
         
         public static void Setup()
         {
-            PathValidation = new CommandLineArgValidationOption<object>();
+            PathValidation = new CommandLineArgValidationOption();
             PathValidation.ArgumentName = string.Empty;
             PathValidation.Requirements = ArgRequirement.Required | ArgRequirement.Unique | ArgRequirement.ValueRequired;
             
-            Validations = new CommandLineArgValidationOption<object>[1];
+            Validations = new CommandLineArgValidationOption[1];
             Validations[0] = PathValidation;
         }
 

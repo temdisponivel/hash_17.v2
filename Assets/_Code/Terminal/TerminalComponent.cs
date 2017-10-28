@@ -34,7 +34,7 @@ namespace HASH
             
             if (string.IsNullOrEmpty(text))
                 TerminalUtil.ChangeToCommandCacheBuffer();
-            else if (text.EndsWith("\n"))
+            else if (text.Contains("\n"))
                 StartCoroutine(TerminalUtil.HandlePlayerInput(text));
             else
                 TerminalUtil.UpdateCommandBuffer();

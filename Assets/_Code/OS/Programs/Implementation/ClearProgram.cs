@@ -12,28 +12,19 @@ namespace HASH
             Top,
             Down,
         }
-
-        public enum Args
-        {
-            ClearMode,
-            Count,
-        }
-
-        public static CommandLineArgValidationOption<Args>[] Validations;
-        public static CommandLineArgValidationOption<Args> ModeValidation;
-        public static CommandLineArgValidationOption<Args> CountValidation;
+        public static CommandLineArgValidationOption[] Validations;
+        public static CommandLineArgValidationOption ModeValidation;
+        public static CommandLineArgValidationOption CountValidation;
 
         public static void Setup()
         {
-            Validations = new CommandLineArgValidationOption<Args>[2];
+            Validations = new CommandLineArgValidationOption[2];
 
-            ModeValidation = new CommandLineArgValidationOption<Args>();
-            ModeValidation.AditionalData = Args.ClearMode;
+            ModeValidation = new CommandLineArgValidationOption();
             ModeValidation.ArgumentName = "mode";
             ModeValidation.Requirements = ArgRequirement.Unique | ArgRequirement.ValueRequired;
 
-            CountValidation = new CommandLineArgValidationOption<Args>();
-            CountValidation.AditionalData = Args.Count;
+            CountValidation = new CommandLineArgValidationOption();
             CountValidation.ArgumentName = "count";
             CountValidation.Requirements = ArgRequirement.Unique | ArgRequirement.ValueRequired;
 

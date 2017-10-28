@@ -1,27 +1,44 @@
 ﻿using System;
 using HASH.Window;
+using SimpleCollections.Util;
+using UnityEngine;
 
 namespace HASH
 {
     public static class OpenProgram
     {
-        public static CommandLineArgValidationOption<object>[] Validations;
-        public static CommandLineArgValidationOption<object> PathValidation;
+        public const string PathArgName = "";
+        public const string TerminalArgName = "t";
+        
+        public static CommandLineArgValidationOption[] Validations;
+        public static CommandLineArgValidationOption PathValidation;
+        public static CommandLineArgValidationOption TerminalValidation;
 
         public static void Setup()
         {
-            PathValidation = new CommandLineArgValidationOption<object>();
-            PathValidation.ArgumentName = string.Empty;
+            PathValidation = new CommandLineArgValidationOption();
+            PathValidation.ArgumentName = PathArgName;
             PathValidation.Requirements = ArgRequirement.Required | ArgRequirement.ValueRequired;
 
-            Validations = new[] {PathValidation};
+            TerminalValidation = new CommandLineArgValidationOption();
+            TerminalValidation.ArgumentName = TerminalArgName;
+            TerminalValidation.Requirements = ArgRequirement.None;
+
+            Validations = new[] {PathValidation, TerminalValidation};
         }
 
         public static void Execute(ProgramExecutionOptions options)
         {
             if (CommandLineUtil.ValidateArguments(options.ParsedArguments, Validations))
             {
-                var path = options.ParsedArguments[0].Value;
+                Pair<string, string> pathArg;
+                
+                // no need to validate this because the argument is required
+                CommandLineUtil.TryGetArgumentByName(options.ParsedArguments, PathArgName, out pathArg);
+                var path = pathArg.Value;
+
+                bool openOnTerminal = CommandLineUtil.ArgumentExists(options.ParsedArguments, TerminalArgName);
+                
                 HashFile file;
                 HashDir dir;
                 if (FileSystem.FileExists(path, out file))
@@ -32,16 +49,19 @@ namespace HASH
                             var textFile = file.Content as TextFile;
                             var textContent = textFile.TextContent;
 
-                            // TODO: remove this shit and uncomment line
-                            WindowUtil.CreateTextWindow(textContent);
-                            //TerminalUtil.ShowText(textContent);
+                            if (openOnTerminal)
+                                TerminalUtil.ShowText(textContent);
+                            else
+                                WindowUtil.CreateTextWindow(textContent);
                             break;
                         case HashFileType.Image:
                             var imageFile = file.Content as ImageFile;
                             var imageContent = imageFile.ImageContent;
 
-                            WindowUtil.CreateImageWindow(imageContent);
-                            // TerminalUtil.ShowImage(imageContent);
+                            if (openOnTerminal)
+                                TerminalUtil.ShowImage(imageContent);
+                            else
+                                WindowUtil.CreateImageWindow(imageContent);
                             break;
                         default:
                             DebugUtil.Error(string.Format("The open program can't open file type: {0}", file.FileType));

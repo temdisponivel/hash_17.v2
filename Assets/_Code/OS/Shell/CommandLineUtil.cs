@@ -202,6 +202,12 @@ namespace HASH
             return !(string.IsNullOrEmpty(parameter.Key) && string.IsNullOrEmpty(parameter.Value));
         }
 
+        public static bool ArgumentExists(SimpleList<Pair<string, string>> arguments, string parameterName)
+        {
+            Pair<string, string> arg;
+            return TryGetArgumentByName(arguments, parameterName, out arg);
+        }
+
         /// <summary>
         /// Search for the nth argument with the given name. Returns true if found the parameter, false otherse.
         /// The resulting parameter will be on the   out Pair argument.
@@ -249,7 +255,7 @@ namespace HASH
         /// This will validate all options whether one of them failed.
         /// This returns true of EVERY argument is EverythingOk.
         /// </summary>
-        public static bool ValidateArguments<T>(SimpleList<Pair<string, string>> arguments, CommandLineArgValidationOption<T>[] options)
+        public static bool ValidateArguments(SimpleList<Pair<string, string>> arguments, CommandLineArgValidationOption[] options)
         {
             bool result = true;
             for (int i = 0; i < options.Length; i++)
@@ -335,8 +341,8 @@ namespace HASH
         /// If this method returns true, every validating said that the arguments are ok. If returned false, there's something wrong.
         /// Use the hasUnknownArg and hasNotOkParameter to known the results of each operation.
         /// </summary>
-        public static bool FullArgValidation<T>(SimpleList<Pair<string, string>> arguments,
-            CommandLineArgValidationOption<T>[] options, string[] knownArguments, out bool areArgumentsKnown, out bool areArgumentsOk)
+        public static bool FullArgValidation(SimpleList<Pair<string, string>> arguments,
+            CommandLineArgValidationOption[] options, string[] knownArguments, out bool areArgumentsKnown, out bool areArgumentsOk)
         {
             areArgumentsOk = ValidateArguments(arguments, options);
             areArgumentsKnown = AreAllArgumentsKnown(arguments, knownArguments);

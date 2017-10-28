@@ -17,13 +17,13 @@ namespace HASH
         public static Color LineColor = Color.blue;
 
         public static TextTableLine HeaderLine;
-        public static CommandLineArgValidationOption<string>[] ArgValidationOptions;
+        public static CommandLineArgValidationOption[] ArgValidationOptions;
 
         public static void Setup()
         {
             HeaderLine = CreateLine("NAME", "TYPE", HeaderColor, TextModifiers.Bold | TextModifiers.Underline);
 
-            var pathArgValidation = new CommandLineArgValidationOption<string>();
+            var pathArgValidation = new CommandLineArgValidationOption();
 
             pathArgValidation.ArgumentName = string.Empty;
             pathArgValidation.Requirements = ArgRequirement.ValueRequired;

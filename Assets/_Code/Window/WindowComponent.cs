@@ -1,4 +1,6 @@
 ﻿using HASH.GUI;
+using SimpleCollections.Lists;
+using SimpleCollections.Util;
 using UnityEngine;
 
 namespace HASH.Window
@@ -18,6 +20,9 @@ namespace HASH.Window
         public WindowResizer[] Resizers;
         public WindowControlBar ControlBar;
 
+        public SimpleList<Pair<UIWidget, int>> WidgetsDefaultDepth;
+        public SimpleList<Pair<UIPanel, int>> PanelsDefaultDepth;
+
         public void OnCloseClicked()
         {
             WindowUtil.CloseWindowComponent(this);
@@ -31,6 +36,12 @@ namespace HASH.Window
         public void OnMinimizeClicked()
         {
             WindowUtil.MinimizeWindowComponent(this);
+        }
+
+        // Called by NGUI
+        void OnClick()
+        {
+            WindowUtil.Focus(this);
         }
     }
 }

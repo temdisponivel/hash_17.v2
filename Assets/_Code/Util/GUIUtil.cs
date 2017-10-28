@@ -14,10 +14,14 @@ namespace HASH
         public static void SetCursorTexture(CursorTexture cursorTexture)
         {
             Texture2D texture = GetTextureFromCursorTexture(cursorTexture);
-            var multiplier = 16;
-            if (cursorTexture == CursorTexture.Normal)
-                multiplier = 0;
-            Cursor.SetCursor(texture, Vector2.one * multiplier, CursorMode.Auto);
+            float width = 0;
+            float height = 0;
+            if (cursorTexture != CursorTexture.Normal)
+            {
+                width = texture.width / 2f;
+                height = texture.height / 2f;
+            }
+            Cursor.SetCursor(texture, new Vector2(width, height), CursorMode.Auto);
         }
 
         public static void SetCursorToWindowResizer(UIWidget.Pivot pivot)
