@@ -16,7 +16,11 @@ namespace HASH
             prog.Name = serialized.Name;
             prog.Description = serialized.Description;
             prog.Commands = serialized.Commands;
-
+            if (serialized.HelpMessage)
+                prog.HelpText = serialized.HelpMessage.text;
+            else
+                prog.HelpText = string.Empty;
+            
             prog.Options = new ProgramOption[serialized.Options.Length];
             for (int i = 0; i < serialized.Options.Length; i++)
                 prog.Options[i] = GetExecutionOptionFromSerializedData(serialized.Options[i]);

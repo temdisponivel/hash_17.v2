@@ -100,6 +100,8 @@ namespace HASH
                     return OpenProgram.Execute;
                 case ProgramType.Cracker:
                     return CrackerProgram.Execute;
+                case ProgramType.Help:
+                    return HelpProgram.Execute;
                 default:
                     DebugUtil.Assert(true, "PROGRAM TYPE HAS NO RELATED CLASS. " + program.ProgramType);
                     break;

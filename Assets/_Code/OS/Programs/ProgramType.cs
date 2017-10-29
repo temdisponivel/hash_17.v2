@@ -10,5 +10,6 @@
         Clear = 20,
         Open = 30,
         Cracker = 40,
+        Help = 50,
     }
 }

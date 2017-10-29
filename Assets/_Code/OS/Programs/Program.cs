@@ -1,4 +1,5 @@
 ﻿using SimpleCollections.Lists;
+using UnityEngine;
 
 namespace HASH
 {
@@ -9,6 +10,7 @@ namespace HASH
     {
         public string Name;
         public string Description;
+        public string HelpText;
 
         public string[] Commands;
         public ProgramOption[] Options;

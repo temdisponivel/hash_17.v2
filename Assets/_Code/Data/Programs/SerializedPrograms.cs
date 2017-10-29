@@ -12,6 +12,7 @@ namespace HASH
     {
         public string Name;
         public string Description;
+        public TextAsset HelpMessage;
 
         public string[] Commands;
         public SerializedProgramOption[] Options;

@@ -63,7 +63,7 @@ namespace HASH
                         {
                             var msg = "Invalid password.";
                             ShowErrorMessage(msg);
-                        }                        
+                        }
                     }
                 }
             }
