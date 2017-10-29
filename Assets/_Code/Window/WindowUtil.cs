@@ -14,6 +14,7 @@ namespace HASH.Window
         public static WindowState DefaultImageState;
 
         public const float UpdateScrollBarsInterval = .1f;
+        public const float UpdateImageWindowBlendFactor = .1f;
 
         public static WindowComponent CurrentlyFocusedWindow;
 
@@ -36,6 +37,7 @@ namespace HASH.Window
             DefaultImageState.CanBeResized = false;
 
             LoopUtil.CallForever(UpdateWindowsScrollBars, UpdateScrollBarsInterval);
+            LoopUtil.CallForever(UpdateImageWindowsBlendFactor, UpdateImageWindowBlendFactor);
         }
 
         public static void CreateTextWindow(string content, string title)
@@ -369,6 +371,33 @@ namespace HASH.Window
                 var collider = colliders[i];
                 var clickListener = collider.gameObject.AddComponent<WindowClickListener>();
                 clickListener.Callback = window.OnClick;
+            }
+        }
+
+        public static void UpdateImageWindowsBlendFactor()
+        {
+            var windows = CurrentlyOpenWindows;
+            for (int i = 0; i < windows.Count; i++)
+            {
+                var window = windows[i];
+                if (window.Type != WindowType.ImageWindow)
+                    continue;
+                
+                var imageWindow = window.WindowContent as ImageWindowComponent;
+                if (imageWindow.UpdateImageBlendFactor)
+                {
+                    if (imageWindow.ImageHolder.drawCall == null)
+                        continue;
+                    
+                    Material material;
+                    
+                    if (imageWindow.ImageHolder.drawCall.dynamicMaterial)
+                        material = imageWindow.ImageHolder.drawCall.dynamicMaterial;
+                    else
+                        material = imageWindow.ImageHolder.drawCall.baseMaterial;
+                    
+                    material.SetFloat("_BlendFactor", imageWindow.EncryptedImageBlendFactor);
+                }
             }
         }
     }

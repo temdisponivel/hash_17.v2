@@ -110,8 +110,13 @@ namespace HASH
                 if (file.Status == FileStatus.Encrypted)
                 {
                     var materialPrefab = DataHolder.GUIReferences.EncryptedImageMaterial;
+                    
                     var material = new Material(materialPrefab);
+                    material.CopyPropertiesFromMaterial(materialPrefab);
+                    
                     imageWindow.ImageHolder.material = material;
+                    imageWindow.UpdateImageBlendFactor = true;
+                    imageWindow.EncryptedImageBlendFactor = 1f;
                 }
             }
         }
