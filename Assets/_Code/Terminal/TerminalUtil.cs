@@ -56,7 +56,7 @@ namespace HASH
                         break;
                 }
             }
-            
+
             UpdateTableAndScroll();
         }
 
@@ -172,14 +172,14 @@ namespace HASH
         }
 
         #endregion
-        
+
         #region Image
 
         public static void ShowImage(Texture texture)
         {
             Terminal.ShowImage(texture, texture.width, texture.height);
         }
-        
+
         #endregion
 
         #region Remove Text
@@ -367,7 +367,7 @@ namespace HASH
             var data = DataHolder.TerminalData;
 
             int index = data.CurrentCommandBufferIndex;
-            
+
             ResetCommandBufferIndex();
             for (int i = 0; i < data.CurrentCommandBuffer.Count; i++)
             {
@@ -387,11 +387,7 @@ namespace HASH
         public static void ChangeToCommandCacheBuffer()
         {
             var data = DataHolder.TerminalData;
-            if (data.CurrentCommandBuffer != data.CommandCache)
-            {
-                data.CurrentCommandBuffer = data.CommandCache;
-                ResetCommandBufferIndex();
-            }
+            data.CurrentCommandBuffer = data.CommandCache;
         }
 
         /// <summary>
@@ -402,11 +398,7 @@ namespace HASH
         public static void ChangeToAvailableCommandsBuffer()
         {
             var data = DataHolder.TerminalData;
-            if (data.CurrentCommandBuffer != data.AvailableCommands)
-            {
-                data.CurrentCommandBuffer = data.AvailableCommands;
-                ResetCommandBufferIndex();
-            }
+            data.CurrentCommandBuffer = data.AvailableCommands;
         }
 
         #endregion

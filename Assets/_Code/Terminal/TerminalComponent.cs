@@ -60,7 +60,6 @@ namespace HASH
         public void EscPressed()
         {
             TerminalUtil.ClearInputText();
-            TerminalUtil.ResetCommandBufferIndex();
         }
 
         public void TabPressed()

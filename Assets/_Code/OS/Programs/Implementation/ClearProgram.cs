@@ -34,6 +34,9 @@ namespace HASH
 
         public static void Execute(ProgramExecutionOptions options)
         {
+            if (ProgramUtil.ShowHelpIfNeeded(options))
+                return;
+            
             bool everythingOk = true;
             int count = 0;
             ClearMode mode = ClearMode.Top;

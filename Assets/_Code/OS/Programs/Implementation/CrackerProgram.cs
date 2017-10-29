@@ -27,6 +27,9 @@ namespace HASH
 
         public static void Execute(ProgramExecutionOptions options)
         {
+            if (ProgramUtil.ShowHelpIfNeeded(options))
+                return;
+            
             if (CommandLineUtil.ValidateArguments(options.ParsedArguments, Validations))
             {
                 Pair<string, string> pathArg = CommandLineUtil.GetArgumentByName(options.ParsedArguments, PathArgName);

@@ -1,4 +1,5 @@
 ﻿using HASH;
+using SimpleCollections.Util;
 
 namespace HASH
 {
@@ -57,6 +58,20 @@ namespace HASH
             ClearProgram.Setup();
             OpenProgram.Setup();
             CrackerProgram.Setup();
+        }
+
+        public static bool ShowHelpIfNeeded(ProgramExecutionOptions options)
+        {
+            if (options.ParsedArguments.Count > 0)
+            {
+                if (CommandLineUtil.ArgumentExists(options.ParsedArguments, "h"))
+                {
+                    HelpProgram.ShowHelpFor(options.ProgramReference);
+                    return true;
+                }
+            }
+
+            return false;
         }
     }
 }

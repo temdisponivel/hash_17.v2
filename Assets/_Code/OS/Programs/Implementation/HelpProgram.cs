@@ -7,6 +7,9 @@ namespace HASH
     {
         public static void Execute(ProgramExecutionOptions options)
         {
+            if (ProgramUtil.ShowHelpIfNeeded(options))
+                return;
+            
             if (options.ParsedArguments.Count > 0)
             {
                 var programName = options.ParsedArguments[0].Value;

@@ -34,15 +34,18 @@ namespace HASH
         /// <summary>
         /// Executes the dir program.
         /// </summary>
-        public static void Execute(ProgramExecutionOptions option)
+        public static void Execute(ProgramExecutionOptions options)
         {
+            if (ProgramUtil.ShowHelpIfNeeded(options))
+                return;
+            
             HashDir currentDir = null;
 
-            if (option.ParsedArguments.Count == 0)
+            if (options.ParsedArguments.Count == 0)
                 currentDir = DataHolder.FileSystemData.CurrentDir;
             else
             {
-                var desiredDirPath = option.ParsedArguments[0].Value;
+                var desiredDirPath = options.ParsedArguments[0].Value;
                 if (!FileSystem.DirExists(desiredDirPath, out currentDir))
                 {
                     string msg;
