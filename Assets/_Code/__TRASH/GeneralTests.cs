@@ -38,7 +38,7 @@ namespace Assets._Code.__TRASH
                 textOpt.Size = textOpt.Text.Length - 10;
                 textOpt.PaddingChar = '-';
                 textOpt.WeightOnLine = .1f;
-                textOpt.ModifyTextOptions.Color = Constants.Colors.Path;
+                textOpt.ModifyTextOptions.Color = Constants.Colors.Success;
                 Debug.Log(TextUtil.FormatTableItem(textOpt));
 
                 SList.Add(list, textOpt);

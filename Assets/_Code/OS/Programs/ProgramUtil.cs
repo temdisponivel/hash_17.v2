@@ -45,5 +45,14 @@ namespace HASH
                 data.CurrentCommandBuffer[i] = option.Insert(0, prefix);
             }
         }
+        
+        public static void SetupPrograms()
+        {
+            CdProgram.Setup();
+            DirProgram.Setup();
+            ClearProgram.Setup();
+            OpenProgram.Setup();
+            CrackerProgram.Setup();
+        }
     }
 }

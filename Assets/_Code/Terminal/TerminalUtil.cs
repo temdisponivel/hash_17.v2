@@ -430,7 +430,7 @@ namespace HASH
         private static TextTableLine CreatePlayerInputLine(string command)
         {
             var path = DataHolder.FileSystemData.CurrentDir.FullPath;
-            var pathColumn = CreatePlayerInputColumn(path, .65f, Constants.Colors.Path, TextModifiers.Italic);
+            var pathColumn = CreatePlayerInputColumn(path, .65f, Constants.Colors.Success, TextModifiers.Italic);
             var commandColumn = CreatePlayerInputColumn(command, .35f, Constants.Colors.Default, TextModifiers.None);
 
             var items = SList.Create<TextTableColumn>(2);
@@ -445,7 +445,7 @@ namespace HASH
             line.MaxLineSize = DataHolder.TerminalData.MaxLineWidthInChars;
 
             line.ItemsSeparator = "> ";
-            line.SeparatorModifier.Color = Constants.Colors.Path;
+            line.SeparatorModifier.Color = Constants.Colors.Success;
             line.SeparatorModifier.Modifiers = TextModifiers.None;
 
             TextUtil.FormatLineConsideringWeightsAndSize(line);

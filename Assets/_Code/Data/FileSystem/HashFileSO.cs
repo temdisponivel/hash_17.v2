@@ -8,6 +8,7 @@ namespace HASH
         public PermissionPair[] Permissions;
         public HashFileType Type;
         public FileStatus Status;
+        public string Password;
         public Object Content;
 
         private void OnValidate()
@@ -18,6 +19,10 @@ namespace HASH
                 DebugUtil.AssertContext((Content as Texture2D) == null, "Image file with a invalid texture asset", this);
             else
                 DebugUtil.AssertContext(true, "File with invalid type!", this);
+            
+            if (Status == FileStatus.Encrypted && string.IsNullOrEmpty(Password))
+                Debug.LogError("The file is encrypted but has no password!", this);
+                
         }
     }
 }

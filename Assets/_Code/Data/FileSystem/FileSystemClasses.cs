@@ -35,6 +35,7 @@ namespace HASH
         public string Name;
         public int ParentDirId;
         public int FileId;
+        public string Password;
         public FileStatus Status;
         public PermissionPair[] UserPermission;
     }

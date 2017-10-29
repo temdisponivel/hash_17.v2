@@ -59,6 +59,8 @@ namespace HASH
         public string FullPath;
         public HashFileType FileType;
 
+        public string Password;
+
         public object Content;
 
         public SimpleTable<string, AccessPermission> UserPermission;

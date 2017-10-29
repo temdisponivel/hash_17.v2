@@ -50,17 +50,9 @@ namespace HASH
             DataHolder.FileSystemData.RootDir = FileSystem.GetRootDir();
             FileSystem.ChangeDir(DataHolder.FileSystemData.RootDir);
             
-            SetupPrograms();
+            ProgramUtil.SetupPrograms();
             
             WindowUtil.Initialize();
-        }
-
-        public void SetupPrograms()
-        {
-            CdProgram.Setup();
-            DirProgram.Setup();
-            ClearProgram.Setup();
-            OpenProgram.Setup();
         }
 
 #if DEB && UNITY_EDITOR

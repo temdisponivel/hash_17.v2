@@ -202,6 +202,13 @@ namespace HASH
             return !(string.IsNullOrEmpty(parameter.Key) && string.IsNullOrEmpty(parameter.Value));
         }
 
+        public static Pair<string, string> GetArgumentByName(SimpleList<Pair<string, string>> arguments, string parameterName)
+        {
+            Pair<string, string> arg;
+            TryGetArgumentByName(arguments, parameterName, out arg);
+            return arg;
+        }
+
         public static bool ArgumentExists(SimpleList<Pair<string, string>> arguments, string parameterName)
         {
             Pair<string, string> arg;

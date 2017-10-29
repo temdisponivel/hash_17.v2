@@ -9,5 +9,6 @@
         Dir = 10,
         Clear = 20,
         Open = 30,
+        Cracker = 40,
     }
 }

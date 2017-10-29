@@ -4,6 +4,7 @@ using HASH;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEngine;
+using UnityEngine.Windows.Speech;
 
 namespace HASH
 {
@@ -353,10 +354,12 @@ namespace HASH
         public static HashFile GetFileFromSerializedData(SerializedHashFile serializedFile)
         {
             var file = new HashFile();
+            
             file.FileId = serializedFile.FileId;
             file.Name = serializedFile.Name;
             file.ParentDirId = serializedFile.ParentDirId;
             file.Status = serializedFile.Status;
+            file.Password = serializedFile.Password;
 
             file.UserPermission = STable.Create<string, AccessPermission>(serializedFile.UserPermission.Length, true);
             for (int i = 0; i < serializedFile.UserPermission.Length; i++)
@@ -534,6 +537,15 @@ namespace HASH
         public static string GetStatusString(FileStatus staus)
         {
             return staus.ToString();
+        }
+        
+        #endregion
+        
+        #region Encryption
+
+        public static void ChangeFileStatus(HashFile file, FileStatus newStatus)
+        {
+            file.Status = newStatus;
         }
         
         #endregion

@@ -98,6 +98,8 @@ namespace HASH
                     return ClearProgram.Execute;
                 case ProgramType.Open:
                     return OpenProgram.Execute;
+                case ProgramType.Cracker:
+                    return CrackerProgram.Execute;
                 default:
                     DebugUtil.Assert(true, "PROGRAM TYPE HAS NO RELATED CLASS. " + program.ProgramType);
                     break;
@@ -116,6 +118,8 @@ namespace HASH
                     return DirProgram.FillCommandBuffer;
                 case ProgramType.Open:
                     return OpenProgram.FillCommandBuffer;
+                case ProgramType.Cracker:
+                    return CrackerProgram.FillCommandBuffer;
                 default:
                     DebugUtil.Warning(string.Format("Program '{0}' doesn't have a fill buffer function.", program.ProgramType));
                     break;

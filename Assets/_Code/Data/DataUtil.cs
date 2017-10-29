@@ -262,6 +262,7 @@ namespace HASH
                 hashFile.ParentDirId = parent.DirId;
                 hashFile.UserPermission = file.Permissions;
                 hashFile.Status = file.Status;
+                hashFile.Password = file.Password;
 
                 switch (fileType)
                 {
