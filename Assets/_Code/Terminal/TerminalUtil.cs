@@ -266,17 +266,18 @@ namespace HASH
 
             ShowText(line.FormattedText);
 
-            // TODO: remove this wait to fix label flickering, but fix table reposition
-            yield return null;
-
-            Shell.RunCommandLine(text);
-
+            if (!Shell.RunCommandLine(text))
+            {
+                var msg = string.Format("'{0}' is not a valid command. If you need help, input 'help'", text);
+                msg = TextUtil.Error(msg);
+                ShowText(msg);
+            }
+            
             UpdateTableAndScroll();
             ClearInputText();
             FocusOnInput();
-
             CacheCommand(DataHolder.TerminalData, text);
-            ResetCommandBufferIndex();
+            ResetCommandBufferIndex();                
         }
 
         /// <summary>

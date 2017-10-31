@@ -13,15 +13,16 @@ namespace HASH
         /// <summary>
         /// Interprets, find the program and execute the command of the given command line.
         /// </summary>
-        public static void RunCommandLine(string commandLine)
+        public static bool RunCommandLine(string commandLine)
         {
             var programOpt = GetProgramExecutionOptions(commandLine);
             if (programOpt.ProgramReference == null)
-                DebugUtil.Error("DID NOT FOUND A PROGRAM MATCH FOR THE GIVEN COMMAND LINE: " + commandLine);
+                return false;
             else
             {
                 var entryPoint = GetProgramExecutionEntryPoint(programOpt.ProgramReference);
                 entryPoint(programOpt);
+                return true;
             }
         }
 

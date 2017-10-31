@@ -21,11 +21,11 @@ namespace HASH
             Validations = new CommandLineArgValidationOption[2];
 
             ModeValidation = new CommandLineArgValidationOption();
-            ModeValidation.ArgumentName = "mode";
+            ModeValidation.ArgumentName = "";
             ModeValidation.Requirements = ArgRequirement.Unique | ArgRequirement.ValueRequired;
 
             CountValidation = new CommandLineArgValidationOption();
-            CountValidation.ArgumentName = "count";
+            CountValidation.ArgumentName = "c";
             CountValidation.Requirements = ArgRequirement.Unique | ArgRequirement.ValueRequired;
 
             Validations[0] = ModeValidation;
@@ -49,9 +49,9 @@ namespace HASH
                 Pair<string, string> countArg;
 
                 bool modePresent =
-                    CommandLineUtil.TryGetArgumentByName(options.ParsedArguments, "mode", out modeArg);
+                    CommandLineUtil.TryGetArgumentByName(options.ParsedArguments, "", out modeArg);
                 bool countPresent =
-                    CommandLineUtil.TryGetArgumentByName(options.ParsedArguments, "count", out countArg);
+                    CommandLineUtil.TryGetArgumentByName(options.ParsedArguments, "c", out countArg);
 
                 if (modePresent && !countPresent)
                 {
