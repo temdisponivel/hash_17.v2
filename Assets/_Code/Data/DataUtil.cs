@@ -224,7 +224,7 @@ namespace HASH
         {
             var parent = new SerializedHashDir();
 
-            parent.Name = Path.GetFileName(dir);
+            parent.Name = Path.GetFileName(dir).ToLower();
             parent.DirId = MathUtil.GetStringHash(dir);
             parent.ParentDirId = parentId;
 
@@ -257,7 +257,7 @@ namespace HASH
                 var hashFile = new SerializedHashFile();
 
                 var name = file.name;
-                hashFile.Name = name; 
+                hashFile.Name = name.ToLower(); 
                 hashFile.FileId = MathUtil.GetStringHash(filePath);
                 hashFile.ParentDirId = parent.DirId;
                 hashFile.UserPermission = file.Permissions;

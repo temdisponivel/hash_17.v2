@@ -88,7 +88,7 @@ namespace HASH
             if (file.Status == FileStatus.Encrypted)
                 textContent = textFile.EncryptedTextContent;
             else
-                textContent = textFile.TextContent;
+                textContent = FileSystem.GetTextFileContent(textFile);
 
             if (openOnTerminal)
                 TerminalUtil.ShowText(textContent);
