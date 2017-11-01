@@ -1,4 +1,3 @@
-INCLUDE ../../DayTwoVars.ink
 INCLUDE ../../StoryVars.ink
 
 VAR dream = 0

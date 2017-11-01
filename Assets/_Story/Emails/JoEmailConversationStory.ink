@@ -1,5 +1,3 @@
-INCLUDE ../DayOneVars.ink
-INCLUDE ../DayTwoVars.ink
 INCLUDE ../StoryVars.ink
 
 ~ temp jo_email = "jo_021222@email.dpkr"
