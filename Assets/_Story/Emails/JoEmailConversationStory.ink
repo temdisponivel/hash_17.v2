@@ -1,13 +1,13 @@
-INCLUDE ../MainStateVars.ink
 INCLUDE ../DayOneVars.ink
 INCLUDE ../DayTwoVars.ink
-INCLUDE ../ExternalFunctions.ink
+INCLUDE ../StoryVars.ink
 
 ~ temp jo_email = "jo_021222@email.dpkr"
-~ temp day_one_dream = GET_DAY_ONE_DREAM()
-~ temp day_two_dream = GET_DAY_TWO_DREAM()
-~ temp current_day = GET_CURRENT_DAY()
-~ temp my_email = GET_MY_EMAIL()
+~ temp day_one_dream = GET_VAR_VALUE(DAY_ONE_DREAM)
+~ temp day_two_dream = GET_VAR_VALUE(DAY_TWO_DREAM)
+~ temp current_day = GET_VAR_VALUE(CURRENT_DAY)
+~ temp my_email = GET_VAR_VALUE(MY_EMAIL)
+~ temp my_name = GET_VAR_VALUE(MY_NAME)
 
 {   
     - current_day == 1: 
@@ -45,6 +45,108 @@ Do you see what boredom gets you? I should have just ignored this nonsense! Now 
 <>
 Everytime I trust someone, I get fucked. Let's just fix this mess already!
 ->END
+
+== DAY_THREE ==
+<>
+[Message ID] d1s5dsdw170dw1ewfvge4w8dvf65e
+[Created at] Fri, Dez 2, 2359
+[From]       {my_email}
+[To]         {jo_email}
+[Subject]    This might interest you
+[Content]:
+
+{
+- DAY_TWO_DREAM == DAY_TWO_DREAM_I_YELL:
+    Calm down, mr perfect. Do I need to remind you about your little incident 2 years ago? If wasn't for me, you'd probably be dead.
+    
+    I don't need you to tell me that I fuck up. I know that already. Just help me get my fucking data back.
+
+    And don't be such a drama queen. You know you can trust me! I'm the only one that knows about your "special condition". If you couldn't trust me, you'd be dead already.
+    
+    I'll get prepare. Pack my bag, my suit, my pills (you never know, right?!). I'll wait for the positions.
+    Bye
+    
+- DAY_TWO_DREAM == DAY_TWO_DREAM_SOMEONE_YELL:
+    I honestly though you'd be more upset. What a happy surprise. I'll get packed. Do you think I should get my pills? Well, I'll get anyway, you never know when you gonna need them.
+    
+    I'll wait for the positions.
+    Bye.
+}
+
+-> DAY_TWO
+
+== DAY_TWO ==
+
+[Message ID] d1s5dsdw170dw1ewfvge4w8dvf65e
+[Created at] Fri, Dez 2, 2359
+[From]       {my_email}
+[To]         {jo_email}
+[Subject]    This might interest you
+[Content]:
+
+{
+- DAY_TWO_DREAM == DAY_TWO_DREAM_I_YELL:
+    Come on, Jo. When did you became so careless? How could you let this fucker who probably doesn't even know how to use a real cellphone hack you? If that happen, how can I trust these conversations? How can I be sure that someone isn't looking into your emails right now?
+    
+    He is probably looking into our emails right now!
+    
+    Let's get this data back. The more he has access to it, the more I'm compromised. You fucking idiot.
+    
+    {
+    - day_one_dream == DAY_ONE_SUSPICIOUS_DREAM:
+        -> SHOULD_NOT_TRUST_YOU
+    - day_one_dream == DAY_ONE_TRUSTFULL_DREAM:
+        -> TRUST_IS_A_MISTAKE
+    - day_one_dream == DAY_ONE_BORED_DREAM:    
+        -> BOREDOM_GETS_YOU
+    }
+    
+    -> FIELD_TRIP
+    
+- DAY_TWO_DREAM == DAY_TWO_DREAM_SOMEONE_YELL:
+    You fuck up this time, Jo. Our emails are on there, he probably knows who I am.
+    
+    I mean, I got no choise now. He know who I am, has access to our conversations.
+    
+    {
+    - day_one_dream == DAY_ONE_SUSPICIOUS_DREAM:
+        -> SHOULD_NOT_TRUST_YOU
+    - day_one_dream == DAY_ONE_TRUSTFULL_DREAM:
+        -> TRUST_IS_A_MISTAKE
+    - day_one_dream == DAY_ONE_BORED_DREAM:    
+        -> BOREDOM_GETS_YOU
+    }
+    
+    -> FIELD_TRIP
+}
+
+<>
+[Message ID] d1s5dsdw170dw1ewfvge4w8dvf65e
+[Created at] Fri, Dez 2, 2359
+[From]       {jo_email}
+[To]         {my_email}
+[Subject]    This might interest you
+[Content]:
+
+    You won't believe this! I my data is gone! My computer is just blank. What the fuck! I bet it was that son of a bitch...
+    
+    I went to his house, told him about what I found and got him really interested. He seemed like a new-born man. I think I might have woken up his old obssession. If I only knew...
+    
+    He asked me all these questions, my name, my email, how did I found the file. I should've seen this coming.
+    
+    At least I got something from him too...
+    
+    He is a very lonely (who isn't though?!), frustated man. Completely divorced from reality. He believes that the profecy is some kind of god-sent message to help human-kind reedem itself! (I mean, come on!).
+    
+    He spent most of his time on his chair now, by the looks (and smell) of it. I belive he hasn't cleaned himself in days. I bet he wouldn't last much longer before killing himself if wasn't for me. He uses an old xPhone V10, you know, the one that nobody uses in like 50 years or so. I don't think he is much into tech, just computers. He had a laptop with him, but by the crost of dirty on it, I'd say it hasn't been used in months. The microphone and camera are covered with black tape, and it was connected to a cable, so I don't think it has wireless capabilties (I'm not surprise though, neither do I).
+    
+    Please, you got help me! You got find T0m3 and get my data back. All that I have is there. My whole life, I can't afford to lose that data. Help a friend out!
+    
+    I know this is just the kind of investigative hacking you love anyway. And also, this guy is probably our best shot at finding the truth about this transcript. What you say?
+    
+-> DAY_ONE
+
+-> DONE
 
 == DAY_ONE ==
 <>
@@ -122,7 +224,7 @@ Everytime I trust someone, I get fucked. Let's just fix this mess already!
 [Subject]    This might interest you
 [Content]:
     
-        Hey {MY_NAME}, how's going? I've come upon something interesting today. As you know, I often go just outside the zone to look for old computers.
+        Hey {my_name}, how's going? I've come upon something interesting today. As you know, I often go just outside the zone to look for old computers.
     Today I found one, unamed, undated, but looked very old. I managed to recover some data from its solid state drive, and there is this file in there,
     that looks like a transcript of a presentation by some important person from way back. Here's what I could recover:
         
@@ -137,107 +239,5 @@ Everytime I trust someone, I get fucked. Let's just fix this mess already!
         Bye.
         
 -> END
-
-== DAY_TWO ==
-
-[Message ID] d1s5dsdw170dw1ewfvge4w8dvf65e
-[Created at] Fri, Dez 2, 2359
-[From]       {my_email}
-[To]         {jo_email}
-[Subject]    This might interest you
-[Content]:
-
-{
-- DAY_TWO_DREAM == DAY_TWO_DREAM_I_YELL:
-    Come on, Jo. When did you became so careless? How could you let this fucker who probably doesn't even know how to use a real cellphone hack you? If that happen, how can I trust these conversations? How can I be sure that someone isn't looking into your emails right now?
-    
-    He is probably looking into our emails right now!
-    
-    Let's get this data back. The more he has access to it, the more I'm compromised. You fucking idiot.
-    
-    {
-    - day_one_dream == DAY_ONE_SUSPICIOUS_DREAM:
-        -> SHOULD_NOT_TRUST_YOU
-    - day_one_dream == DAY_ONE_TRUSTFULL_DREAM:
-        -> TRUST_IS_A_MISTAKE
-    - day_one_dream == DAY_ONE_BORED_DREAM:    
-        -> BOREDOM_GETS_YOU
-    }
-    
-    -> FIELD_TRIP
-    
-- DAY_TWO_DREAM == DAY_TWO_DREAM_SOMEONE_YELL:
-    You fuck up this time, Jo. Our emails are on there, he probably knows who I am.
-    
-    I mean, I got no choise now. He know who I am, has access to our conversations.
-    
-    {
-    - day_one_dream == DAY_ONE_SUSPICIOUS_DREAM:
-        -> SHOULD_NOT_TRUST_YOU
-    - day_one_dream == DAY_ONE_TRUSTFULL_DREAM:
-        -> TRUST_IS_A_MISTAKE
-    - day_one_dream == DAY_ONE_BORED_DREAM:    
-        -> BOREDOM_GETS_YOU
-    }
-    
-    -> FIELD_TRIP
-}
-
-<>
-[Message ID] d1s5dsdw170dw1ewfvge4w8dvf65e
-[Created at] Fri, Dez 2, 2359
-[From]       {jo_email}
-[To]         {my_email}
-[Subject]    This might interest you
-[Content]:
-
-    You won't believe this! I my data is gone! My computer is just blank. What the fuck! I bet it was that son of a bitch...
-    
-    I went to his house, told him about what I found and got him really interested. He seemed like a new-born man. I think I might have woken up his old obssession. If I only knew...
-    
-    He asked me all these questions, my name, my email, how did I found the file. I should've seen this coming.
-    
-    At least I got something from him too...
-    
-    He is a very lonely (who isn't though?!), frustated man. Completely divorced from reality. He believes that the profecy is some kind of god-sent message to help human-kind reedem itself! (I mean, come on!).
-    
-    He spent most of his time on his chair now, by the looks (and smell) of it. I belive he hasn't cleaned himself in days. I bet he wouldn't last much longer before killing himself if wasn't for me. He uses an old xPhone V10, you know, the one that nobody uses in like 50 years or so. I don't think he is much into tech, just computers. He had a laptop with him, but by the crost of dirty on it, I'd say it hasn't been used in months. The microphone and camera are covered with black tape, and it was connected to a cable, so I don't think it has wireless capabilties (I'm not surprise though, neither do I).
-    
-    Please, you got help me! You got find T0m3 and get my data back. All that I have is there. My whole life, I can't afford to lose that data. Help a friend out!
-    
-    I know this is just the kind of investigative hacking you love anyway. And also, this guy is probably our best shot at finding the truth about this transcript. What you say?
-    
--> DAY_ONE
-
--> DONE
-
-== DAY_THREE ==
-<>
-[Message ID] d1s5dsdw170dw1ewfvge4w8dvf65e
-[Created at] Fri, Dez 2, 2359
-[From]       {my_email}
-[To]         {jo_email}
-[Subject]    This might interest you
-[Content]:
-
-{
-- DAY_TWO_DREAM == DAY_TWO_DREAM_I_YELL:
-    Calm down, mr perfect. Do I need to remind you about your little incident 2 years ago? If wasn't for me, you'd probably be dead.
-    
-    I don't need you to tell me that I fuck up. I know that already. Just help me get my fucking data back.
-
-    And don't be such a drama queen. You know you can trust me! I'm the only one that knows about your "special condition". If you couldn't trust me, you'd be dead already.
-    
-    I'll get prepare. Pack my bag, my suit, my pills (you never know, right?!). I'll wait for the positions.
-    Bye
-    
-- DAY_TWO_DREAM == DAY_TWO_DREAM_SOMEONE_YELL:
-    I honestly though you'd be more upset. What a happy surprise. I'll get packed. Do you think I should get my pills? Well, I'll get anyway, you never know when you gonna need them.
-    
-    I'll wait for the positions.
-    Bye.
-}
-
--> DAY_TWO
 
 -> DONE

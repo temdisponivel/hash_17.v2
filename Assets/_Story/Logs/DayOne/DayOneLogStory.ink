@@ -1,8 +1,12 @@
 INCLUDE ../../DayOneVars.ink
-INCLUDE ../../ExternalFunctions.ink
+INCLUDE ../../StoryVars.ink
 
-~ temp dream = GET_DAY_ONE_DREAM()
-~ temp saw_email =  GET_DAY_ONE_SAW_EMAIL_BEFORE_LOG()
+VAR dream = 0
+VAR saw_email = false
+
+~ dream = GET_VAR_VALUE(DAY_ONE_DREAM)
+~ saw_email = GET_VAR_VALUE(DAY_ONE_SAW_EMAIL_BEFORE_LOG)
+
 {
 - dream == DAY_ONE_SUSPICIOUS_DREAM:
     -> SUSPICIOUS_DREAM

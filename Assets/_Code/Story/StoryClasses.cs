@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Security.Policy;
 using Ink.Runtime;
 using UnityEngine;
 
@@ -8,17 +10,19 @@ namespace HASH.Story
     {
         // EXTERNAL FUNC
 
-        public static class ExternalFuncNames
+        public static class StoryVars
         {
-            public const string GET_CURRENT_DAY_FUNC_NAME = "GET_CURRENT_DAY";
-            public const string GET_MY_EMAIL_FUNC_NAME = "GET_MY_EMAIL";
-            public const string GET_MY_NAME_FUNC_NAME = "GET_MY_NAME";
+            public static Dictionary<string, object> GlobalVars;
             
-            public const string GET_DAY_ONE_DREAM_FUNC_NAME = "GET_DAY_ONE_DREAM";
-            public const string GET_DAY_ONE_SAW_EMAIL_BEFORE_LOG_FUNC_NAME = "GET_DAY_ONE_SAW_EMAIL_BEFORE_LOG";
+            public const string CURRENT_DAY = "CURRENT_DAY";
+            public const string MY_EMAIL = "MY_EMAIL";
+            public const string MY_NAME = "MY_NAME";
             
-            public const string GET_DAY_TWO_DREAM_FUNC_NAME = "GET_DAY_TWO_DREAM";
-            public const string GET_DAY_TWO_SAW_EMAIL_BEFORE_LOG_FUNC_NAME = "GET_DAY_TWO_SAY_EMAIL_BEFORE_LOG";
+            public const string DAY_ONE_DREAM = "DAY_ONE_DREAM";
+            public const string DAY_ONE_SAW_EMAIL_BEFORE_LOG = "GET_DAY_ONE_SAW_EMAIL_BEFORE_LOG";
+            
+            public const string DAY_TWO_DREAM = "DAY_TWO_DREAM";
+            public const string DAY_TWO_SAW_EMAIL_BEFORE_LOG = "DAY_TWO_SAY_EMAIL_BEFORE_LOG";
         }
         
         // MAIN STATE
@@ -32,8 +36,8 @@ namespace HASH.Story
         public static class MainState
         {
             public static StoryDays CurrentDay;
-            public static string MyEmail;
             public static string MyName;
+            public static string MyEmail;
         }
 
         // DAY ONE
