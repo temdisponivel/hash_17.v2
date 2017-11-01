@@ -60,7 +60,7 @@ namespace HASH.Story
         public enum DayTwoDreams : short
         {
             I_YELL = 1,
-            SOMEONE_YELL = 1,
+            SOMEONE_YELL = 2,
         }
 
         public static class DayTwoState
