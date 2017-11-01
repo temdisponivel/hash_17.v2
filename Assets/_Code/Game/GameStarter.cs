@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using HASH.GUI;
+using HASH.Story;
 using HASH.Window;
 using UnityEngine;
 
@@ -32,9 +33,11 @@ namespace HASH
 #endif
             
             Constants.Colors = Colors;
-            
+
             DataHolder.DebugCondition = DebugCondition;
             DataHolder.GUIReferences = GUIReferences;
+            
+            StoryUtil.Init();
             
             GUIUtil.SetCursorToDefault();
 

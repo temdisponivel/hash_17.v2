@@ -93,7 +93,7 @@ namespace HASH
         {
             FileSystem.FilleCommandBufferWithFileSystem(FillBufferFileSystemOptions.IncludeFile);
 
-            ProgramUtil.AddPrefixToCommandBuffer("open ");
+            ProgramUtil.AddPrefixToCommandBuffer("cracker ");
         }
 
         public static void ShowErrorMessage(string msg)

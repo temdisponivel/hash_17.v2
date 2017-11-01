@@ -32,7 +32,7 @@ namespace HASH
     /// </summary>
     public class TextFile
     {
-        public string TextContent;
+        public Ink.Runtime.Story Story;
         public string EncryptedTextContent;
     }
     

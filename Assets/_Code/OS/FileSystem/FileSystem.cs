@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using HASH;
+using HASH.Story;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEngine;
@@ -311,6 +312,10 @@ namespace HASH
             return null;
         }
         
+        /// <summary>
+        /// Returns true if there's a file at path. Stores the found file at the given parameter.
+        /// Returns null if there's no file at the path.
+        /// </summary>
         public static bool FileExists(string path, out HashFile file)
         {
             file = FindFileByPath(path);
@@ -379,8 +384,11 @@ namespace HASH
             var file = GetFileFromSerializedData(serialized.File);
             file.FileType = HashFileType.Text;
             var txtFile = new TextFile();
-            txtFile.TextContent = serialized.TextAsset.text;
-            txtFile.EncryptedTextContent = TextUtil.EncryptString(txtFile.TextContent);
+            
+            txtFile.Story = new Ink.Runtime.Story(serialized.TextAsset.text);
+            StoryUtil.BindExternalFunctions(txtFile.Story);
+            
+            txtFile.EncryptedTextContent = TextUtil.EncryptString(txtFile.Story.ToString());
             file.Content = txtFile;
             return file;
         }
@@ -471,6 +479,16 @@ namespace HASH
         public static void CacheFileContents(HashFile file)
         {
             CacheFile(file);
+        }
+
+        /// <summary>
+        /// Returns the string content of the given file. 
+        /// </summary>
+        public static string GetTextFileContent(TextFile file)
+        {
+            file.Story.ResetState();
+            var result = file.Story.ContinueMaximally();
+            return result;
         }
 
         #endregion

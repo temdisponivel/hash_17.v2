@@ -37,8 +37,6 @@ namespace HASH
                 Debug.Break();
             }
         }
-        
-        
 
         /// <summary>
         /// Logs the given message with the given color.
