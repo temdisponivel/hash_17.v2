@@ -32,8 +32,8 @@ namespace HASH
             
             if (CommandLineUtil.ValidateArguments(options.ParsedArguments, Validations))
             {
-                Pair<string, string> pathArg = CommandLineUtil.GetArgumentByName(options.ParsedArguments, PathArgName);
-                Pair<string, string> passwordArg = CommandLineUtil.GetArgumentByName(options.ParsedArguments, PasswordArgName);
+                Pair<string, string> pathArg = CommandLineUtil.FindArgumentByName(options.ParsedArguments, PathArgName);
+                Pair<string, string> passwordArg = CommandLineUtil.FindArgumentByName(options.ParsedArguments, PasswordArgName);
 
                 var path = pathArg.Value;
                 var password = passwordArg.Value;

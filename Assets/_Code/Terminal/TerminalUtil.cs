@@ -422,7 +422,10 @@ namespace HASH
 
         private static TextTableLine CreatePlayerInputLine(string command)
         {
-            var path = DataHolder.DeviceData.CurrentDevice.FileSystem.CurrentDir.FullPath;
+            var device = DataHolder.DeviceData.CurrentDevice; 
+            var path = device.FileSystem.CurrentDir.FullPath;
+            path = string.Format("{0}@{1}:{2}", device.DeviceName, DataHolder.DeviceData.CurrentUser.Username, path);
+            
             var pathColumn = CreatePlayerInputColumn(path, .65f, Constants.Colors.Success, TextModifiers.Italic);
             var commandColumn = CreatePlayerInputColumn(command, .35f, Constants.Colors.Default, TextModifiers.None);
 
@@ -432,7 +435,6 @@ namespace HASH
 
             var line = new TextTableLine();
             line.Items = items;
-
 
             line.MaxLineSizeIsForced = false;
             line.MaxLineSize = DataHolder.TerminalData.MaxLineWidthInChars;

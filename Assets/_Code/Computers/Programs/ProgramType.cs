@@ -11,5 +11,6 @@
         Open = 30,
         Cracker = 40,
         Help = 50,
+        SSH = 60,
     }
 }

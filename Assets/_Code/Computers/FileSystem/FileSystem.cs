@@ -4,6 +4,7 @@ using HASH;
 using HASH.Story;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
+using SimpleCollections.Util;
 using UnityEngine;
 using UnityEngine.Windows.Speech;
 
@@ -465,11 +466,17 @@ namespace HASH
             file.Password = serializedFile.Password;
             file.Condition = serializedFile.Condition;
 
-            file.UserPermission = STable.Create<string, AccessPermission>(serializedFile.UserPermission.Length, true);
+            file.UserPermission = SList.Create<ClassPair<string, AccessPermission>>(serializedFile.UserPermission.Length);
             for (int i = 0; i < serializedFile.UserPermission.Length; i++)
             {
                 var permission = serializedFile.UserPermission[i];
-                file.UserPermission[permission.Key] = permission.Value;
+                var user = permission.Key;
+                
+                var pair = new ClassPair<string, AccessPermission>();
+                pair.Key = user.UserName;
+                pair.Value = permission.Value;
+                
+                SList.Add(file.UserPermission, pair);
             }
 
             return file;
@@ -596,7 +603,25 @@ namespace HASH
         public static bool IsFileAvaibale(HashFile file)
         {
             var result = StoryUtil.EvaluateCondition(file.Condition);
+            var permission = GetAccessPermission(file);
+            
+            result = result && permission > AccessPermission.Hidden;
             return result;
+        }
+
+        public static AccessPermission GetAccessPermission(HashFile file)
+        {
+            var user = DataHolder.DeviceData.CurrentUser.Username;
+            return GetAccessPermissionForUser(file, user);
+        }
+
+        public static AccessPermission GetAccessPermissionForUser(HashFile file, string username)
+        {
+            var permissionPair = SList.Find(file.UserPermission, p => string.Equals(p.Key, username));
+            if (permissionPair != null)
+                return permissionPair.Value;
+            else
+                return AccessPermission.Editable;
         }
 
         #endregion

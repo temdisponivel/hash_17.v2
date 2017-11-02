@@ -364,6 +364,11 @@ namespace HASH
         {
             return ApplyNGUIColor(defaut, Constants.Colors.Default);
         }
+
+        public static string Success(string success)
+        {
+            return ApplyNGUIColor(success, Constants.Colors.Success);
+        }
         
         public static string Warning(string warning)
         {

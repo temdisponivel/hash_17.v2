@@ -29,8 +29,7 @@ namespace HASH
             DataHolder.DeviceData = DeviceUtil.GetDeviceDataFromSerializedData(devices);
             CacheData();
             
-            FileSystem.CacheRootDir();
-            DeviceUtil.ChangeDevice(DataHolder.DeviceData.CurrentDevice);
+            DeviceUtil.UpdateDeviceRelatedGUI();
         }
 
         private static SerializedHashDevices LoadDevices()
@@ -56,6 +55,8 @@ namespace HASH
                 var files = device.FileSystem.AllFiles;
                 foreach (var file in files)
                     FileSystem.CacheFileContents(file.Value);
+                
+                FileSystem.CacheRootDir();
             }
 
             DataHolder.DeviceData.CurrentDevice = DataHolder.DeviceData.PlayerDevice;
@@ -77,6 +78,8 @@ namespace HASH
                 BakeFileSystemData(allDevices[i]);
             
             Debug.Log("Baking done!");
+            EditorUtility.SetDirty(devices);
+            Selection.activeObject = devices;
         }
 
         public static void BakeFileSystemData(SerializedHashDevice device)

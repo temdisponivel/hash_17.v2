@@ -5,7 +5,7 @@ namespace HASH
 {
     public class HashUser
     {
-        public string Name;
+        public string Username;
         public string Password;
     }
     
@@ -22,6 +22,7 @@ namespace HASH
     public class HashDevice
     {
         public string DeviceName;
+        public string IpAddress;
 
         public SimpleList<Program> AllPrograms;
         public SimpleList<HashUser> AllUsers;

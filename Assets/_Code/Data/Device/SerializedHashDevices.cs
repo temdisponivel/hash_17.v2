@@ -5,16 +5,10 @@ using UnityEngine;
 namespace HASH
 {
     [Serializable]
-    public class SerializedHashUser
-    {
-        public string UserName;
-        public string Password;
-    }
-    
-    [Serializable]
     public class SerializedHashDevice
     {
         public string DeviceName;
+        public string IpAddress;
         
         public SerializedHashUser[] Users;
         public SerializedProgram[] Programs;

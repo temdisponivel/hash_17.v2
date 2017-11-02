@@ -9,7 +9,7 @@ namespace HASH
     /// Empty class to "concretize" the class pair in order to serialized it.
     /// </summary>
     [Serializable]
-    public class PermissionPair : ClassPair<string, AccessPermission>
+    public class PermissionPair : ClassPair<SerializedHashUser, AccessPermission>
     {
     }
     

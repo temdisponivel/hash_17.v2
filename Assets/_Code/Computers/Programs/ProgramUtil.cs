@@ -78,6 +78,7 @@ namespace HASH
             ClearProgram.Setup();
             OpenProgram.Setup();
             CrackerProgram.Setup();
+            SSHProgram.Setup();
         }
 
         public static bool ShowHelpIfNeeded(ProgramExecutionOptions options)

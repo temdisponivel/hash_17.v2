@@ -46,19 +46,29 @@ namespace HASH
                 HashDir dir;
                 if (FileSystem.FileExistsAndIsAvailable(path, out file))
                 {
-                    switch (file.FileType)
+                    var permission = FileSystem.GetAccessPermission(file);
+                    if (permission < AccessPermission.Editable)
                     {
-                        case HashFileType.Text:
-                            var textFile = file.Content as TextFile;
-                            OpenTextFile(file, textFile, openOnTerminal);
-                            break;
-                        case HashFileType.Image:
-                            var imageFile = file.Content as ImageFile;
-                            OpenImageFile(file, imageFile, openOnTerminal);
-                            break;
-                        default:
-                            DebugUtil.Error(string.Format("The open program can't open file type: {0}", file.FileType));
-                            break;
+                        var msg = "You don't have permission to open this file.";
+                        msg = TextUtil.Error(msg);
+                        TerminalUtil.ShowText(msg);
+                    }
+                    else
+                    {
+                        switch (file.FileType)
+                        {
+                            case HashFileType.Text:
+                                var textFile = file.Content as TextFile;
+                                OpenTextFile(file, textFile, openOnTerminal);
+                                break;
+                            case HashFileType.Image:
+                                var imageFile = file.Content as ImageFile;
+                                OpenImageFile(file, imageFile, openOnTerminal);
+                                break;
+                            default:
+                                DebugUtil.Error(string.Format("The open program can't open file type: {0}", file.FileType));
+                                break;
+                        }                        
                     }
                 }
                 else

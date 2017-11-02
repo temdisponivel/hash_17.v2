@@ -2,6 +2,7 @@
 using HASH.Story;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
+using SimpleCollections.Util;
 using UnityEngine;
 
 namespace HASH
@@ -9,13 +10,11 @@ namespace HASH
     /// <summary>
     /// Enumerates all possible access permissions.
     /// </summary>
-    [Flags]
     public enum AccessPermission
     {
-        None = 1 << 0,
-        Read = 1 << 1,
-        Write = 1 << 2,
-        All = Read | Write,
+        Hidden = 0,
+        Visible = 1,
+        Editable = 2,
     }
     
     /// <summary>
@@ -64,7 +63,7 @@ namespace HASH
 
         public object Content;
 
-        public SimpleTable<string, AccessPermission> UserPermission;
+        public SimpleList<ClassPair<string, AccessPermission>> UserPermission;
 
         public FileStatus Status;
         public HashStory.Condition Condition;
