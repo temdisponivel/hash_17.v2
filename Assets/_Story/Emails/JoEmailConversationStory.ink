@@ -24,7 +24,7 @@ This should never be shown!
 
 == FIELD_TRIP ==
 <>
-You said he uses an old cellphone. Maybe we could track him down using the cellphone antenas to find him MNID; there's probably about 2 or 3 people still using these phones.
+You said he uses an old cellphone. Maybe we could track him down using the cellphone antenas to find his MNID; there's probably about 2 or 3 people still using these phones.
 
 Get ready to a little trip, since I cannot get out of here, you'll have to go to him to confirm his location and get more intel.
 -> END

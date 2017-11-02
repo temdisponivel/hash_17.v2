@@ -51,7 +51,7 @@ namespace HASH
                     string msg;
 
                     HashFile file;
-                    if (FileSystem.FileExists(desiredDirPath, out file))
+                    if (FileSystem.FileExistsAndIsAvailable(desiredDirPath, out file))
                         msg = string.Format("The path '{0}' points to a file. Use 'open {0}' to open this file.",
                             desiredDirPath);
                     else
@@ -65,7 +65,7 @@ namespace HASH
             }
 
             var childs = currentDir.Childs;
-            var files = currentDir.Files;
+            var files = FileSystem.GetAvailableFilesFromDir(currentDir);
 
             if (childs.Count == 0 && files.Count == 0)
                 TerminalUtil.ShowColorizedText("EMPTY DIRECTORY!", LineColor);

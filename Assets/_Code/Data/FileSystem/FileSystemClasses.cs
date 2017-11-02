@@ -1,4 +1,5 @@
 ﻿using System;
+using HASH.Story;
 using SimpleCollections.Util;
 using UnityEngine;
 
@@ -10,6 +11,12 @@ namespace HASH
     [Serializable]
     public class PermissionPair : ClassPair<string, AccessPermission>
     {
+    }
+
+    [Serializable]
+    public class SerializedHashFileCondition
+    {
+        public HashStory.StoryDays MinimalDays;
     }
 
     /// <summary>
@@ -38,6 +45,7 @@ namespace HASH
         public string Password;
         public FileStatus Status;
         public PermissionPair[] UserPermission;
+        public SerializedHashFileCondition Condition;
     }
 
     /// <summary>

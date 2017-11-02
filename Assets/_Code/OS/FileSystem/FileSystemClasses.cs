@@ -1,4 +1,5 @@
 ﻿using System;
+using HASH.Story;
 using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEngine;
@@ -25,6 +26,11 @@ namespace HASH
         Invalid = -1,
         Text = 0,
         Image = 5, 
+    }
+
+    public class HashFileCondition
+    {
+        public HashStory.StoryDays MinimalDay;
     }
     
     /// <summary>
@@ -66,6 +72,7 @@ namespace HASH
         public SimpleTable<string, AccessPermission> UserPermission;
 
         public FileStatus Status;
+        public HashFileCondition Condition;
     }
     
     

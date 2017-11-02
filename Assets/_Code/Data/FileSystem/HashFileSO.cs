@@ -9,6 +9,7 @@ namespace HASH
         public HashFileType Type;
         public FileStatus Status;
         public string Password;
+        public SerializedHashFileCondition Condition;
         public Object Content;
 
         private void OnValidate()

@@ -38,7 +38,7 @@ namespace HASH
 
                 if (FileSystem.DirExists(path, out dir))
                     FileSystem.ChangeDir(dir);
-                else if (FileSystem.FileExists(path, out file))
+                else if (FileSystem.FileExistsAndIsAvailable(path, out file))
                 {
                     var msg = string.Format("The path '{0}' points to a file. Use 'open {0}' to open this file.", path);
                     msg = TextUtil.Warning(msg);

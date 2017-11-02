@@ -19,7 +19,7 @@ namespace HASH.Story
         {
             // TODO: load from save file
 
-            HashStory.MainState.CurrentDay = HashStory.StoryDays.Two;
+            HashStory.MainState.CurrentDay = HashStory.StoryDays.One;
             HashStory.MainState.MyEmail = "seventeen@dpkr.com.br";
             HashStory.MainState.MyName = "Seventeen";
 

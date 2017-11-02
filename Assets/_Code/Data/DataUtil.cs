@@ -263,6 +263,7 @@ namespace HASH
                 hashFile.UserPermission = file.Permissions;
                 hashFile.Status = file.Status;
                 hashFile.Password = file.Password;
+                hashFile.Condition = file.Condition;
 
                 switch (fileType)
                 {

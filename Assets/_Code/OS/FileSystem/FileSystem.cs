@@ -142,6 +142,9 @@ namespace HASH
             return null;
         }
 
+        /// <summary>
+        /// Navigate through the given path part considering currentDir as the current folder.
+        /// </summary>
         private static HashDir ProcessPathPart(HashDir currentDir, string pathPart)
         {
             var folderName = pathPart;
@@ -296,6 +299,23 @@ namespace HASH
             return dir;
         }
 
+        /// <summary>
+        /// Returns a list containing all the files of the given dir that are available for use.
+        /// See IsFileAvailable.
+        /// </summary>
+        public static SimpleList<HashFile> GetAvailableFilesFromDir(HashDir dir)
+        {
+            var result = SList.Create<HashFile>(1);
+            for (int i = 0; i < dir.Files.Count; i++)
+            {
+                var file = dir.Files[i];
+                if (IsFileAvaibale(file))
+                    SList.Add(result, file);
+            }
+
+            return result;
+        }
+
         #endregion
 
         #region File
@@ -313,8 +333,17 @@ namespace HASH
         }
         
         /// <summary>
-        /// Returns true if there's a file at path. Stores the found file at the given parameter.
+        /// Returns true if there's a file at path and this file is available for use. Stores the found file at the given parameter.
         /// Returns null if there's no file at the path.
+        /// </summary>
+        public static bool FileExistsAndIsAvailable(string path, out HashFile file)
+        {
+            file = FindFileByPath(path);
+            return file != null && IsFileAvaibale(file);
+        }
+        
+        /// <summary>
+        /// Returns true there's a file at path. Stores the found file on out file parameter.
         /// </summary>
         public static bool FileExists(string path, out HashFile file)
         {
@@ -347,10 +376,23 @@ namespace HASH
             for (int i = 0; i < files.Count; i++)
             {
                 var file = files[i];
+                if (!IsFileAvaibale(file))
+                    continue;
+                
                 if (string.Equals(file.FullName, fileName, StringComparison.InvariantCultureIgnoreCase))
                     return file;
             }
             return null;
+        }
+
+        /// <summary>
+        /// Returns the file condition created from the serialized file condition.
+        /// </summary>
+        public static HashFileCondition GetHashFileConditionFromSerialized(SerializedHashFileCondition condition)
+        {
+            var cond = new HashFileCondition();
+            cond.MinimalDay = condition.MinimalDays;
+            return cond;
         }
 
         /// <summary>
@@ -365,6 +407,7 @@ namespace HASH
             file.ParentDirId = serializedFile.ParentDirId;
             file.Status = serializedFile.Status;
             file.Password = serializedFile.Password;
+            file.Condition = GetHashFileConditionFromSerialized(serializedFile.Condition);
 
             file.UserPermission = STable.Create<string, AccessPermission>(serializedFile.UserPermission.Length, true);
             for (int i = 0; i < serializedFile.UserPermission.Length; i++)
@@ -491,6 +534,23 @@ namespace HASH
             return result;
         }
 
+        /// <summary>
+        /// Returns true if the given file is avaiable for use.
+        /// </summary>
+        public static bool IsFileAvaibale(HashFile file)
+        {
+            var result = EvaluateFileCondition(file.Condition);
+            return result;
+        }
+
+        /// <summary>
+        /// Returns true if the given file condition is true.
+        /// </summary>
+        public static bool EvaluateFileCondition(HashFileCondition condition)
+        {
+            return HashStory.MainState.CurrentDay >= condition.MinimalDay;
+        }
+
         #endregion
 
         #region Permission
@@ -531,7 +591,7 @@ namespace HASH
 
             if (option == FillBufferFileSystemOptions.IncludeAll || option == FillBufferFileSystemOptions.IncludeFile)
             {
-                var files = currentDir.Files;
+                var files = FileSystem.GetAvailableFilesFromDir(currentDir);
                 for (int i = 0; i < files.Count; i++)
                     SList.Add(commandBuffer, files[i].FullPath);
             }
