@@ -8,6 +8,7 @@ namespace HASH
     {
         public static void SetCursorToDefault()
         {
+            Cursor.lockState = CursorLockMode.Confined;
             SetCursorTexture(CursorTexture.Normal);
         }
 

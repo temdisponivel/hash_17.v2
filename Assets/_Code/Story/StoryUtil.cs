@@ -62,5 +62,10 @@ namespace HASH.Story
 
             return value;
         }
+
+        public static bool EvaluateCondition(HashStory.Condition condition)
+        {
+            return HashStory.MainState.CurrentDay >= condition.MinimalDays;
+        }
     }
 }

@@ -12,13 +12,7 @@ namespace HASH
     public class PermissionPair : ClassPair<string, AccessPermission>
     {
     }
-
-    [Serializable]
-    public class SerializedHashFileCondition
-    {
-        public HashStory.StoryDays MinimalDays;
-    }
-
+    
     /// <summary>
     /// Serialized version of the hashdir.
     /// </summary>
@@ -30,7 +24,6 @@ namespace HASH
         public int ParentDirId;
         public int[] ChildsDirId;
         public int[] FilesId;
-        public PermissionPair[] UserPermission;
     }
     
     /// <summary>
@@ -45,7 +38,7 @@ namespace HASH
         public string Password;
         public FileStatus Status;
         public PermissionPair[] UserPermission;
-        public SerializedHashFileCondition Condition;
+        public HashStory.Condition Condition;
     }
 
     /// <summary>
@@ -75,5 +68,14 @@ namespace HASH
     {
         Normal = 0,
         Encrypted = 10,
+    }
+    
+    [Serializable]
+    public class SerializedFileSystem
+    {
+        public SerializedHashDir[] Dirs;
+
+        public SerializedHashFileText[] TextFiles;
+        public SerializedHashFileImage[] ImageFiles;
     }
 }

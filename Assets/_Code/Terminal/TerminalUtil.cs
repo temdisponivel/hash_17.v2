@@ -422,7 +422,7 @@ namespace HASH
 
         private static TextTableLine CreatePlayerInputLine(string command)
         {
-            var path = DataHolder.FileSystemData.CurrentDir.FullPath;
+            var path = DataHolder.DeviceData.CurrentDevice.FileSystem.CurrentDir.FullPath;
             var pathColumn = CreatePlayerInputColumn(path, .65f, Constants.Colors.Success, TextModifiers.Italic);
             var commandColumn = CreatePlayerInputColumn(command, .35f, Constants.Colors.Default, TextModifiers.None);
 

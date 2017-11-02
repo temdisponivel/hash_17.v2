@@ -15,15 +15,15 @@ namespace HASH
         public DebugUtil.DebugCondition DebugCondition;
         public HashColors Colors;
         
-        IEnumerator Start()
+        void Start()
         {
-            yield return InitializeGame();
+            InitializeGame();
         }
 
         /// <summary>
         /// Initialized the game.
         /// </summary>
-        public IEnumerator InitializeGame()
+        public void InitializeGame()
         {        
 #if DEB
             if (GUIReferences.InputListener == null)
@@ -33,29 +33,16 @@ namespace HASH
 #endif
             
             Constants.Colors = Colors;
-
             DataHolder.DebugCondition = DebugCondition;
             DataHolder.GUIReferences = GUIReferences;
             
-            StoryUtil.Init();
-            
-            GUIUtil.SetCursorToDefault();
-
-            yield return DataUtil.Load();
-            DataUtil.ProcessLoadedData();
-
-            LoopUtil.Init();
-            
             DataHolder.GUIReferences.TerminalComponent.Initialize();
-
-            Cursor.lockState = CursorLockMode.Confined;
-
-            DataHolder.FileSystemData.RootDir = FileSystem.GetRootDir();
-            FileSystem.ChangeDir(DataHolder.FileSystemData.RootDir);
-            
-            ProgramUtil.SetupPrograms();
-            
+            StoryUtil.Init();
+            LoopUtil.Init();
             WindowUtil.Initialize();
+            DataUtil.LoadData();
+            ProgramUtil.SetupPrograms();
+            GUIUtil.SetCursorToDefault();
         }
 
 #if DEB && UNITY_EDITOR

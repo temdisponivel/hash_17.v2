@@ -8,6 +8,12 @@ namespace HASH.Story
 {
     public static class HashStory
     {
+        [Serializable]
+        public class Condition
+        {
+            public StoryDays MinimalDays;
+        }
+        
         // EXTERNAL FUNC
 
         public static class StoryVars
