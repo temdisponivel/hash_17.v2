@@ -21,6 +21,8 @@ namespace HASH.Window
         public const int FocusedWindowDepth = 10000;
         public const int UnfocusedWindowDepth = 100;
 
+        public static Vector2 MaxWindowSize;
+
         public static void Initialize()
         {
             WindowIds = 0;
@@ -38,6 +40,17 @@ namespace HASH.Window
 
             LoopUtil.CallForever(UpdateWindowsScrollBars, UpdateScrollBarsInterval);
             LoopUtil.CallForever(UpdateImageWindowsBlendFactor, UpdateImageWindowBlendFactor);
+            
+            MaxWindowSize = new Vector2();
+
+            Resolution resolution;
+            if (Screen.resolutions.Length > 1)
+                resolution = Screen.resolutions[Screen.resolutions.Length - 2];
+            else
+                resolution = Screen.resolutions[Screen.resolutions.Length - 1];
+            
+            MaxWindowSize.x = resolution.width;
+            MaxWindowSize.y = resolution.height;
         }
 
         public static void CreateTextWindow(string content, string title)
@@ -67,6 +80,7 @@ namespace HASH.Window
             var imageWindow = CreateImageWindow(window.SceneWindow.ContentParent);
             imageWindow.ImageHolder.mainTexture = texture;
 
+            
             SetWindowSize(window.SceneWindow, texture.width, texture.height);
 
             window.WindowContent = imageWindow;
@@ -134,10 +148,10 @@ namespace HASH.Window
         public static void SetWindowSize(WindowComponent windowComponent, int width, int height)
         {
             if (width >= 0)
-                windowComponent.WindowWidget.width = width;
+                windowComponent.WindowWidget.width = (int) Mathf.Min(width, MaxWindowSize.x);
 
             if (height >= 0)
-                windowComponent.WindowWidget.height = height;
+                windowComponent.WindowWidget.height = (int) Mathf.Min(height, MaxWindowSize.y);
 
             var bounds = GameObjectUtil.GetDragObjectBounds(windowComponent.ControlBar.DragObject);
             windowComponent.ControlBar.DragObject.panelRegion.ConstrainTargetToBounds(windowComponent.transform, ref bounds, true);

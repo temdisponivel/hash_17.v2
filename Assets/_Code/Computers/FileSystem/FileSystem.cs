@@ -385,6 +385,41 @@ namespace HASH
             return files.Count > 0 || childs.Count > 0;
         }
 
+        public static HashDir CreateDir(HashDir parent, string name)
+        {
+            var hashDir = new HashDir();
+            hashDir.DirId = MathUtil.GetStringHash(name);
+            hashDir.Name = name;
+            hashDir.Childs = SList.Create<HashDir>(1);
+            hashDir.ChildsDirId = SList.Create<int>(1);
+            hashDir.Files = SList.Create<HashFile>(1);
+            hashDir.FilesId = SList.Create<int>(1);
+            hashDir.ParentDir = parent;
+            if (parent != null)
+            {
+                hashDir.ParentDirId = parent.DirId;
+                SList.Add(parent.Childs, hashDir);
+                SList.Add(parent.ChildsDirId, hashDir.DirId);
+            }
+            else
+                hashDir.ParentDirId = -1;
+
+            CacheDirFullPath(hashDir);
+
+            return hashDir;
+        }
+
+        public static void AddFileToDir(HashDir dir, HashFile file)
+        {
+            file.ParentDir = dir;
+            file.ParentDirId = dir.DirId;
+
+            SList.Add(dir.Files, file);
+            SList.Add(dir.FilesId, file.FileId);
+
+            CacheFile(file);
+        }
+
         #endregion
 
         #region File
@@ -471,11 +506,11 @@ namespace HASH
             {
                 var permission = serializedFile.UserPermission[i];
                 var user = permission.Key;
-                
+
                 var pair = new ClassPair<string, AccessPermission>();
                 pair.Key = user.UserName;
                 pair.Value = permission.Value;
-                
+
                 SList.Add(file.UserPermission, pair);
             }
 
@@ -604,7 +639,7 @@ namespace HASH
         {
             var result = StoryUtil.EvaluateCondition(file.Condition);
             var permission = GetAccessPermission(file);
-            
+
             result = result && permission > AccessPermission.Hidden;
             return result;
         }
@@ -622,6 +657,64 @@ namespace HASH
                 return permissionPair.Value;
             else
                 return AccessPermission.Editable;
+        }
+
+        private static HashFile CreateBaseFile(HashDir parent, string name)
+        {
+            var hashFile = new HashFile();
+
+            hashFile.Name = GetValidFileName(parent, name);
+            hashFile.FileId = MathUtil.GetStringHash(name);
+
+            hashFile.UserPermission = SList.Create<ClassPair<string, AccessPermission>>(1);
+            hashFile.Condition = new HashStory.Condition();
+            hashFile.Condition.MinimalDays = HashStory.MainState.CurrentDay;
+
+            AddFileToDir(parent, hashFile);
+
+            return hashFile;
+        }
+
+        public static HashFile CreateTextFile(HashDir parent, string name, string text)
+        {
+            var hashFile = CreateBaseFile(parent, name);
+            var textFile = new TextFile();
+            textFile.EncryptedTextContent = TextUtil.EncryptString(text);
+            textFile.Story = new Ink.Runtime.Story(text);
+            hashFile.Content = textFile;
+            hashFile.FileType = HashFileType.Text;
+            
+            CacheFile(hashFile);
+            
+            return hashFile;
+        }
+
+        public static HashFile CreateImageFile(HashDir parent, string name, Texture2D image)
+        {
+            var hashFile = CreateBaseFile(parent, name);
+            var imageFile = new ImageFile();
+            imageFile.ImageContent = image;
+            hashFile.Content = imageFile;
+            hashFile.FileType = HashFileType.Image;
+            
+            CacheFile(hashFile);
+            
+            return hashFile;
+        }
+
+        public static string GetValidFileName(HashDir dir, string currentName)
+        {
+            int count = 0;
+            for (int i = 0; i < dir.Files.Count; i++)
+            {
+                var file = dir.Files[i];
+                if (file.Name.StartsWith(currentName))
+                    count++;
+            }
+            if (count > 0)
+                return string.Format("{0}_{1}", currentName, count);
+            else
+                return currentName;
         }
 
         #endregion

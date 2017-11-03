@@ -14,5 +14,6 @@
         SSH = 60,
         GSMWatcher = 70,
         Map = 80,
+        Print = 90,
     }
 }

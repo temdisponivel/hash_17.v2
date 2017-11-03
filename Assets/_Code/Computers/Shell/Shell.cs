@@ -111,6 +111,8 @@ namespace HASH
                     return GSMWatcherProgram.Execute;
                 case ProgramType.Map:
                     return MapProgram.Execute;
+                case ProgramType.Print:
+                    return PrintProgram.Execute;
                 default:
                     DebugUtil.Assert(true, "PROGRAM TYPE HAS NO RELATED CLASS. " + program.ProgramType);
                     break;
