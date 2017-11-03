@@ -11,6 +11,19 @@ namespace HASH
     /// </summary>
     public static class ProgramUtil
     {
+        public static Program FindProgramOnDevice(ProgramType type)
+        {
+            var allPrograms = DataHolder.DeviceData.CurrentDevice.AllPrograms;
+            for (int i = 0; i < allPrograms.Count; i++)
+            {
+                var prog = allPrograms[i];
+                if (prog.ProgramType == type)
+                    return prog;
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Returns a list of all the programs deserialized from the given serialized data.
         /// </summary>
@@ -25,7 +38,7 @@ namespace HASH
 
             return result;
         }
-        
+
         /// <summary>
         /// Creates and returns a program from the serialized data.
         /// </summary>
@@ -36,12 +49,13 @@ namespace HASH
             prog.Description = serialized.Description;
             prog.Commands = serialized.Commands;
             prog.Condition = serialized.Condition;
-                
+            prog.AditionalData = serialized.AditionalData;
+
             if (serialized.HelpMessage)
                 prog.HelpText = serialized.HelpMessage.text;
             else
                 prog.HelpText = string.Empty;
-            
+
             prog.Options = new ProgramOption[serialized.Options.Length];
             for (int i = 0; i < serialized.Options.Length; i++)
                 prog.Options[i] = GetExecutionOptionFromSerializedData(serialized.Options[i]);
@@ -70,15 +84,38 @@ namespace HASH
                 data.CurrentCommandBuffer[i] = option.Insert(0, prefix);
             }
         }
-        
+
         public static void SetupPrograms()
         {
-            CdProgram.Setup();
-            DirProgram.Setup();
-            ClearProgram.Setup();
-            OpenProgram.Setup();
-            CrackerProgram.Setup();
-            SSHProgram.Setup();
+            if (DoesCurrentDeviceHasProgram(ProgramType.Cd))
+                CdProgram.Setup();
+
+            if (DoesCurrentDeviceHasProgram(ProgramType.Dir))
+                DirProgram.Setup();
+
+            if (DoesCurrentDeviceHasProgram(ProgramType.Clear))
+                ClearProgram.Setup();
+
+            if (DoesCurrentDeviceHasProgram(ProgramType.Open))
+                OpenProgram.Setup();
+
+            if (DoesCurrentDeviceHasProgram(ProgramType.Cracker))
+                CrackerProgram.Setup();
+
+            if (DoesCurrentDeviceHasProgram(ProgramType.SSH))
+                SSHProgram.Setup();
+
+            if (DoesCurrentDeviceHasProgram(ProgramType.GSMWatcher))
+            {
+                var gsmWatcherData = FindProgramOnDevice(ProgramType.GSMWatcher);
+                GSMWatcherProgram.Setup(gsmWatcherData.AditionalData);
+            }
+
+            if (DoesCurrentDeviceHasProgram(ProgramType.Map))
+            {
+                var mapData = FindProgramOnDevice(ProgramType.Map);
+                MapProgram.Setup(mapData.AditionalData);                
+            }
         }
 
         public static bool ShowHelpIfNeeded(ProgramExecutionOptions options)
@@ -111,6 +148,11 @@ namespace HASH
         public static bool IsProgramAvailable(Program program)
         {
             return StoryUtil.EvaluateCondition(program.Condition);
+        }
+
+        public static bool DoesCurrentDeviceHasProgram(ProgramType type)
+        {
+            return FindProgramOnDevice(type) != null;
         }
     }
 }

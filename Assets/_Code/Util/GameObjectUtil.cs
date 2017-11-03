@@ -42,5 +42,12 @@ namespace HASH
 
             return bounds;
         }
+
+        public static void ResetTransform(Transform transform)
+        {
+            transform.localPosition = Vector3.zero;
+            transform.localScale = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+        }
     }
 }

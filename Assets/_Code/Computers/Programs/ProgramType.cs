@@ -12,5 +12,7 @@
         Cracker = 40,
         Help = 50,
         SSH = 60,
+        GSMWatcher = 70,
+        Map = 80,
     }
 }

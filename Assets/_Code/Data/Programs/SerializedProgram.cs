@@ -27,5 +27,7 @@ namespace HASH
         public ProgramType ProgramType;
 
         public HashStory.Condition Condition;
+
+        public UnityEngine.Object AditionalData;
     }
 }

@@ -105,8 +105,12 @@ namespace HASH
                     return CrackerProgram.Execute;
                 case ProgramType.Help:
                     return HelpProgram.Execute;
-                 case ProgramType.SSH:
-                     return SSHProgram.Execute;
+                case ProgramType.SSH:
+                    return SSHProgram.Execute;
+                case ProgramType.GSMWatcher:
+                    return GSMWatcherProgram.Execute;
+                case ProgramType.Map:
+                    return MapProgram.Execute;
                 default:
                     DebugUtil.Assert(true, "PROGRAM TYPE HAS NO RELATED CLASS. " + program.ProgramType);
                     break;
