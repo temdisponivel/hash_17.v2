@@ -116,6 +116,9 @@ namespace HASH
                 var mapData = FindProgramOnDevice(ProgramType.Map);
                 MapProgram.Setup(mapData.AditionalData);                
             }
+
+            if (DoesCurrentDeviceHasProgram(ProgramType.Cracker))
+                CrackerProgram.Setup();
         }
 
         public static bool ShowHelpIfNeeded(ProgramExecutionOptions options)

@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
-using HASH;
 using SimpleCollections.Lists;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace HASH
 {
@@ -79,7 +76,42 @@ namespace HASH
                 SList.Enqueue(data.BatchEntries, entry);
             }
             else
+            {
                 Terminal.ShowSingleText(references, text);
+                UpdateTableAndScroll();
+            }
+        }
+
+        /// <summary>
+        /// Changes the last shown text to the given text.
+        /// </summary>
+        public static void ChangeLastText(string text)
+        {
+            var data = DataHolder.TerminalData;
+            if (data.Batching)
+            {
+                if (data.BatchEntries.Count == 0)
+                    ShowText(text);
+                else
+                {
+                    var entry = SList.Peek(data.BatchEntries);
+                    DebugUtil.Assert(entry.Texts.Length > 1, "Changing last text as a single text but last text is not a single text!");
+                    entry.Texts[0] = text;
+                }
+            }
+            else
+            {
+                var allEntries = DataHolder.TerminalData.AllEntries;
+                if (allEntries.Count == 0)
+                    ShowText(text);
+                else
+                {
+                    var lastEntry = SList.Peek(allEntries);
+                    DebugUtil.Assert(lastEntry.EntryType != TerminalEntryType.SingleText, "Changing last text as a single text but last text is not a single text!");
+                    var textEntry = lastEntry.SceneObject.GetComponent<SingleTextEntry>();
+                    textEntry.TextComponent.text = text;
+                }
+            }
         }
 
         /// <summary>
@@ -97,72 +129,44 @@ namespace HASH
                 SList.Enqueue(data.BatchEntries, entry);
             }
             else
+            {
                 Terminal.ShowDualText(references, leftText, rightText);
+                UpdateTableAndScroll();
+            }
         }
-
+        
         /// <summary>
-        /// Applies the color to the text and then calls ShowText.
+        /// Changes the last shown text to the given texts.
         /// </summary>
-        public static void ShowColorizedText(string text, Color color)
+        public static void ChangeLastDualText(string leftText, string rightText)
         {
-            var colorizedText = TextUtil.ApplyNGUIColor(text, color);
-            ShowText(colorizedText);
-        }
-
-        /// <summary>
-        /// Applies the color to the text and then calls ShowText.
-        /// </summary>
-        public static void ShowColorizedDualText(string leftText, Color leftColor, string rightText, Color rightColor)
-        {
-            var leftColorizedText = TextUtil.ApplyNGUIColor(leftText, leftColor);
-            var rightcolorizedText = TextUtil.ApplyNGUIColor(rightText, rightColor);
-            ShowDualText(leftColorizedText, rightcolorizedText);
-        }
-
-        /// <summary>
-        /// Apply the modifiers and then call ShowText.
-        /// Use TextModifiers to create the modifiers.
-        /// </summary>
-        public static void ShowModifiedText(string text, int modifiers)
-        {
-            var modifiedText = TextUtil.ApplyNGUIModifiers(text, modifiers);
-            ShowText(modifiedText);
-        }
-
-        /// <summary>
-        /// Apply the modifiers and then call ShowText.
-        /// Use TextModifiers to create the modifiers.
-        /// </summary>
-        public static void ShowModifiedDualText(string leftText, int leftModifers, string rightText, int rightModifiers)
-        {
-            var leftModifiedText = TextUtil.ApplyNGUIModifiers(leftText, leftModifers);
-            var rightModifiedText = TextUtil.ApplyNGUIModifiers(rightText, rightModifiers);
-            ShowDualText(leftModifiedText, rightModifiedText);
-        }
-
-        /// <summary>
-        /// Colorize the text, then modify the text and then call ShowText.
-        /// </summary>
-        public static void ShowModifiedAndColorizedText(string text, Color color, int modifiers)
-        {
-            var modifiedText = TextUtil.ApplyNGUIModifiers(text, modifiers);
-            var colorizedText = TextUtil.ApplyNGUIColor(modifiedText, color);
-            ShowText(colorizedText);
-        }
-
-        /// <summary>
-        /// Colorize the text, then modify the text and then call ShowText.
-        /// </summary>
-        public static void ShowModifiedAndColorizedDualText(string leftText, Color leftColor, int leftModifiers,
-            string rightText, Color rightColor, int rightModifiers)
-        {
-            var leftColorizedText = TextUtil.ApplyNGUIColor(leftText, leftColor);
-            var leftModifiedText = TextUtil.ApplyNGUIModifiers(leftColorizedText, leftModifiers);
-
-            var rightColorizedText = TextUtil.ApplyNGUIColor(rightText, rightColor);
-            var rightModifiedText = TextUtil.ApplyNGUIModifiers(rightColorizedText, rightModifiers);
-
-            ShowDualText(leftModifiedText, rightModifiedText);
+            var data = DataHolder.TerminalData;
+            if (data.Batching)
+            {
+                if (data.BatchEntries.Count == 0)
+                    ShowDualText(leftText, rightText);
+                else
+                {
+                    var entry = SList.Peek(data.BatchEntries);
+                    DebugUtil.Assert(entry.Texts.Length > 1, "Changing last text as a dual text but last text is not a dual text!");
+                    entry.Texts[0] = leftText;
+                    entry.Texts[1] = rightText;
+                }
+            }
+            else
+            {
+                var allEntries = DataHolder.TerminalData.AllEntries;
+                if (allEntries.Count == 0)
+                    ShowDualText(leftText, rightText);
+                else
+                {
+                    var lastEntry = SList.Peek(allEntries);
+                    DebugUtil.Assert(lastEntry.EntryType != TerminalEntryType.DualText, "Changing last text as a dual text but last text is not a dual text!");
+                    var textEntry = lastEntry.SceneObject.GetComponent<DualTextEntry>();
+                    textEntry.LeftTextComponent.text = leftText;
+                    textEntry.RightTextComponent.text = rightText;
+                }
+            }
         }
 
         public static void UpdateCurrentPathLabel()
@@ -262,10 +266,10 @@ namespace HASH
                 DebugUtil.LogType.Info);
 
             var deviceText = GetCurrentPathTextFormatted();
-            
+
             deviceText = TextUtil.Success(deviceText);
             deviceText = TextUtil.ApplyNGUIModifiers(deviceText, TextModifiers.Italic);
-            
+
             ShowDualText(deviceText, text);
 
             if (!Shell.RunCommandLine(text))
@@ -274,12 +278,12 @@ namespace HASH
                 msg = TextUtil.Error(msg);
                 ShowText(msg);
             }
-            
+
             UpdateTableAndScroll();
             ClearInputText();
             FocusOnInput();
             CacheCommand(DataHolder.TerminalData, text);
-            ResetCommandBufferIndex();                
+            ResetCommandBufferIndex();
         }
 
         /// <summary>
@@ -429,13 +433,31 @@ namespace HASH
             text = TextUtil.ApplyNGUIModifiers(text, TextModifiers.Italic);
             return text;
         }
-        
+
         public static string GetCurrentPathText()
         {
-            var device = DataHolder.DeviceData.CurrentDevice; 
+            var device = DataHolder.DeviceData.CurrentDevice;
             var path = device.FileSystem.CurrentDir.FullPath;
             path = string.Format("{0}@{1}:{2}", device.DeviceName, DataHolder.DeviceData.CurrentUser.Username, path);
             return string.Format("{0}>", path);
+        }
+
+        #endregion
+
+        #region Blocking
+
+        public static void BlockPlayerInput(string message)
+        {
+            var data = DataHolder.GUIReferences;
+            data.Input.enabled = false;
+            data.Input.value = message;
+        }
+
+        public static void UnblockPlayerInput()
+        {
+            var data = DataHolder.GUIReferences;
+            data.Input.enabled = true;
+            data.Input.value = string.Empty;
         }
 
         #endregion

@@ -68,7 +68,11 @@ namespace HASH
             var files = FileSystem.GetAvailableFilesFromDir(currentDir);
 
             if (childs.Count == 0 && files.Count == 0)
-                TerminalUtil.ShowColorizedText("EMPTY DIRECTORY!", LineColor);
+            {
+                var txt = "EMPTY DIRECTORY!";
+                txt = TextUtil.ApplyNGUIColor(txt, LineColor);
+                TerminalUtil.ShowText(txt);
+            }
             else
             {
                 TerminalUtil.StartTextBatch();

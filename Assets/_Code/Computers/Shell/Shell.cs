@@ -113,6 +113,8 @@ namespace HASH
                     return MapProgram.Execute;
                 case ProgramType.Print:
                     return PrintProgram.Execute;
+                case ProgramType.Cracker:
+                    return CrackerProgram.Execute;
                 default:
                     DebugUtil.Assert(true, "PROGRAM TYPE HAS NO RELATED CLASS. " + program.ProgramType);
                     break;

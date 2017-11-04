@@ -8,7 +8,7 @@ namespace HASH
 {
     public class LoopUtil : MonoBehaviour
     {
-        public static LoopUtil Instance;
+        private static LoopUtil Instance;
         
         public static SimpleList<Action> UpdateCallbacks;
         public static SimpleList<Action> LateUpdateCallbacks;
@@ -57,6 +57,11 @@ namespace HASH
         public static Coroutine CallForever(Action callback, float timeInterval)
         {
             return Instance.StartCoroutine(CallForeverEnumerator(callback, timeInterval));
+        }
+
+        public static Coroutine RunCoroutine(IEnumerator coroutine)
+        {
+            return Instance.StartCoroutine(coroutine);
         }
 
         public static IEnumerator CallForeverEnumerator(Action callback, float timeInterval)

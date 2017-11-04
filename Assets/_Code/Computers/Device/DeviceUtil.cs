@@ -44,6 +44,14 @@ namespace HASH
             return null;
         }
 
+        public static HashDevice FindDeviceByIpOrName(string ipOrName)
+        {
+            var device = FindDeviceByIp(ipOrName);
+            if (device == null)
+                device = FindDeviceByName(ipOrName);
+            return device;
+        }
+
         private static HashDevice InternalFindDeviceByName(DeviceData data, string name)
         {
             var allDevices = data.AllDevices;
