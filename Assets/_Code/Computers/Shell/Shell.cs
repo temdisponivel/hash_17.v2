@@ -101,8 +101,8 @@ namespace HASH
                     return ClearProgram.Execute;
                 case ProgramType.Open:
                     return OpenProgram.Execute;
-                case ProgramType.Cracker:
-                    return CrackerProgram.Execute;
+                case ProgramType.Cryptor:
+                    return CryptorProgram.Execute;
                 case ProgramType.Help:
                     return HelpProgram.Execute;
                 case ProgramType.SSH:
@@ -131,10 +131,9 @@ namespace HASH
                     return DirProgram.FillCommandBuffer;
                 case ProgramType.Open:
                     return OpenProgram.FillCommandBuffer;
-                case ProgramType.Cracker:
-                    return CrackerProgram.FillCommandBuffer;
+                case ProgramType.Cryptor:
+                    return CryptorProgram.FillCommandBuffer;
                 default:
-                    DebugUtil.Warning(string.Format("Program '{0}' doesn't have a fill buffer function.", program.ProgramType));
                     break;
             }
 

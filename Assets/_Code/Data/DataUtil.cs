@@ -8,9 +8,9 @@ using SimpleCollections.Hash;
 using SimpleCollections.Lists;
 using UnityEditor.Hardware;
 using UnityEngine;
-
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 
 namespace HASH
@@ -22,13 +22,13 @@ namespace HASH
     {
         public const string DEVICES_PATH = "Data/SerializedDevices";
         public const string RESOURCE_FOLDER_PATH_IN_PROJECT = "Assets/Resources/FileSystem/";
-        
+
         public static void LoadData()
         {
             var devices = LoadDevices();
             DataHolder.DeviceData = DeviceUtil.GetDeviceDataFromSerializedData(devices);
             CacheData();
-            
+
             DeviceUtil.UpdateDeviceRelatedGUI();
         }
 
@@ -36,7 +36,7 @@ namespace HASH
         {
             return Resources.Load<SerializedHashDevices>(DEVICES_PATH);
         }
-        
+
         /// <summary>
         /// Cache files and dirs data.
         /// </summary>
@@ -47,15 +47,15 @@ namespace HASH
             {
                 var device = devices[i];
                 DataHolder.DeviceData.CurrentDevice = device;
-                
+
                 var dirs = device.FileSystem.AllDirectories;
                 foreach (var dir in dirs)
                     FileSystem.CacheDirContent(dir.Value);
-                
+
                 var files = device.FileSystem.AllFiles;
                 foreach (var file in files)
                     FileSystem.CacheFileContents(file.Value);
-                
+
                 FileSystem.CacheRootDir();
             }
 
@@ -76,7 +76,7 @@ namespace HASH
             var allDevices = devices.Devices;
             for (int i = 0; i < allDevices.Length; i++)
                 BakeFileSystemData(allDevices[i]);
-            
+
             Debug.Log("Baking done!");
             EditorUtility.SetDirty(devices);
             Selection.activeObject = devices;
@@ -120,13 +120,13 @@ namespace HASH
             var childs = Directory.GetDirectories(dir);
             var parentDirPath = PathUtil.RemovePathPart(dir, RESOURCE_FOLDER_PATH_IN_PROJECT);
             var files = Resources.LoadAll<HashFileSO>("FileSystem/" + parentDirPath);
-            
+
             var filesIds = new List<int>();
             for (int i = 0; i < files.Length; i++)
             {
                 var file = files[i];
                 var fileType = file.Type;
-                
+
                 var filePath = AssetDatabase.GetAssetPath(file);
 
                 {
@@ -134,19 +134,19 @@ namespace HASH
                     var filePathRelativeToResource = PathUtil.RemovePathPart(filePath, RESOURCE_FOLDER_PATH_IN_PROJECT);
                     var fileName = Path.GetFileName(filePathRelativeToResource);
 
-                    var fileDirPath = PathUtil.RemovePathPart(filePathRelativeToResource, fileName); 
+                    var fileDirPath = PathUtil.RemovePathPart(filePathRelativeToResource, fileName);
                     PathUtil.MatchPathFashion(ref fileDirPath, ref parentDirPath);
                     if (fileDirPath != parentDirPath)
                         continue;
                 }
-                
+
                 if (fileType == HashFileType.Invalid)
                     continue;
 
                 var hashFile = new SerializedHashFile();
 
                 var name = file.name;
-                hashFile.Name = name.ToLower(); 
+                hashFile.Name = name.ToLower();
                 hashFile.FileId = MathUtil.GetStringHash(filePath);
                 hashFile.ParentDirId = parent.DirId;
                 hashFile.UserPermission = file.Permissions;
@@ -159,7 +159,7 @@ namespace HASH
                     case HashFileType.Text:
                         var textFile = new SerializedHashFileText();
                         textFile.File = hashFile;
-                        
+
                         textFile.TextAsset = file.Content as TextAsset;
                         if (textFile.TextAsset == null)
                             Debug.LogError("This file [CLICK ME] is marked as text but it's content is not a text asset!", file);
@@ -169,9 +169,9 @@ namespace HASH
                     case HashFileType.Image:
                         var imageFile = new SerializedHashFileImage();
                         imageFile.File = hashFile;
-                        
+
                         imageFile.ImageAsset = file.Content as Texture2D;
-                        
+
                         if (imageFile.ImageAsset == null)
                             Debug.LogError("This file [CLICK ME] is marked as image but it's content is not a texture asset!", file);
 

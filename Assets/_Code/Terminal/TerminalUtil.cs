@@ -167,8 +167,7 @@ namespace HASH
 
         public static void UpdateCurrentPathLabel()
         {
-            var line = CreatePlayerInputLine(string.Empty);
-            DataHolder.GUIReferences.CurrentPath.text = line.FormattedText;
+            DataHolder.GUIReferences.CurrentPath.text = GetCurrentPathTextFormatted();
         }
 
         #endregion
@@ -262,9 +261,12 @@ namespace HASH
             DebugUtil.Log("[Terminal Util] PLAYER INPUT: " + text, Color.green, DebugUtil.DebugCondition.Verbose,
                 DebugUtil.LogType.Info);
 
-            var line = CreatePlayerInputLine(text);
-
-            ShowText(line.FormattedText);
+            var deviceText = GetCurrentPathTextFormatted();
+            
+            deviceText = TextUtil.Success(deviceText);
+            deviceText = TextUtil.ApplyNGUIModifiers(deviceText, TextModifiers.Italic);
+            
+            ShowDualText(deviceText, text);
 
             if (!Shell.RunCommandLine(text))
             {
@@ -418,54 +420,22 @@ namespace HASH
 
         #endregion
 
-        #region Tabling
+        #region Path
 
-        private static TextTableLine CreatePlayerInputLine(string command)
+        public static string GetCurrentPathTextFormatted()
+        {
+            var text = GetCurrentPathText();
+            text = TextUtil.Success(text);
+            text = TextUtil.ApplyNGUIModifiers(text, TextModifiers.Italic);
+            return text;
+        }
+        
+        public static string GetCurrentPathText()
         {
             var device = DataHolder.DeviceData.CurrentDevice; 
             var path = device.FileSystem.CurrentDir.FullPath;
             path = string.Format("{0}@{1}:{2}", device.DeviceName, DataHolder.DeviceData.CurrentUser.Username, path);
-            
-            var pathColumn = CreatePlayerInputColumn(path, .65f, Constants.Colors.Success, TextModifiers.Italic);
-            var commandColumn = CreatePlayerInputColumn(command, .35f, Constants.Colors.Default, TextModifiers.None);
-
-            var items = SList.Create<TextTableColumn>(2);
-            SList.Add(items, pathColumn);
-            SList.Add(items, commandColumn);
-
-            var line = new TextTableLine();
-            line.Items = items;
-
-            line.MaxLineSizeIsForced = false;
-            line.MaxLineSize = DataHolder.TerminalData.MaxLineWidthInChars;
-
-            line.ItemsSeparator = "> ";
-            line.SeparatorModifier.Color = Constants.Colors.Success;
-            line.SeparatorModifier.Modifiers = TextModifiers.None;
-
-            TextUtil.FormatLineConsideringWeightsAndSize(line);
-
-            return line;
-        }
-
-        private static TextTableColumn CreatePlayerInputColumn(
-            string text,
-            float weight,
-            Color color,
-            int textModifiers)
-        {
-            var item = new TextTableColumn();
-
-            item.Align = TextTableAlign.Left;
-            item.Text = text;
-            item.ModifyTextOptions.Color = color;
-            item.PaddingChar = ' ';
-            item.WeightOnLine = weight;
-            item.WrapMode = WrapTextMode.AddDots;
-            item.ModifyTextOptions.Modifiers = textModifiers;
-            item.Size = text.Length;
-
-            return item;
+            return string.Format("{0}>", path);
         }
 
         #endregion

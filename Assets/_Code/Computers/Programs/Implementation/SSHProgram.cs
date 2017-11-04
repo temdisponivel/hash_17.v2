@@ -49,21 +49,32 @@
                 }
                 else
                 {
-                    if (DeviceUtil.TryLogin(device, userName, password))
+                    var hasSSH = DeviceUtil.HasProgram(device, ProgramType.SSH);
+                    if (hasSSH)
                     {
-                        var user = DeviceUtil.FindUserByName(device, userName);
-                        DeviceUtil.ChangeDevice(device, user);
+                        if (DeviceUtil.TryLogin(device, userName, password))
+                        {
+                            var user = DeviceUtil.FindUserByName(device, userName);
+                            DeviceUtil.ChangeDevice(device, user);
 
-                        var msg = string.Format("Successfully logged into '{0}'", device.DeviceName);
-                        msg = TextUtil.Success(msg);
-                        TerminalUtil.ShowText(msg);
+                            var msg = string.Format("Successfully logged into '{0}'", device.DeviceName);
+                            msg = TextUtil.Success(msg);
+                            TerminalUtil.ShowText(msg);
+                        }
+                        else
+                        {
+                            var msg = "Username or password invalid.";
+                            msg = TextUtil.Error(msg);
+                            TerminalUtil.ShowText(msg);
+                        }
                     }
                     else
                     {
-                        var msg = "Username or password invalid.";
+                        var msg = "The device '{0}' is not running a SSH instance, therefore cannot be accessed using a SSH.";
+                        msg = string.Format(msg, device.IpAddress);
                         msg = TextUtil.Error(msg);
                         TerminalUtil.ShowText(msg);
-                    }                    
+                    }
                 }
             }
             else

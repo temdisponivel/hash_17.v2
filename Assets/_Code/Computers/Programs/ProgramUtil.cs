@@ -99,8 +99,8 @@ namespace HASH
             if (DoesCurrentDeviceHasProgram(ProgramType.Open))
                 OpenProgram.Setup();
 
-            if (DoesCurrentDeviceHasProgram(ProgramType.Cracker))
-                CrackerProgram.Setup();
+            if (DoesCurrentDeviceHasProgram(ProgramType.Cryptor))
+                CryptorProgram.Setup();
 
             if (DoesCurrentDeviceHasProgram(ProgramType.SSH))
                 SSHProgram.Setup();

@@ -2,6 +2,7 @@
 using HASH.Story;
 using SimpleCollections.Lists;
 using UnityEngine;
+using UnityEngine.iOS;
 
 namespace HASH
 {
@@ -9,13 +10,13 @@ namespace HASH
     {
         public const string DEFAULT_USER_NAME = "guest";
         public const string DEFAULT_PASSWORD = "guest";
-        
+
         public static bool TryFindeDeviceByName(string name, out HashDevice device)
         {
             device = FindDeviceByName(name);
             return device != null;
         }
-        
+
         public static HashDevice FindDeviceByName(string name)
         {
             return InternalFindDeviceByName(DataHolder.DeviceData, name);
@@ -26,7 +27,7 @@ namespace HASH
             device = FindDeviceByIp(ip);
             return device != null;
         }
-        
+
         public static HashDevice FindDeviceByIp(string ip)
         {
             var allDevices = DataHolder.DeviceData.AllDevices;
@@ -64,13 +65,13 @@ namespace HASH
             var result = StoryUtil.EvaluateCondition(device.Condition);
             return result;
         }
-        
+
         public static bool TryFindUserByName(HashDevice device, string userName, out HashUser user)
         {
             user = FindUserByName(device, userName);
             return user != null;
         }
-        
+
         public static HashUser FindUserByName(HashDevice device, string userName)
         {
             var users = device.AllUsers;
@@ -95,14 +96,14 @@ namespace HASH
 
         public static bool AuthenticateUser(HashUser user, string passwordAttempt)
         {
-            return string.Equals(user.Password, passwordAttempt);   
+            return string.Equals(user.Password, passwordAttempt);
         }
-        
+
         public static void ChangeDevice(HashDevice newDevice, HashUser newUser)
         {
             DataHolder.DeviceData.CurrentDevice = newDevice;
             DataHolder.DeviceData.CurrentUser = newUser;
-            
+
             UpdateDeviceRelatedGUI();
         }
 
@@ -116,7 +117,7 @@ namespace HASH
         public static HashUser GetUserFromSerializedData(SerializedHashUser serializedUser)
         {
             DebugUtil.AssertContext(serializedUser == null, "Null user", serializedUser);
-            
+
             var result = new HashUser();
             result.Username = serializedUser.UserName;
             result.Password = serializedUser.Password;
@@ -129,16 +130,16 @@ namespace HASH
             device.DeviceName = serializedDevice.DeviceName;
             device.Condition = serializedDevice.Condition;
             device.IpAddress = serializedDevice.IpAddress;
-            
+
             device.AllPrograms = ProgramUtil.GetAllProgramsFromSerializedData(serializedDevice.Programs);
             device.AllUsers = SList.Create<HashUser>(serializedDevice.Users.Length);
-            
+
             for (int i = 0; i < serializedDevice.Users.Length; i++)
             {
                 var user = GetUserFromSerializedData(serializedDevice.Users[i]);
                 SList.Add(device.AllUsers, user);
             }
-            
+
             var defaultUser = new HashUser();
             defaultUser.Username = DEFAULT_USER_NAME;
             defaultUser.Password = DEFAULT_PASSWORD;
@@ -167,6 +168,12 @@ namespace HASH
             result.CurrentDevice = result.PlayerDevice;
 
             return result;
+        }
+
+        public static bool HasProgram(HashDevice device, ProgramType programType)
+        {
+            var programs = ProgramUtil.GetAvailablePrograms(device);
+            return SList.Exists(programs, p => p.ProgramType == programType);
         }
     }
 }
