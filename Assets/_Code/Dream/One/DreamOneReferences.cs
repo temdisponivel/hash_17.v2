@@ -7,5 +7,8 @@ namespace HASH
         public Camera Camera;
         public DreamOnePlayerController PlayerController; 
         public DreamOneTelephone Telephone;
+        public DreamOnePaperMessage PaperMessage;
+
+        public AudioSource Ambiance;
     }
 }

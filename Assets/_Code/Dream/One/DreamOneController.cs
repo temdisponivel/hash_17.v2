@@ -28,6 +28,14 @@ namespace HASH
             Camera.SetupCurrent(CurrentState.References.Camera);
 
             dreamOneReferences.PlayerController.Initiate();
+            CurrentState.References.PaperMessage.Initialize();
+            
+            CurrentState.References.Ambiance.Play();
+        }
+
+        public static void InteractedWithPaperMessage()
+        {
+            CurrentState.References.PaperMessage.Finish();
             CurrentState.References.Telephone.Initialize();
         }
 

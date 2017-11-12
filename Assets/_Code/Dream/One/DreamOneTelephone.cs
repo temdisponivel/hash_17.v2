@@ -17,7 +17,7 @@ namespace HASH
 
             TelephoneAudioSource.loop = true;
             TelephoneAudioSource.PlayDelayed(DelayForPhoneRing);
-            LoopUtil.RunCoroutine(LookAtPhone(DelayForPhoneRing + .1f));
+            LoopUtil.RunCoroutine(LookAtPhone(DelayForPhoneRing + .3f));
         }
 
         public void Finish()
@@ -33,7 +33,7 @@ namespace HASH
             {
                 var player = DreamOneController.CurrentState.References.PlayerController;
                 if (GameObjectUtil.IsCloserThan(player.transform, transform, InteractionRadius))
-                    InteractedWithPlayer();
+                    DreamOneController.OnInteractWithPhone();
             }
         }
 
@@ -43,11 +43,6 @@ namespace HASH
             
             var playerController = DreamOneController.CurrentState.References.PlayerController;
             playerController.StartLookingAtPhone();
-        }
-
-        public void InteractedWithPlayer()
-        {
-            DreamOneController.OnInteractWithPhone();
         }
 
 #if UNITY_EDITOR
