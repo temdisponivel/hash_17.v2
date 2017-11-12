@@ -3,7 +3,7 @@ using SimpleCollections.Lists;
 using SimpleCollections.Util;
 using UnityEngine;
 
-namespace HASH.Window
+namespace HASH
 {
     public static class WindowUtil
     {
@@ -95,7 +95,7 @@ namespace HASH.Window
         {
             var references = DataHolder.GUIReferences;
 
-            var windowObj = NGUITools.AddChild(DataHolder.GUIReferences.UIRoot.gameObject, references.WindowPrefab);
+            var windowObj = NGUITools.AddChild(DataHolder.GUIReferences.WindowsParent, references.WindowPrefab);
 
             var windowComponent = windowObj.GetComponent<WindowComponent>();
 
@@ -413,6 +413,22 @@ namespace HASH.Window
                     material.SetFloat("_BlendFactor", imageWindow.EncryptedImageBlendFactor);
                 }
             }
+        }
+
+        public static void ShowAllWindows()
+        {
+            DataHolder.GUIReferences.WindowsParent.SetActive(true);
+        }
+
+        public static void HideAllWindows()
+        {
+            DataHolder.GUIReferences.WindowsParent.SetActive(false);
+        }
+
+        public static void ToggleAllWindows()
+        {
+            var current = !DataHolder.GUIReferences.WindowsParent.activeSelf;
+            DataHolder.GUIReferences.WindowsParent.SetActive(current);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using HASH.Window;
+﻿using HASH;
 using UnityEngine;
 
 namespace HASH.GUI

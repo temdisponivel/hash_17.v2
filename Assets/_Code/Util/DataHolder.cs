@@ -13,5 +13,7 @@ namespace HASH
         public static GUIReferences GUIReferences;
 
         public static DeviceData DeviceData;
+
+        public static DreamReferences DreamReferences;
     }
 }

@@ -90,5 +90,10 @@ namespace HASH
             scroll.UpdateScrollbars(true);
             scroll.UpdatePosition();
         }
+
+        public static void FocusOnInput()
+        {
+            DataHolder.GUIReferences.Input.isSelected = true;
+        }
     }
 }

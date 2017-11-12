@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace HASH.Window
+namespace HASH
 {
     public enum WindowType
     {

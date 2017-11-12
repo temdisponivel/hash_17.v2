@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HASH.Window
+namespace HASH
 {
     public class TextWindowComponent : MonoBehaviour
     {

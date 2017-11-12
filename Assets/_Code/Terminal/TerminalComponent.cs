@@ -1,4 +1,5 @@
-﻿using HASH;
+﻿using System;
+using HASH;
 using SimpleCollections.Lists;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ namespace HASH
     /// </summary>
     public class TerminalComponent : MonoBehaviour
     {
+        [NonSerialized]
         public float LastTabPressedTime;
 
         public const float DoubleTabPressedInterval = .3f; 
@@ -81,6 +83,11 @@ namespace HASH
                 else
                     TerminalUtil.NavigateCommandBuffer(1, true);
             }
+        }
+
+        public void F1Pressed()
+        {
+            TerminalUtil.ToggleTerminal();
         }
 
         #endregion

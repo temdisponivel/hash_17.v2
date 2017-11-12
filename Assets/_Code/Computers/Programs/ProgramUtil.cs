@@ -1,8 +1,5 @@
-﻿using HASH;
-using HASH.Story;
+﻿using HASH.Story;
 using SimpleCollections.Lists;
-using SimpleCollections.Util;
-using UnityEditor;
 
 namespace HASH
 {

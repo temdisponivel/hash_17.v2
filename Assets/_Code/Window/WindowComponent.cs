@@ -3,7 +3,7 @@ using SimpleCollections.Lists;
 using SimpleCollections.Util;
 using UnityEngine;
 
-namespace HASH.Window
+namespace HASH
 {
     public class WindowComponent : MonoBehaviour
     {

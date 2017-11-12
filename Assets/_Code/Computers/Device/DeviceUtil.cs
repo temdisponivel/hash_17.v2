@@ -1,8 +1,6 @@
 ﻿using System;
 using HASH.Story;
 using SimpleCollections.Lists;
-using UnityEngine;
-using UnityEngine.iOS;
 
 namespace HASH
 {

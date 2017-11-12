@@ -1,5 +1,5 @@
 ﻿using System;
-using HASH.Window;
+using HASH;
 using UnityEngine;
 
 namespace HASH.GUI
@@ -34,6 +34,8 @@ namespace HASH.GUI
         public TerminalComponent TerminalComponent;
 
         [Header("WINDOW")]
+        public GameObject WindowsParent;
+        
         public GameObject WindowPrefab;
         public TextWindowComponent TextWindowPrefab;
         public ImageWindowComponent ImageWindowPrefab;
@@ -41,6 +43,10 @@ namespace HASH.GUI
         public CursorTextureConfig[] CursorTextures;
 
         public Material EncryptedImageMaterial;
+
+        [Header("Announcement")] 
+        public UIPanel AnnouncementPanel;
+        public UILabel AnnoucementLabel;
     }
 
     public enum CursorTexture

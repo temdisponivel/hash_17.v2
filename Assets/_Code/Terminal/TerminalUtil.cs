@@ -461,5 +461,29 @@ namespace HASH
         }
 
         #endregion
+        
+        #region Hide
+
+        public static void ShowTerminal()
+        {
+            var references = DataHolder.GUIReferences;
+            references.MainPanel.gameObject.SetActive(true);
+            
+            GUIUtil.FocusOnInput();
+        }
+        
+        public static void HideTerminal()
+        {
+            var references = DataHolder.GUIReferences;
+            references.MainPanel.gameObject.SetActive(false);
+        }
+
+        public static void ToggleTerminal()
+        {
+            var current = !DataHolder.GUIReferences.MainPanel.gameObject.activeSelf;
+            DataHolder.GUIReferences.MainPanel.gameObject.SetActive(current);
+        }
+        
+        #endregion
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace HASH.Window
+namespace HASH
 {
     [DisallowMultipleComponent]
     public class WindowClickListener : MonoBehaviour

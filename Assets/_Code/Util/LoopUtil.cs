@@ -56,7 +56,7 @@ namespace HASH
 
         public static Coroutine CallForever(Action callback, float timeInterval)
         {
-            return Instance.StartCoroutine(CallForeverEnumerator(callback, timeInterval));
+            return Instance.StartCoroutine(InternalCallForever(callback, timeInterval));
         }
 
         public static Coroutine RunCoroutine(IEnumerator coroutine)
@@ -64,13 +64,29 @@ namespace HASH
             return Instance.StartCoroutine(coroutine);
         }
 
-        public static IEnumerator CallForeverEnumerator(Action callback, float timeInterval)
+        public static void RunAsynOp(AsyncOperation asyncOp)
+        {
+            
+        }
+
+        private static IEnumerator InternalCallForever(Action callback, float timeInterval)
         {
             while (true)
             {
                 yield return new WaitForSeconds(timeInterval);
                 callback();
             }
+        }
+
+        public static void CallAfterSeconds(Action callback, float seconds)
+        {
+            RunCoroutine(InternalCallForever(callback, seconds));
+        }
+
+        private static IEnumerable InternalCallAfterSeconds(Action callback, float seconds)
+        {
+            yield return new WaitForSeconds(seconds);
+            callback();
         }
     }
 }

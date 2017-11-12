@@ -1,5 +1,5 @@
 ﻿using System;
-using HASH.Window;
+using HASH;
 using SimpleCollections.Util;
 using UnityEngine;
 

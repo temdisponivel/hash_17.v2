@@ -49,5 +49,16 @@ namespace HASH
             transform.localScale = Vector3.zero;
             transform.localRotation = Quaternion.identity;
         }
+
+        public static float DistanceSqrd(Transform a, Transform b)
+        {
+            return (a.position - b.position).sqrMagnitude;
+        }
+
+        public static bool IsCloserThan(Transform a, Transform b, float distance)
+        {
+            var realDistance = DistanceSqrd(a, b);
+            return realDistance <= (distance * distance);
+        }
     }
 }

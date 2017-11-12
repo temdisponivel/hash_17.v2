@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: e40f63c2cbdbfd846a41d94bf5f3474b
+timeCreated: 1510437941
+licenseType: Pro
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Laconic
+  fontNames:
+  - Laconic
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 5549e2f0c56e4484e835315edb0f5b54, type: 3}
+  - {fileID: 12800000, guid: 2a628e015c5347e4395d6b7ac3cee125, type: 3}
+  - {fileID: 12800000, guid: 0041e6f2b2623d648aec19eb361be3c4, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

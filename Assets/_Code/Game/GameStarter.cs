@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using HASH.GUI;
 using HASH.Story;
-using HASH.Window;
+using HASH;
 using UnityEngine;
 
 namespace HASH
@@ -12,8 +12,12 @@ namespace HASH
     public class GameStarter : MonoBehaviour
     {
         public GUIReferences GUIReferences;
+        public DreamReferences DreamReferences;
+        
         public DebugUtil.DebugCondition DebugCondition;
         public HashColors Colors;
+
+        public GameObject DreamOnePrefab;
         
         void Start()
         {
@@ -35,6 +39,7 @@ namespace HASH
             Constants.Colors = Colors;
             DataHolder.DebugCondition = DebugCondition;
             DataHolder.GUIReferences = GUIReferences;
+            DataHolder.DreamReferences = DreamReferences;
             
             DataHolder.GUIReferences.TerminalComponent.Initialize();
             StoryUtil.Init();
@@ -43,6 +48,11 @@ namespace HASH
             DataUtil.LoadData();
             ProgramUtil.SetupPrograms();
             GUIUtil.SetCursorToDefault();
+            
+            TerminalUtil.HideTerminal();
+            AnnouncementUtil.HideAnnouncement();
+
+            DreamUtil.ExecuteDreamOne();            
         }
 
 #if DEB && UNITY_EDITOR
